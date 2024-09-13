@@ -1,0 +1,1 @@
+export default baseUrl = "http://localhost:4175/api";
