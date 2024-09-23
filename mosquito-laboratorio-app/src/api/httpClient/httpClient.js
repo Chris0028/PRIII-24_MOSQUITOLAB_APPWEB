@@ -1,11 +1,9 @@
 import axios from "axios";
-import baseUrl from "../baseUrl/baseUrl";
+import { baseUrl } from "../baseUrl/baseUrl";
 
-const api = axios.create({
+export const httpClient = axios.create({
     baseURL: baseUrl,
     headers: {
         'Content-Type': 'application/json'
     }
 });
-
-export default api;

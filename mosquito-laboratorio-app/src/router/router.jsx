@@ -1,10 +1,10 @@
 import { Route, Routes } from "react-router-dom";
-import Auth from "../modules/auth/components/auth";
+import AuthContainer from "../modules/auth/components/authContainer";
 
 export default function Routing() {
     return (
         <Routes>
-            {/* <Route index element={<Auth />} /> */}
+            <Route index element={<AuthContainer />} />
         </Routes>
     )
 }
