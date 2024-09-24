@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import './App.css'
 import Routing from './router/router'
 import 'rsuite/dist/rsuite.min.css'
 

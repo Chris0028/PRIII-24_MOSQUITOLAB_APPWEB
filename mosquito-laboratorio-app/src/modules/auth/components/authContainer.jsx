@@ -4,7 +4,7 @@ import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
 
 export default function AuthContainer() {
     return (
-        <Container style={{ minHeight: '100hv' }}>
+        <Container style={{ minHeight: '100hv', padding: '100px' }}>
             <Header>
                 <FlexboxGrid>
                     <FlexboxGridItem colspan={24} style={{ textAlign: 'center' }}>
