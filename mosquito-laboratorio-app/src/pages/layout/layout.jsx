@@ -6,7 +6,7 @@ import UserInfo from "./components/userInfo";
 import CustomNavItem from "./components/customNavItem";
 import NavItem from "rsuite/esm/Nav/NavItem";
 
-export default function Layout() {
+export default function Layout({children}) {
     const [hoveredItem, setHoveredItem] = useState(null);
 
     function handleMouseEnter(eventKey) {
@@ -25,7 +25,7 @@ export default function Layout() {
                         <Nav>
                             <UserInfo />
                             <CustomNavItem eventKey="2" label="Área de trabajo" hoveredItem={hoveredItem} disabled />
-                            <CustomNavItem eventKey="3" icon={<FaVial />} label="Laboratorio" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} />
+                            <CustomNavItem eventKey="3" icon={<FaVial />} label="Laboratorio" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/fileform'} />
                             <CustomNavItem eventKey="4" icon={<FaFileInvoice />} label="Fichas DE.CHI.KA" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} />
                             <CustomNavItem eventKey="5" icon={<FaCloudDownloadAlt />} label="Descargas" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} />
                             <CustomNavItem eventKey="6" icon={<FaChartBar />} label="Reportes" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} />
@@ -51,7 +51,7 @@ export default function Layout() {
                     </Navbar>
                 </Header>
                 <Content style={styles.content}>
-                    {/* Aquí iría el contenido de la página */}
+                    {children}
                 </Content>
             </Container>
         </Container>
