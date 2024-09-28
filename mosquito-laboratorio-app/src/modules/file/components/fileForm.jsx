@@ -7,7 +7,7 @@ export default function FileForm() {
     const [step, setStep] = useState(0);
 
     const onChange = (nextStep) => {
-        setStep(nextStep < 0 ? 0 : nextStep > 1 ? 1 : nextStep);
+        setStep(nextStep < 0 ? 0 : nextStep > 5 ? 1 : nextStep);
     };
 
     const onNext = () => onChange(step + 1);
@@ -34,7 +34,7 @@ export default function FileForm() {
                 <Button onClick={onPrevious} disabled={step === 0}>
                     Anterior
                 </Button>
-                <Button onClick={onNext} disabled={step === 1}>
+                <Button onClick={onNext} disabled={step === 5}>
                     Siguiente
                 </Button>
             </ButtonGroup>

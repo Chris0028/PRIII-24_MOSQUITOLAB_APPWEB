@@ -1,8 +1,44 @@
 import { Form, DatePicker, FlexboxGrid, InputPicker } from 'rsuite';
 import FormControl from 'rsuite/esm/FormControl';
 import FormGroup from 'rsuite/esm/FormGroup';
+import { GetMunicipalities } from '../services/locationService';
+import { useEffect, useState } from 'react';
 
 export default function FormStepOne() {
+
+    const caseOptions = [
+        { label: 'Caso Captado en Búsqueda Activa', value: 'ActiveSearch' },
+        { label: 'Atención en Servicio de Salud', value: 'MedicalCenter' },
+        { label: 'Otro', value: 'Other'},
+    ];
+
+    const subSectorOptions = [
+        { label: 'Público', value: 'Public' },
+        { label: 'Seguro Salud', value: 'HealthSecure' },
+        { label: 'Privado', value: 'Private'},
+        { label: 'Otro', value: 'Other'},
+    ];     
+
+    const [municipalities, setMunicipalities] = useState([]);
+
+    useEffect(() => {
+        async function fetchMunicipalities() {
+            try {
+                const data = await GetMunicipalities();
+                if (data) {
+                    setMunicipalities(data.map(municipality => ({
+                        label: municipality.name,
+                        value: municipality.id
+                    })));
+                }
+            } catch (error) {
+                console.error('Error fetching municipalities:', error);
+            }
+        }
+
+        fetchMunicipalities();
+    }, []);
+
     return (
         <Form fluid>
             <FlexboxGrid justify="space-between">
@@ -20,13 +56,7 @@ export default function FormStepOne() {
                     </FormGroup>
                     <FormGroup>
                         <Form.ControlLabel>Municipio *</Form.ControlLabel>
-                        <InputPicker
-                            name="municipality"
-                            placeholder="Seleccione el municipio"
-                            block
-                            size="lg"
-                            style={{ width: '100%' }}
-                        />
+                        <InputPicker name="municipality" placeholder="Seleccione el municipio" block size="lg" style={{ width: '100%' }} data={municipalities || []}/>
                     </FormGroup>
                     <FormGroup>
                         <Form.ControlLabel>Fecha de Notificación *</Form.ControlLabel>
@@ -40,6 +70,7 @@ export default function FormStepOne() {
                             block
                             size="lg"
                             style={{ width: '100%' }}
+                            data={caseOptions}
                         />
                     </FormGroup>
                 </FlexboxGrid.Item>
@@ -64,6 +95,7 @@ export default function FormStepOne() {
                             block
                             size="lg"
                             style={{ width: '100%' }}
+                            data={subSectorOptions}
                         />
                     </FormGroup>
                     <FormGroup>
