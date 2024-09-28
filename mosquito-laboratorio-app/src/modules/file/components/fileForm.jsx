@@ -18,11 +18,16 @@ export default function FileForm() {
             <Steps current={step}>
                 <Steps.Item title="Paso 1" description="Datos del Establecimiento" />
                 <Steps.Item title="Paso 2" description="Datos del Paciente" />
+                <Steps.Item title="Paso 3" description="Antecedentes Epidemiológicos" />
+                <Steps.Item title="Paso 4" description="Datos Clínicos" />
+                <Steps.Item title="Paso 5" description="Datos en caso de Hospitalización" />
+                <Steps.Item title="Paso 6" description="Confirmación" />
             </Steps>
             <hr />
             <Panel header={`Paso: ${step + 1}`} bordered>
                 {step === 0 && <FormStepOne />}
                 {step === 1 && <FormStepTwo />}
+
             </Panel>
             <hr />
             <ButtonGroup>

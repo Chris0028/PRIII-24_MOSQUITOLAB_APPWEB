@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import AuthContainer from "../modules/auth/components/authContainer";
-import FileForm from "../modules/file/components/fileform";
 import Layout from "../pages/layout/layout";
+import FileForm from "../modules/file/components/fileform";
 
 export default function Routing() {
     return (
