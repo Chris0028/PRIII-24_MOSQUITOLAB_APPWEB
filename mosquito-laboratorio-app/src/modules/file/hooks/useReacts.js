@@ -45,4 +45,6 @@ export function useDiseaseTabs() {
     dengueCase,
     setDengueCase: handleDengueCaseChange,
   };
+
 }
+
