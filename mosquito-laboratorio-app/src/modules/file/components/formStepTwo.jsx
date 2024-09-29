@@ -4,8 +4,8 @@ import FormControl from 'rsuite/esm/FormControl';
 import FormGroup from 'rsuite/esm/FormGroup';
 import { Toggles } from '../hooks/useReacts';
 import { sexOptions, countriesOptions } from '../utils/PickerOptions';
-import {APIProvider, Map} from '../hooks/useMaps'
 import { useFetchMunicipalities } from '../repositories/locationRepository';
+import { APIProvider , Map } from '../hooks/useMaps';
 
 export default function FormStepTwo() {
   const { isPregnant, isInsured, handleToggleChange, handleToggleChange1 } = Toggles();
