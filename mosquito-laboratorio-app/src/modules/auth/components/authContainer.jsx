@@ -1,4 +1,4 @@
-import { Container, Content, FlexboxGrid, Footer, Header, Panel, Stack, Text } from "rsuite";
+import { Container, Content, FlexboxGrid, Header, Panel } from "rsuite";
 import AuthForm from "./authForm";
 import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
 
