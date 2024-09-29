@@ -27,7 +27,7 @@ export default function FormStepFive() {
                 <FlexboxGrid.Item colspan={11}>
                     <FormGroup>
                         <Form.ControlLabel>Fecha de Hospitalización</Form.ControlLabel>
-                        <DatePicker name="hospitalizationDate" format="dd/MM/yyyy" style={{ width: '100%' }} />
+                        <DatePicker name="hospitalizationDate" format="yyyy/MM/dd" style={{ width: '100%' }} />
                     </FormGroup>
                 </FlexboxGrid.Item>
             </FlexboxGrid>
@@ -52,7 +52,7 @@ export default function FormStepFive() {
                 <FlexboxGrid.Item colspan={11}>
                     <FormGroup>
                         <Form.ControlLabel>Fecha de Hospitalización</Form.ControlLabel>
-                        <DatePicker name="utiHospitalizationDate" format="dd/MM/yyyy" style={{ width: '100%' }} />
+                        <DatePicker name="utiHospitalizationDate" format="yyyy/MM/dd" style={{ width: '100%' }} />
                     </FormGroup>
                 </FlexboxGrid.Item>
             </FlexboxGrid>
@@ -63,4 +63,4 @@ export default function FormStepFive() {
             </FormGroup>
         </Form>
     );
-}
+};
