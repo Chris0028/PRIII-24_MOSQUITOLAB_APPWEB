@@ -4,7 +4,7 @@ import { Form, DatePicker, FlexboxGrid, InputPicker } from 'rsuite';
 import FormControl from 'rsuite/esm/FormControl';
 import FormGroup from 'rsuite/esm/FormGroup';
 import { useFetchMunicipalities, useFetchStates } from '../repositories/locationRepository';
-import { caseOptions, subSectorOptions, healthStablishmentOptions } from '../utils/PickerOptions';
+import { caseOptions, subSectorOptions, healthStablishmentOptions } from '../utils/pickerOptions';
 
 export default function FormStepOne() {
   const municipalities = useFetchMunicipalities();

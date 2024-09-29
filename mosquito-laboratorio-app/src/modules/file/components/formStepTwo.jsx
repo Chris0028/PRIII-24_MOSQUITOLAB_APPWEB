@@ -3,13 +3,12 @@ import { Form, DatePicker, Toggle, FlexboxGrid, InputPicker, Divider } from 'rsu
 import FormControl from 'rsuite/esm/FormControl';
 import FormGroup from 'rsuite/esm/FormGroup';
 import { Toggles } from '../hooks/useReacts';
-import { sexOptions, countriesOptions } from '../utils/PickerOptions';
+import { sexOptions, countriesOptions } from '../utils/pickerOptions';
 import {APIProvider, Map} from '../hooks/useMaps'
 import { useFetchMunicipalities } from '../repositories/locationRepository';
 
 export default function FormStepTwo() {
   const { isPregnant, isInsured, handleToggleChange, handleToggleChange1 } = Toggles();
-  
   const municipalities = useFetchMunicipalities();
 
   return (
@@ -226,13 +225,7 @@ export default function FormStepTwo() {
             <Form.ControlLabel>Ubicación de la Residencia por GPS *</Form.ControlLabel>
             <div style={{ width: '100%', height: 400, margin: 'auto' }}>
               <APIProvider apiKey={'AIzaSyDUp525rIEomavdDPSV8eqjnPWuMxVr0iM'} onLoad={() => console.log('Maps API has loaded.')}>
-                <Map
-                  defaultZoom={15}
-                  defaultCenter={{ lat: -17.388283899568613, lng: -66.14925111256666 }}
-                  onCameraChanged={(ev) =>
-                    console.log('camera changed:', ev.detail.center, 'zoom:', ev.detail.zoom)
-                  }
-                />
+                <Map defaultZoom={15} defaultCenter={{ lat: -17.388283899568613, lng: -66.14925111256666 }} onClick={ onMapClick } />
               </APIProvider>
             </div>
           </FormGroup>

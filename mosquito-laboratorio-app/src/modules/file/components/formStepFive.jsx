@@ -1,8 +1,18 @@
-import { Form, DatePicker, FlexboxGrid, RadioGroup, Radio, Panel} from 'rsuite';
+import { useState } from '../hooks/useReacts';
+import { Form, DatePicker, FlexboxGrid, RadioGroup, Radio, Panel, InputPicker } from 'rsuite';
+import { medicalDischargeOptions} from '../utils/pickerOptions';
 import FormControl from 'rsuite/esm/FormControl';
 import FormGroup from 'rsuite/esm/FormGroup';
 
+
+
 export default function FormStepFive() {
+    const [dischargeType, setDischargeType] = useState('');
+
+    const handleDischargeTypeChange = (value) => {
+        setDischargeType(value);
+    };
+
     return (
         <Form fluid>
             {/* Panel de Información */}
@@ -61,6 +71,36 @@ export default function FormStepFive() {
                 <Form.ControlLabel>Establecimiento de Salud</Form.ControlLabel>
                 <FormControl name="utiHospitalName" placeholder="Nombre del establecimiento de salud" style={{ width: '100%' }} />
             </FormGroup>
+
+            {/* Tipo de Alta Médica y Fecha de Defunción */}
+            <FlexboxGrid justify="space-between" style={{ marginTop: 30 }}>
+                <FlexboxGrid.Item colspan={11}>
+                    <FormGroup>
+                        <Form.ControlLabel>Tipo de Alta Médica</Form.ControlLabel>
+                        <InputPicker
+                            name="dischargeType"
+                            data={medicalDischargeOptions}
+                            block
+                            size="lg"
+                            placeholder="Seleccione el tipo de alta médica"
+                            onChange={handleDischargeTypeChange}
+                            style={{ width: '100%' }}
+                        />
+                    </FormGroup>
+                </FlexboxGrid.Item>
+
+                <FlexboxGrid.Item colspan={11}>
+                    <FormGroup>
+                        <Form.ControlLabel>Fecha de Defunción</Form.ControlLabel>
+                        <DatePicker
+                            name="deathDate"
+                            format="yyyy/MM/dd"
+                            style={{ width: '100%' }}
+                            disabled={dischargeType !== 'Defuncion'}
+                        />
+                    </FormGroup>
+                </FlexboxGrid.Item>
+            </FlexboxGrid>
         </Form>
     );
 };

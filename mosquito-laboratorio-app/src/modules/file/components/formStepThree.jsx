@@ -2,7 +2,7 @@ import { Form, FlexboxGrid, Panel, InputPicker } from 'rsuite';
 import FormControl from 'rsuite/esm/FormControl';
 import FormGroup from 'rsuite/esm/FormGroup';
 import { useFetchMunicipalities, useFetchStates } from '../repositories/locationRepository';
-import { countriesOptions } from '../utils/PickerOptions';
+import { countriesOptions } from '../utils/pickerOptions';
 
 
 export default function FormStepThree() {
