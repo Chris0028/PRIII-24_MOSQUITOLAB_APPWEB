@@ -1,16 +1,17 @@
+import { useState } from '../hooks/useReacts';
 import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, InputGroup } from 'rsuite';
 import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaChartLine } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
-const { Column, HeaderCell, Cell } = Table; 
+const { Column, HeaderCell, Cell } = Table;
 
 const ColoredCell = ({ rowData, dataKey, ...props }) => {
   let backgroundColor = '';
 
-  switch (rowData.status) {
+  switch (rowData.status) { 
     case 'POSITIVO':
-      backgroundColor = '#5E89BF';
-      
+      backgroundColor = '#8AABD6';
+
       break;
     case 'PENDIENTE':
       backgroundColor = '#BFCDE0';
@@ -23,16 +24,15 @@ const ColoredCell = ({ rowData, dataKey, ...props }) => {
   }
 
   return (
-    <Cell {...props} style={{ backgroundColor, display: 'flex',  alignItems: 'center', height: '100%', justifyContent:'center', textAlign:'center', verticalAlign: 'middle'}}>
+    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle' }}>
       {rowData[dataKey]}
     </Cell>
   );
 };
 
-
 export default function RecordsView() {
- 
-  const navigate = useNavigate();
+
+  const navigate = useNavigate()
 
   const data = [
     {
@@ -69,7 +69,7 @@ export default function RecordsView() {
       notificationDate: '29/08/2024',
     },
     {
-      status: 'NEGATIVO',
+      status: 'POSITIVO',
       sampleStatus: 'CON RESULTADO',
       code: 'CB-P-202030',
       ci: '3148475',
@@ -101,6 +101,17 @@ export default function RecordsView() {
       birthDate: '29/12/1965',
       notificationDate: '29/08/2024',
     },
+    {
+      status: 'NEGATIVO',
+      sampleStatus: 'CON RESULTADO',
+      code: 'CB-P-202030',
+      ci: '3148475',
+      names: 'JUANITO',
+      lastName: 'USTARIZ',
+      secondLastName: 'FELIPEZ',
+      birthDate: '29/12/1965',
+      notificationDate: '29/08/2024',
+    },
   ];
 
   return (
@@ -108,7 +119,7 @@ export default function RecordsView() {
       {/* Alerta de Descarga */}
       <div
         style={{
-          backgroundColor: '#E3D290',
+          backgroundColor: '#BFCDE0',
           padding: '10px',
           borderRadius: '4px',
           marginBottom: '10px',
@@ -119,11 +130,10 @@ export default function RecordsView() {
         <IconButton
           icon={<FaExclamation color="white" />}
           circle
-          size="lg"
-          style={{ backgroundColor: 'black', marginRight: '10px' }}
+          style={{ backgroundColor: 'black', marginRight: '10px', fontSize: '12px'}}
         />
         <p style={{ margin: 0 }}>
-          <strong style={{ fontSize: '18px' }}>Solo puede realizar dos descargas diarias</strong>
+          <strong style={{ fontSize: '17px' }}>Solo puede realizar dos descargas diarias.</strong>
         </p>
       </div>
 
@@ -148,12 +158,12 @@ export default function RecordsView() {
       {/* Contenedor para la tabla con scroll */}
       <div style={{ flex: 1, overflowY: 'auto', marginBottom: '20px' }}>
         {/* Tabla de Registros */}
-        <Table height={600} data={data} rowHeight={100} style={{ fontWeight: 'bold', textAlign:'center', verticalAlign: 'middle' }}>
-          <Column width={100} fixed >
+        <Table height={800} data={data} rowHeight={100} style={{ fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle' }}>
+          <Column width={90} fixed >
             <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Acciones</HeaderCell>
             <Cell >
               {(rowData) => (
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'  }}>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
                   <Whisper placement="top" trigger="hover" speaker={<Tooltip>Editar</Tooltip>}>
                     <IconButton
                       icon={<FaEdit />}

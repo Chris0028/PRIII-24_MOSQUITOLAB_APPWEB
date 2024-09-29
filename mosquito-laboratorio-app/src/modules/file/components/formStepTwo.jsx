@@ -161,7 +161,7 @@ export default function FormStepTwo() {
         <FlexboxGrid.Item colspan={11} style={{ marginBottom: 30 }}>
           <FormGroup>
             <Form.ControlLabel>Municipio / Departamento *</Form.ControlLabel>
-            <InputPicker name="municipalityDepartment" block size="lg" placeholder="Ingrese el nombre de su municipio" style={{ width: '100%' }}  data={municipalities} />
+            <InputPicker name="municipalityDepartment" block size="lg" placeholder="Ingrese el nombre de su municipio" style={{ width: '100%' }} data={municipalities} />
           </FormGroup>
         </FlexboxGrid.Item>
 

@@ -4,11 +4,16 @@ import { Button, ButtonToolbar, Form, InputGroup } from "rsuite";
 import FormControl from "rsuite/esm/FormControl";
 import FormGroup from "rsuite/esm/FormGroup";
 import InputGroupAddon from "rsuite/esm/InputGroup/InputGroupAddon";
-import { authenticate } from "../services/authService"
+import { authenticateAsync } from "../services/authService"
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../../redux/userSlice";
 
 export default function AuthForm() {
 
+    const dispatch = useDispatch();
     const [authData, setAuthData] = useState({ username: '', password: '' });
+    const navigate = useNavigate();
 
     function handleChange(value, name) {
         setAuthData({
@@ -19,7 +24,11 @@ export default function AuthForm() {
 
     async function signIn(e) {
         e.preventDefault();
-        await authenticate(authData);
+        const credentials = await authenticateAsync(authData);
+        if (credentials != null) {
+            dispatch(setUser(credentials));
+            navigate('/samples');
+        }
     }
 
     return (
@@ -44,7 +53,7 @@ export default function AuthForm() {
             <Button appearance="link" color="blue">¿Olvidó su contraseña?</Button>
             <FormGroup>
                 <ButtonToolbar>
-                    <Button block appearance="primary" onClick={signIn}>Ingresar</Button>
+                    <Button block appearance="primary" onClick={(e) => signIn(e)}>Ingresar</Button>
                 </ButtonToolbar>
             </FormGroup>
         </Form>

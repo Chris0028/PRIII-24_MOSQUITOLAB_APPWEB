@@ -1,13 +1,15 @@
-import { FaChartBar, FaCloudDownloadAlt, FaFileInvoice, FaSignOutAlt, FaUserAlt, FaVial } from "react-icons/fa";
-import { Container, Content, Divider, Header, Nav, Navbar, Sidebar, Sidenav } from "rsuite";
+import { FaChartBar, FaCloudDownloadAlt, FaFileInvoice, FaSignOutAlt, FaUserAlt, FaVial, FaBars } from "react-icons/fa";
+import { Container, Content, Divider, Header, Nav, Navbar, Sidebar, Sidenav, IconButton } from "rsuite";
 import SidenavBody from "rsuite/esm/Sidenav/SidenavBody";
 import { useState } from "react";
 import UserInfo from "./components/userInfo";
 import CustomNavItem from "./components/customNavItem";
 import NavItem from "rsuite/esm/Nav/NavItem";
+import { PiEyedropperSampleFill } from "react-icons/pi";
 
-export default function Layout({children}) {
+export default function Layout({ children }) {
     const [hoveredItem, setHoveredItem] = useState(null);
+    const [expanded, setExpanded] = useState(window.innerWidth > 768);
 
     function handleMouseEnter(eventKey) {
         setHoveredItem(eventKey);
@@ -17,24 +19,35 @@ export default function Layout({children}) {
         setHoveredItem(null);
     }
 
+    function toggleSidebar() {
+        setExpanded(!expanded);
+    }
+
+    function handleResize() {
+        setExpanded(window.innerWidth > 768);
+    }
+
+    window.addEventListener('resize', handleResize);
+
     return (
         <Container style={styles.container}>
-            <Sidebar width={300} collapsible style={styles.sidebar}>
+            <Sidebar width={expanded ? 300 : 100} collapsible expanded={expanded} style={styles.sidebar}>
                 <Sidenav defaultOpenKeys={['1']} appearance="subtle">
                     <SidenavBody style={{ flexGrow: 1 }}>
                         <Nav>
-                            <UserInfo />
-                            <CustomNavItem eventKey="2" label="Área de trabajo" hoveredItem={hoveredItem} disabled />
-                            <CustomNavItem eventKey="3" icon={<FaVial />} label="Laboratorio" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} />
-                            <CustomNavItem eventKey="4" icon={<FaFileInvoice />} label="Fichas DE.CHI.KA" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/homefiledoctor'} />
-                            <CustomNavItem eventKey="5" icon={<FaCloudDownloadAlt />} label="Descargas" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/homefilelabo'} />
-                            <CustomNavItem eventKey="6" icon={<FaChartBar />} label="Reportes" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} />
-                            <CustomNavItem eventKey="7" icon={<FaUserAlt />} label="Cuenta" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} />
+                            <UserInfo expanded={expanded} />
+                            <CustomNavItem eventKey="2" label="Área de trabajo" hoveredItem={hoveredItem} disabled expanded={expanded} />
+                            <CustomNavItem eventKey="3" icon={<FaVial />} label="Laboratorio" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/homefilelabo'} expanded={expanded} />
+                            <CustomNavItem eventKey="4" icon={<PiEyedropperSampleFill />} label="Muestras" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/samples'} expanded={expanded} />
+                            <CustomNavItem eventKey="5" icon={<FaFileInvoice />} label="Fichas DE.CHI.KA" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/homefiledoctor'} expanded={expanded} />
+                            <CustomNavItem eventKey="6" icon={<FaCloudDownloadAlt />} label="Descargas" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />
+                            <CustomNavItem eventKey="7" icon={<FaChartBar />} label="Reportes" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />
+                            <CustomNavItem eventKey="8" icon={<FaUserAlt />} label="Cuenta" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />
                         </Nav>
                     </SidenavBody>
-                    <Nav style={{ marginTop: '25vh' }}>
+                    <Nav style={{ marginTop: expanded ? '10vh' : '2vh' }}>
                         <Divider />
-                        <CustomNavItem eventKey="8" icon={<FaSignOutAlt />} label="Cerrar sesión" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} />
+                        <CustomNavItem eventKey="9" icon={<FaSignOutAlt />} label="Cerrar sesión" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} expanded={expanded} />
                     </Nav>
                 </Sidenav>
             </Sidebar>
@@ -43,6 +56,13 @@ export default function Layout({children}) {
                 <Header>
                     <Navbar appearance="inverse" style={styles.navbar}>
                         <Nav>
+                            <IconButton
+                                icon={<FaBars />}
+                                onClick={toggleSidebar}
+                                appearance="subtle"
+                                style={styles.toggleButton}
+                                aria-label="Toggle Sidebar"
+                            />
                             <NavItem disabled style={styles.headerNav}>LABORATORIO</NavItem>
                         </Nav>
                         <Nav pullRight>
@@ -62,6 +82,7 @@ const styles = {
     container: {
         display: 'flex',
         height: '100vh',
+        overflow: 'hidden',
     },
     sidebar: {
         display: 'flex',
@@ -71,11 +92,14 @@ const styles = {
     navbar: {
         background: '#F5F5F5',
         color: 'black',
-        padding: '25px',
+        padding: '15px',
+    },
+    toggleButton: {
+        marginRight: '10px',
     },
     headerNav: {
         fontWeight: 'bolder',
-        fontSize: '18px',
+        fontSize: '16px',
     },
     content: {
         padding: '20px',
