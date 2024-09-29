@@ -1,6 +1,6 @@
-import { useState } from '../hooks/useReacts';
 import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, InputGroup } from 'rsuite';
 import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaChartLine } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const { Column, HeaderCell, Cell } = Table; 
 
@@ -29,7 +29,11 @@ const ColoredCell = ({ rowData, dataKey, ...props }) => {
   );
 };
 
+
 export default function RecordsView() {
+ 
+  const navigate = useNavigate();
+
   const data = [
     {
       status: 'POSITIVO',
@@ -231,7 +235,7 @@ export default function RecordsView() {
         }}
       >
         {/* Botón para Agregar Ficha */}
-        <Button appearance="primary" color="blue" size="lg">
+        <Button appearance="primary" color="blue" size="lg" onClick={() => navigate('/fileform')}>
           <FaPlus style={{ marginRight: 10 }} /> Agregar Ficha
         </Button>
 
