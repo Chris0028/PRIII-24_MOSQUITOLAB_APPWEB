@@ -1,4 +1,4 @@
-import {APIProvider, Map, Marker} from '@vis.gl/react-google-maps';
+import {APIProvider, Map, Marker, InfoWindow} from '@vis.gl/react-google-maps';
 
 
-export {APIProvider, Map, Marker}
+export {APIProvider, Map, Marker, InfoWindow}

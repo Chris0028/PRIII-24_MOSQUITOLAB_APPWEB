@@ -1,5 +1,5 @@
 import { Tabs, Form, DatePicker, FlexboxGrid, Checkbox, Input, Panel, SelectPicker } from 'rsuite';
-import FormGroup from 'rsuite/esm/FormGroup';
+import { FormGroup } from '../hooks/useForms';
 import { useDiseaseTabs } from '../hooks/useReacts';
 import { dengueOptions, dengueSymptoms, chikungunyaSymptoms, zikaSymptoms } from '../utils/symptonOptions';
 

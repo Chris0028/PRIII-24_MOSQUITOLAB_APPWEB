@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 
-
-export { useState, useEffect }
+export { React, useCallback, useState, useEffect };
 
 export function Toggles(){
     const [isPregnant, setIsPregnant] = useState(false);

@@ -20,12 +20,10 @@ export const dengueSymptoms = {
     'Sangrado o Mucosas',
   ],
   grave: [
-    'Fiebre aguda',
-    'Nauseas/Vómitos',
-    'Cefalea',
-    'Dolor Retro-Orbitario',
-    'Mialgias',
-    'Petequias Prueba Torniquete +',
+    'Distres Respiratorio',
+    'Choque',
+    'Sangrado Grave',
+    'Compromiso: Grave de Organos',
   ],
 };
 

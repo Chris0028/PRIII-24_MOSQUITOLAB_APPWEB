@@ -1,16 +1,39 @@
-import React from 'react';
 import { Form, DatePicker, Toggle, FlexboxGrid, InputPicker, Divider } from 'rsuite';
-import FormControl from 'rsuite/esm/FormControl';
-import FormGroup from 'rsuite/esm/FormGroup';
-import { Toggles } from '../hooks/useReacts';
 import { sexOptions, countriesOptions } from '../utils/pickerOptions';
-import { APIProvider, Map } from '../hooks/useMaps'
+import { APIProvider, Map, Marker, InfoWindow } from '../hooks/useMaps'
 import { useFetchMunicipalities } from '../repositories/locationRepository';
+import { React, useState, useCallback, Toggles } from '../hooks/useReacts';
+import { FormControl, FormGroup } from '../hooks/useForms';
 
 export default function FormStepTwo() {
   const { isPregnant, isInsured, handleToggleChange, handleToggleChange1 } = Toggles();
   const municipalities = useFetchMunicipalities();
 
+  const [markerPosition, setMarkerPosition] = useState({
+    lat: -17.388283899568613,
+    lng: -66.14925111256666,
+  });
+
+  const [showInfoWindow, setShowInfoWindow] = useState(false);
+
+  // Maneja el evento de finalización del arrastre del marcador
+  const onMarkerDragEnd = useCallback((event) => {
+    setMarkerPosition({
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng(),
+    });
+  }, []);
+
+  // Maneja el evento de clic en el marcador para mostrar la información
+  const onMarkerClick = useCallback(() => {
+    setShowInfoWindow(true);
+  }, []);
+
+  // Maneja el cierre de la ventana de información
+  const onInfoWindowClose = useCallback(() => {
+    setShowInfoWindow(false);
+  }, []);
+  
   return (
     <Form fluid>
       <FlexboxGrid justify="space-between" align="middle">
@@ -223,9 +246,28 @@ export default function FormStepTwo() {
         <FlexboxGrid.Item colspan={24} style={{ marginTop: 50 }}>
           <FormGroup>
             <Form.ControlLabel>Ubicación de la Residencia por GPS *</Form.ControlLabel>
-            <div style={{ width: '100%', height: 400, margin: 'auto' }}>
+            <div style={{ width: '100%', height: 500, margin: 'auto' }}>
               <APIProvider apiKey={'AIzaSyDUp525rIEomavdDPSV8eqjnPWuMxVr0iM'} onLoad={() => console.log('Maps API has loaded.')}>
-                <Map defaultZoom={15} defaultCenter={{ lat: -17.388283899568613, lng: -66.14925111256666 }} />
+                <Map defaultZoom={15} defaultCenter={{ lat: -17.388283899568613, lng: -66.14925111256666 }}>
+                  <Marker
+                    position={markerPosition}
+                    draggable // Esto hace que el marcador sea arrastrable
+                    onDragEnd={onMarkerDragEnd} // Evento que se dispara al finalizar el arrastre del marcador
+                    onClick={onMarkerClick} // Evento que se dispara al hacer clic en el marcador
+                  />
+                  {showInfoWindow && (
+                    <InfoWindow
+                      position={markerPosition}
+                      onCloseClick={onInfoWindowClose}
+                    >
+                      <div>
+                        <h4>Pin dropped at:</h4>
+                        <p>Latitud: {markerPosition.lat}</p>
+                        <p>Longitud: {markerPosition.lng}</p>
+                      </div>
+                    </InfoWindow>)
+                  }
+                </Map>
               </APIProvider>
             </div>
           </FormGroup>

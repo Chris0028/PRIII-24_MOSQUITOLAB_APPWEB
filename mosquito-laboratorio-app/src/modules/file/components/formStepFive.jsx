@@ -1,8 +1,7 @@
 import { useState } from '../hooks/useReacts';
 import { Form, DatePicker, FlexboxGrid, RadioGroup, Radio, Panel, InputPicker } from 'rsuite';
 import { medicalDischargeOptions} from '../utils/pickerOptions';
-import FormControl from 'rsuite/esm/FormControl';
-import FormGroup from 'rsuite/esm/FormGroup';
+import { FormControl, FormGroup } from '../hooks/useForms';
 
 
 
