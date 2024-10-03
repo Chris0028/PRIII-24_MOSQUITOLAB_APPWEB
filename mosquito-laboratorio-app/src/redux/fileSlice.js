@@ -5,43 +5,43 @@ const initialState = {
   stepOne: {
     healthEstablishment: '',
     municipality: '',
-    notificationDate: null,
+    notificationDate: '',
     discoveryMethod: '',
     department: '',
     subsector: '',
     contactInfo: '',
   },
   stepTwo: {
-    //parte 1 - Hasta EMBARAZADA
-    documentNumber: '',
-    birthDate: null,
-    age: null,
-    gender: '',
-    isPregnant: false,
-    fum: null,
-    posibleBirthDate: null,
-    comorbidity: null,
-    specifyComorbidity: null,
+    // Parte 1 - Datos personales hasta "Embarazada"
+    documentNumber: '',           // Se inicializa como string vacío
+    birthDate: '',                // Se inicializa como string vacío en formato 'yyyy-mm-dd' para evitar problemas con componentes de fecha
+    age: 0,                       // Se inicializa con 0
+    gender: '',                   // Puede ser 'male', 'female', o '' (cadena vacía para valor no seleccionado)
+    isPregnant: false,            // Booleano, con false por defecto
+    fum: '',                      // Fecha de última menstruación en string vacío ('yyyy-mm-dd')
+    possibleBirthDate: '',        // Fecha de posible parto, también en string vacío
+    comorbidity: '',              // String vacío para comorbilidades
+    specifyComorbidity: '',       // String vacío para especificar enfermedades adicionales
     
-    //parte 2  - Hasta ANTES DE SEGURO
-    names: '',
-    lastName: '',
-    secondLastName: null,
-    countryOrigin: '',
-    phoneNumber: '',
-    resindenceAddress: '',
-    municipalityOrState: '',
+    // Parte 2 - Datos adicionales hasta seguro
+    names: '',                    // Nombres del paciente, string vacío
+    lastName: '',                 // Apellido paterno, string vacío
+    secondLastName: '',           // Apellido materno, string vacío
+    countryOrigin: '',            // País de origen, string vacío
+    phoneNumber: '',              // Número de teléfono, string vacío
+    residenceAddress: '',         // Dirección de residencia, string vacío
+    municipalityOrState: '',      // Municipio o departamento, string vacío
 
-    //parte 3 - hasta SEGURO
-    isSecured: false,
-    companyName: null,
-    insuranceOrFund: null,
-    insuredNumber: null,
-    specifySecure: null,
+    // Parte 3 - Información sobre seguro
+    isSecured: false,             // Booleano para indicar si está asegurado
+    companyName: '',              // Nombre de la empresa aseguradora, string vacío
+    insuranceOrFund: '',          // Caja o seguro, string vacío
+    insuredNumber: '',            // Número de matriculación del seguro, string vacío
+    specifySecure: '',            // Campo para especificar seguro si es necesario, string vacío
 
-    //parte 4 - MAPA
-    latitude: '',
-    longitude: '',
+    // Parte 4 - Coordenadas del mapa
+    latitude: 0,                  // Coordenada de latitud inicial, valor predeterminado de 0
+    longitude: 0,                 // Coordenada de longitud inicial, valor predeterminado de 0
   },
   stepThree: {
     countryOrPlace: '',
@@ -51,33 +51,39 @@ const initialState = {
     neighborhood: '',
   },
   stepFour: {
-    //parte 1 - SINTOMAS
-    symptomsOnsetDate: null,
+    symptomStartDate: null,
     epidemiologicalWeek: '',
+    selectedDisease: 'Zika',
+    dengueCase: '',
     symptoms: {
-        zika: { Exantema_Maculopapular: '', Edema_Periarticular: '', Conjuntivitis_no_Purulenta: '', 
-                Fiebre_menor385: '', Mialgia_Altragia: '', Otro: null   },
-        chikungunya: { FiebreMenor385: '', Polialtralgias: '', Poliartritis: '',
-                       Mialgias: '', Exantema: '', Otro: null },
-        dengue: {
-          sinSignosAlarma: { Fiebre_aguda: '', Nauseas_Vomitos: '', Cefalea: '', DolorRetroOrbitario: '', 
-                             Mialgias: '', PetequiasTorniquete: '', Otro: null },
-          conSignosAlarma: { DolorAbominal: '', VomitosPersistentes: '', LetargiaoIrritabilidad: '', 
-                             SangradooMucosas: '', Otro: null },
-          grave: { DistresRespiratorio: '', Choque: '', SangradoGrave: '', 
-                   GraveOrganos: '', Otro: null },
-        },
+      zika: [],
+      chikungunya: [],
+      dengue: {
+        sinSignosAlarma: [],
+        conSignosAlarma: [],
+        grave: [],
       },
-  },
+    },
+    otherSymptom: {
+      zika: '',
+      chikungunya: '',
+      dengue: '',
+    },
+    otherSymptomChecked: {
+      zika: false,
+      chikungunya: false,
+      dengue: false,
+    },
+  },  
   stepFive: {
     wasHospitalized: null,
-    hospitalizationDate: null,
+    hospitalizationDate: '', // Cambiado para inicializar con una cadena vacía
     utiHospitalized: null,
-    utiHospitalizationDate: null,
+    utiHospitalizationDate: '', // Cadena vacía para evitar `undefined`
     healthEstablishment1: '',
     medicalDischargeType: '',
-    dischargeDate: null,
-  },
+    dischargeDate: '', // Inicializar como cadena vacía también
+  },  
   stepSix: {
     laboratorySend: '',
     doctorName: '',

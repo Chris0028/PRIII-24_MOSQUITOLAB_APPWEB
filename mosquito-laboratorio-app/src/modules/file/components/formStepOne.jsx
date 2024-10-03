@@ -1,26 +1,27 @@
-import { React } from '../hooks/useReacts';
+import { useSelector, useDispatch } from 'react-redux';
 import { Form, DatePicker, FlexboxGrid, InputPicker } from 'rsuite';
-import { FormControl, FormGroup} from '../hooks/useForms';
+import { FormControl, FormGroup } from '../hooks/useForms';
 import { useFetchMunicipalities, useFetchStates } from '../repositories/locationRepository';
 import { caseOptions, subSectorOptions, healthStablishmentOptions } from '../utils/pickerOptions';
-import { useSelector, useDispatch } from 'react-redux';
-import { updateStepOne } from '../../../redux/fileSlice';
+import { createHandleDateChange, createHandleInputChange } from '../utils/stepOneUtil'; // Asegúrate de usar la ruta correcta
+
+// Función para convertir la fecha almacenada (string) a un objeto Date
+const parseDate = (dateString) => {
+  return dateString ? new Date(dateString) : null;
+};
 
 export default function FormStepOne() {
-  //Uso de REDUX
+  // Uso de REDUX
   const dispatch = useDispatch();
   // Obtener los datos del estado de Redux
   const formData = useSelector((state) => state.file.stepOne);
 
+  // Crear las funciones para manejar los cambios utilizando la utilidad
+  const handleDateChange = createHandleDateChange(dispatch);
+  const handleInputChange = createHandleInputChange(dispatch);
+
   const municipalities = useFetchMunicipalities();
   const states = useFetchStates();
-
-  // Manejar el cambio en los campos del formulario
-  const handleChange = (value, name) => {
-    // Asegúrate de que estás despachando la acción con los datos correctos
-    dispatch(updateStepOne({ [name]: value }));
-  };
-  
 
   return (
     <Form fluid>
@@ -30,8 +31,8 @@ export default function FormStepOne() {
             <Form.ControlLabel>Establecimiento de Salud Notificante *</Form.ControlLabel>
             <InputPicker
               name="healthEstablishment"
-              value={formData.healthEstablishment} // Carga los datos actuales
-              onChange={(value) => handleChange(value, 'healthEstablishment')}
+              value={formData.healthEstablishment || ''} // Carga los datos actuales o cadena vacía
+              onChange={(value) => handleInputChange('healthEstablishment', value)}
               placeholder="Seleccione el establecimiento"
               block
               size="lg"
@@ -43,8 +44,8 @@ export default function FormStepOne() {
             <Form.ControlLabel>Municipio *</Form.ControlLabel>
             <InputPicker
               name="municipality"
-              value={formData.municipality} // Carga los datos actuales
-              onChange={(value) => handleChange(value, 'municipality')}
+              value={formData.municipality || ''} // Carga los datos actuales o cadena vacía
+              onChange={(value) => handleInputChange('municipality', value)}
               placeholder="Seleccione el municipio"
               block
               size="lg"
@@ -56,8 +57,8 @@ export default function FormStepOne() {
             <Form.ControlLabel>Fecha de Notificación *</Form.ControlLabel>
             <DatePicker
               name="notificationDate"
-              value={formData.notificationDate} // Carga los datos actuales
-              onChange={(value) => handleChange(value, 'notificationDate')}
+              value={parseDate(formData.notificationDate)} // Convierte la cadena almacenada en un objeto Date
+              onChange={(value) => handleDateChange('notificationDate', value)}
               style={{ width: '100%' }}
             />
           </FormGroup>
@@ -65,8 +66,8 @@ export default function FormStepOne() {
             <Form.ControlLabel>Cómo se Descubrió el Caso *</Form.ControlLabel>
             <InputPicker
               name="discoveryMethod"
-              value={formData.discoveryMethod} // Carga los datos actuales
-              onChange={(value) => handleChange(value, 'discoveryMethod')}
+              value={formData.discoveryMethod || ''} // Carga los datos actuales o cadena vacía
+              onChange={(value) => handleInputChange('discoveryMethod', value)}
               placeholder="Seleccione el método"
               block
               size="lg"
@@ -80,8 +81,8 @@ export default function FormStepOne() {
             <Form.ControlLabel>Departamento *</Form.ControlLabel>
             <InputPicker
               name="department"
-              value={formData.department} // Carga los datos actuales
-              onChange={(value) => handleChange(value, 'department')}
+              value={formData.department || ''} // Carga los datos actuales o cadena vacía
+              onChange={(value) => handleInputChange('department', value)}
               placeholder="Seleccione el departamento"
               block
               size="lg"
@@ -93,8 +94,8 @@ export default function FormStepOne() {
             <Form.ControlLabel>Subsector *</Form.ControlLabel>
             <InputPicker
               name="subsector"
-              value={formData.subsector} // Carga los datos actuales
-              onChange={(value) => handleChange(value, 'subsector')}
+              value={formData.subsector || ''} // Carga los datos actuales o cadena vacía
+              onChange={(value) => handleInputChange('subsector', value)}
               placeholder="Seleccione el subsector"
               block
               size="lg"
@@ -106,8 +107,8 @@ export default function FormStepOne() {
             <Form.ControlLabel>Teléfono o Correo Electrónico del Establecimiento *</Form.ControlLabel>
             <FormControl
               name="contactInfo"
-              value={formData.contactInfo} // Carga los datos actuales
-              onChange={(value) => handleChange(value, 'contactInfo')}
+              value={formData.contactInfo || ''} // Carga los datos actuales o cadena vacía
+              onChange={(value) => handleInputChange('contactInfo', value)}
               type="text"
               placeholder="Ingrese teléfono o correo electrónico"
               style={{ width: '100%' }}
