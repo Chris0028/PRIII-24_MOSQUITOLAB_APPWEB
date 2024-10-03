@@ -1,21 +1,23 @@
 import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, InputGroup } from 'rsuite';
 import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaChartLine } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { GetHistoryForLab } from '../services/historyForLab';
+import { useEffect, useState } from 'react';
 
 const { Column, HeaderCell, Cell } = Table;
 
-const ColoredCell = ({ rowData, dataKey, ...props }) => {
+const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
   let backgroundColor = '';
 
-  switch (rowData.status) { 
-    case 'POSITIVO':
+  switch (rowData.result) { 
+    case 'Positivo':
       backgroundColor = '#8AABD6';
 
       break;
-    case 'PENDIENTE':
+    case 'Pendiente':
       backgroundColor = '#BFCDE0';
       break;
-    case 'NEGATIVO':
+    case 'Negativo':
       backgroundColor = '#FFFFFF';
       break;
     default:
@@ -24,94 +26,40 @@ const ColoredCell = ({ rowData, dataKey, ...props }) => {
 
   return (
     <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle' }}>
-      {rowData[dataKey]}
+      {children ? children(rowData) : rowData[dataKey]}
     </Cell>
   );
 };
 
-export default function RecordsView() {
+//Funcion para filtrar correctamente las fechas
+function formatDate(date) {
+  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  return new Date(date).toLocaleDateString('es-ES', options);
+}
 
+export default function RecordsView() {
   const navigate = useNavigate()
 
-  const data = [
-    {
-      status: 'POSITIVO',
-      sampleStatus: 'CON RESULTADO',
-      code: 'CB-P-202020',
-      ci: '3148475',
-      names: 'JUAN',
-      lastName: 'LOPEZ',
-      secondLastName: 'DE TORDOYA',
-      birthDate: '25/12/1965',
-      notificationDate: '26/08/2024',
-    },
-    {
-      status: 'PENDIENTE',
-      sampleStatus: 'CON RESULTADO',
-      code: 'CB-P-202027',
-      ci: '3148475',
-      names: 'PEDRO',
-      lastName: 'QUIROZ',
-      secondLastName: '',
-      birthDate: '27/12/1965',
-      notificationDate: '28/08/2024',
-    },
-    {
-      status: 'NEGATIVO',
-      sampleStatus: 'CON RESULTADO',
-      code: 'CB-P-202030',
-      ci: '3148475',
-      names: 'TEDDY',
-      lastName: 'FERNANDEZ',
-      secondLastName: 'LOPEZ',
-      birthDate: '29/12/1965',
-      notificationDate: '29/08/2024',
-    },
-    {
-      status: 'POSITIVO',
-      sampleStatus: 'CON RESULTADO',
-      code: 'CB-P-202030',
-      ci: '3148475',
-      names: 'CESAR',
-      lastName: 'TANGAMANDAPIO',
-      secondLastName: 'LOPEZ',
-      birthDate: '29/12/1965',
-      notificationDate: '29/08/2024',
-    },
-    {
-      status: 'PENDIENTE',
-      sampleStatus: 'CON RESULTADO',
-      code: 'CB-P-202030',
-      ci: '3148475',
-      names: 'NAHUEL',
-      lastName: 'GUTIERREZ',
-      secondLastName: 'COLQUE',
-      birthDate: '29/12/1965',
-      notificationDate: '29/08/2024',
-    },
-    {
-      status: 'POSITIVO',
-      sampleStatus: 'CON RESULTADO',
-      code: 'CB-P-202030',
-      ci: '3148475',
-      names: 'CHRISTIAN',
-      lastName: 'GONZALES',
-      secondLastName: 'ENCINAS',
-      birthDate: '29/12/1965',
-      notificationDate: '29/08/2024',
-    },
-    {
-      status: 'NEGATIVO',
-      sampleStatus: 'CON RESULTADO',
-      code: 'CB-P-202030',
-      ci: '3148475',
-      names: 'JUANITO',
-      lastName: 'USTARIZ',
-      secondLastName: 'FELIPEZ',
-      birthDate: '29/12/1965',
-      notificationDate: '29/08/2024',
-    },
-  ];
+  const [historyFiles, setHistoryFiles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await GetHistoryForLab();
+        if (data != null) {
+          setHistoryFiles(data);
+        }
+      } catch (err) {
+        setError('Error al cargar los datos');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', padding: '20px' }}>
@@ -157,7 +105,7 @@ export default function RecordsView() {
       {/* Contenedor para la tabla con scroll */}
       <div style={{ flex: 1, overflowY: 'auto', marginBottom: '20px' }}>
         {/* Tabla de Registros */}
-        <Table height={800} data={data} rowHeight={100} style={{ fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle' }}>
+        <Table height={800} data={ historyFiles } rowHeight={100} style={{ fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle' }}>
           <Column width={90} fixed >
             <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Acciones</HeaderCell>
             <Cell >
@@ -182,20 +130,33 @@ export default function RecordsView() {
               )}
             </Cell>
           </Column>
-
+          {false && (
+          <Column width={120} resizable>
+            <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>id</HeaderCell>
+            <ColoredCell dataKey="id" />
+          </Column>
+          )}
           <Column width={120} resizable >
             <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Estado</HeaderCell>
-            <ColoredCell dataKey="status" />
+            <ColoredCell dataKey="result" />
           </Column>
 
           <Column width={180} resizable>
             <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Estado de muestra</HeaderCell>
-            <ColoredCell dataKey="sampleStatus" />
+            <ColoredCell dataKey="status">
+              {(rowData) => (
+                <span>
+                  {rowData.status === 0 ? 'Sin resultado' : rowData.status === 1 ? 'Con resultado' : rowData.status}
+                </span>
+              )}
+            </ColoredCell>
           </Column>
 
           <Column width={120} resizable>
             <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Código</HeaderCell>
-            <ColoredCell dataKey="code" />
+            <ColoredCell dataKey="code" >
+              {(rowData) => <span>{rowData.code || 'N/A'}</span>}
+            </ColoredCell>
           </Column>
 
           <Column width={120} resizable>
@@ -215,17 +176,23 @@ export default function RecordsView() {
 
           <Column width={180} resizable>
             <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Segundo Apellido</HeaderCell>
-            <ColoredCell dataKey="secondLastName" />
+            <ColoredCell dataKey="secondLastName">
+              {(rowData) => <span>{rowData.secondLastName || 'N/A'}</span>}
+            </ColoredCell>
           </Column>
 
           <Column width={180} resizable>
             <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Fecha de Nacimiento</HeaderCell>
-            <ColoredCell dataKey="birthDate" />
+            <ColoredCell dataKey="birthDate">
+              {(rowData) => <span>{formatDate(rowData.birthDate)}</span>}
+            </ColoredCell>
           </Column>
 
           <Column width={180} resizable>
             <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Fecha de Notificación</HeaderCell>
-            <ColoredCell dataKey="notificationDate" />
+            <ColoredCell dataKey="registerDate">
+              {(rowData) => <span>{formatDate(rowData.registerDate)}</span>}
+            </ColoredCell>
           </Column>
         </Table>
       </div>
@@ -256,3 +223,4 @@ export default function RecordsView() {
     </div>
   );
 }
+
