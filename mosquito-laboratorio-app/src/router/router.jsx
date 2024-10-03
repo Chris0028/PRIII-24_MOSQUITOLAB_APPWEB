@@ -5,6 +5,8 @@ import SampleContainer from "../modules/sample/components/sampleContainer";
 import FileForm from "../modules/file/components/fileForm";
 import HomeFileDoctor from "../modules/file/components/homeFileDoctor";
 import HomeFileLabo from "../modules/file/components/homeFileLabo";
+import ConsolidateReport from "../modules/report/components/consolidatedReport";
+
 
 export default function Routing() {
     return (
@@ -14,6 +16,8 @@ export default function Routing() {
             <Route path='/fileform' element={<Layout children={<FileForm />} />} />
             <Route path='/homefiledoctor' element={<Layout children={<HomeFileDoctor />} />} />
             <Route path='/homefilelabo' element={<Layout children={<HomeFileLabo />} />} />
+            <Route path='/consolidatereport' element={<Layout children={<ConsolidateReport />} />} />
+
         </Routes>
     )
 }

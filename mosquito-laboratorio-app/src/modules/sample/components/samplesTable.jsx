@@ -10,7 +10,7 @@ export default function SamplesTable() {
 
     useEffect(() => {
         async function fetchData() {
-            const data = await getSamplesAsync()
+            const data = await getSamplesAsync(null)
             setSamples(data)
         }
         fetchData()

@@ -41,7 +41,7 @@ export default function Layout({ children }) {
                             <CustomNavItem eventKey="4" icon={<PiEyedropperSampleFill />} label="Muestras" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/samples'} expanded={expanded} />
                             <CustomNavItem eventKey="5" icon={<FaFileInvoice />} label="Fichas DE.CHI.KA" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/homefiledoctor'} expanded={expanded} />
                             <CustomNavItem eventKey="6" icon={<FaCloudDownloadAlt />} label="Descargas" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />
-                            <CustomNavItem eventKey="7" icon={<FaChartBar />} label="Reportes" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />
+                            <CustomNavItem eventKey="7" icon={<FaChartBar />} label="Reportes" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/consolidatereport'} expanded={expanded} />
                             <CustomNavItem eventKey="8" icon={<FaUserAlt />} label="Cuenta" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />
                         </Nav>
                     </SidenavBody>
