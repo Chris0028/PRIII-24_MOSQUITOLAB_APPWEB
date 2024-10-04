@@ -1,9 +1,9 @@
 import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, InputGroup } from 'rsuite';
 import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaChartLine } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { GetHistoryForLab } from '../services/historyForLab';
 import { useEffect, useState } from 'react';
-
+import { GetHistoryFileByHospital } from '../services/historyByHospital';
+//PREGUNTARLE AL INGENIERO COMO CAMBIAR EL COLOR
 const { Column, HeaderCell, Cell } = Table;
 
 const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
@@ -12,7 +12,6 @@ const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
   switch (rowData.result) { 
     case 'Positivo':
       backgroundColor = '#8AABD6';
-
       break;
     case 'Pendiente':
       backgroundColor = '#BFCDE0';
@@ -25,7 +24,7 @@ const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
   }
 
   return (
-    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle' }}>
+    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle'}}>
       {children ? children(rowData) : rowData[dataKey]}
     </Cell>
   );
@@ -47,7 +46,7 @@ export default function RecordsView() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await GetHistoryForLab();
+        const data = await GetHistoryFileByHospital();
         if (data != null) {
           setHistoryFiles(data);
         }
@@ -138,7 +137,7 @@ export default function RecordsView() {
           )}
           <Column width={120} resizable >
             <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Estado</HeaderCell>
-            <ColoredCell dataKey="result" />
+            <ColoredCell  dataKey="result" />
           </Column>
 
           <Column width={180} resizable>
