@@ -1,7 +1,6 @@
 import { DatePicker, FlexboxGrid, Form, SelectPicker, Button, InputGroup, IconButton } from 'rsuite';
 import FormGroup from 'rsuite/esm/FormGroup';
 
-
 export default function FilterReportForm() {
   return (
     <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
