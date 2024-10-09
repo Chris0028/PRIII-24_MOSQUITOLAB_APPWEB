@@ -2,6 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
+  //Solo se usa el dato de discoveryMethod, el resto debe ser estatico
   stepOne: {
     healthEstablishment: '',
     municipality: '',
