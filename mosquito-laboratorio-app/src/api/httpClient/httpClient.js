@@ -7,3 +7,16 @@ export const httpClient = axios.create({
         'Content-Type': 'application/json'
     }
 });
+
+httpClient.interceptors.request.use(
+    config => {
+        const jwt = localStorage.getItem('jwt');
+        if (jwt) {
+            config.headers['Authorization'] = `Bearer ${jwt}`;
+        }
+        return config;
+    },
+    err => {
+        return Promise.reject(err);
+    }
+);
