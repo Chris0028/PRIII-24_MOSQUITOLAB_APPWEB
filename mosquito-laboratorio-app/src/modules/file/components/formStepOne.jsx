@@ -4,6 +4,8 @@ import { FormControl, FormGroup } from '../hooks/useForms';
 import { useFetchMunicipalities, useFetchStates } from '../repositories/locationRepository';
 import { caseOptions, subSectorOptions, healthStablishmentOptions } from '../utils/pickerOptions';
 import { createHandleDateChange, createHandleInputChange } from '../utils/stepOneUtil'; // Asegúrate de usar la ruta correcta
+import { useEffect, useState } from '../hooks/useReacts';
+import { useFetchHospitals } from '../repositories/hospitalRepository';
 
 // Función para convertir la fecha almacenada (string) a un objeto Date
 const parseDate = (dateString) => {
@@ -22,6 +24,32 @@ export default function FormStepOne() {
 
   const municipalities = useFetchMunicipalities();
   const states = useFetchStates();
+  const hospitals = useFetchHospitals();
+
+  const [userData, setUserData] = useState({hospitalDoctor: '', 
+                                            hospitalContactDoctor: '', hospitalNetworkDoctor: '',
+                                            stateDoctor: '', municipalityDoctor: ''});
+  const userSelector = useSelector((state) => state.user)
+
+  useEffect(() => {
+    const getUser = userSelector.user.info;
+    setUserData({
+      hospitalDoctor: getUser.hospital,
+      hospitalContactDoctor:getUser.hospitalContact,
+      hospitalNetworkDoctor:getUser.hospitalNetwork,
+      stateDoctor: getUser.state,
+      municipalityDoctor: getUser.municipality
+    })
+    console.log(userData)
+  }, [])
+
+
+  const handleSelect = (value, name) => {
+    setUserData((prevData) => ({
+      ...prevData,
+      [name]: value // Actualiza el campo seleccionado
+    }));
+  };
 
   return (
     <Form fluid>
@@ -31,13 +59,13 @@ export default function FormStepOne() {
             <Form.ControlLabel>Establecimiento de Salud Notificante *</Form.ControlLabel>
             <InputPicker
               name="healthEstablishment"
-              value={formData.healthEstablishment || ''} // Carga los datos actuales o cadena vacía
+              value={formData.healthEstablishment || userData.hospitalDoctor} // Carga los datos actuales o cadena vacía
               onChange={(value) => handleInputChange('healthEstablishment', value)}
               placeholder="Seleccione el establecimiento"
               block
               size="lg"
               style={{ width: '100%' }}
-              data={healthStablishmentOptions || []}
+              data={ municipalities || []}
             />
           </FormGroup>
           <FormGroup>
@@ -54,25 +82,25 @@ export default function FormStepOne() {
             />
           </FormGroup>
           <FormGroup>
+            <Form.ControlLabel>Red de Salud *</Form.ControlLabel>
+            <InputPicker
+              name="healthNetwork"
+              value={formData.healthNetwork || ''} // Carga los datos actuales o cadena vacía
+              onChange={(value) => handleInputChange('healthNetwork', value)}
+              placeholder="Seleccione la red de salud"
+              block
+              size="lg"
+              style={{ width: '100%' }}
+              data={[]} // Asegúrate de tener las opciones disponibles
+            />
+          </FormGroup>
+          <FormGroup>
             <Form.ControlLabel>Fecha de Notificación *</Form.ControlLabel>
             <DatePicker
               name="notificationDate"
               value={parseDate(formData.notificationDate)} // Convierte la cadena almacenada en un objeto Date
               onChange={(value) => handleDateChange('notificationDate', value)}
               style={{ width: '100%' }}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Form.ControlLabel>Cómo se Descubrió el Caso *</Form.ControlLabel>
-            <InputPicker
-              name="discoveryMethod"
-              value={formData.discoveryMethod || ''} // Carga los datos actuales o cadena vacía
-              onChange={(value) => handleInputChange('discoveryMethod', value)}
-              placeholder="Seleccione el método"
-              block
-              size="lg"
-              style={{ width: '100%' }}
-              data={caseOptions || []}
             />
           </FormGroup>
         </FlexboxGrid.Item>
@@ -101,6 +129,19 @@ export default function FormStepOne() {
               size="lg"
               style={{ width: '100%' }}
               data={subSectorOptions || []}
+            />
+          </FormGroup>
+          <FormGroup>
+            <Form.ControlLabel>Cómo se Descubrió el Caso *</Form.ControlLabel>
+            <InputPicker
+              name="discoveryMethod"
+              value={formData.discoveryMethod || ''} // Carga los datos actuales o cadena vacía
+              onChange={(value) => handleInputChange('discoveryMethod', value)}
+              placeholder="Seleccione el método"
+              block
+              size="lg"
+              style={{ width: '100%' }}
+              data={caseOptions || []}
             />
           </FormGroup>
           <FormGroup>

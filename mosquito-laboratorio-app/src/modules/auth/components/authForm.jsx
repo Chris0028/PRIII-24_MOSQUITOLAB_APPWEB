@@ -27,7 +27,7 @@ export default function AuthForm() {
         const credentials = await authenticateAsync(authData);
         if (credentials != null) {
             dispatch(setUser(credentials));
-            navigate('/samples');
+            navigate('/fileform');
         }
     }
 
