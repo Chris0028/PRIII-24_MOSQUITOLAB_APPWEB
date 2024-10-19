@@ -1,29 +1,25 @@
-import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { Avatar } from "rsuite";
 import NavItem from "rsuite/esm/Nav/NavItem";
+import { decodeToken } from "../utils/decoder";
 
 export default function UserInfo({ expanded }) {
 
-    const [userAuth, setUserAuth] = useState({ username: '', role: '' })
-
-    const userSelector = useSelector((state) => state.user)
+    const [userAuth, setUserAuth] = useState({ username: '', role: '' });
 
     useEffect(() => {
-        const getUser = decodeToken(userSelector.user.jwt)
-        if (getUser.role === 'Admin') {
-            setUserAuth({ username: getUser.sub, role: 'Administrador' });
-        } else if (getUser.role === 'Employee') {
-            setUserAuth({ username: getUser.sub, role: 'Laboratorio' });
-        } else {
-            setUserAuth({ username: getUser.sub, role: 'Doctor' });
+        const jwt = localStorage.getItem('jwt');
+        if (jwt) {
+            const getUser = decodeToken(jwt);
+            if (getUser.role === 'Admin') {
+                setUserAuth({ username: getUser.sub, role: 'Administrador' });
+            } else if (getUser.role === 'Employee') {
+                setUserAuth({ username: getUser.sub, role: 'Laboratorio' });
+            } else {
+                setUserAuth({ username: getUser.sub, role: 'Doctor' });
+            }
         }
     }, [])
-
-    function decodeToken(jwt) {
-        return jwtDecode(jwt);
-    }
 
     return (
         <NavItem eventKey="1" style={{ ...styles.userInfo, justifyContent: expanded ? 'flex-start' : 'center' }}>

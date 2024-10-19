@@ -20,14 +20,15 @@ export default function AuthForm() {
             ...authData,
             [name]: value
         });
-    };
+    }
 
     async function signIn(e) {
         e.preventDefault();
         const credentials = await authenticateAsync(authData);
         if (credentials != null) {
             dispatch(setUser(credentials));
-            navigate('/fileform');
+            localStorage.setItem('jwt', credentials.jwt);
+            navigate('/samples');
         }
     }
 

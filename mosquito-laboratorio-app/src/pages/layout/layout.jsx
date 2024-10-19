@@ -1,15 +1,26 @@
 import { FaChartBar, FaCloudDownloadAlt, FaFileInvoice, FaSignOutAlt, FaUserAlt, FaVial, FaBars } from "react-icons/fa";
 import { Container, Content, Divider, Header, Nav, Navbar, Sidebar, Sidenav, IconButton } from "rsuite";
 import SidenavBody from "rsuite/esm/Sidenav/SidenavBody";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UserInfo from "./components/userInfo";
 import CustomNavItem from "./components/customNavItem";
 import NavItem from "rsuite/esm/Nav/NavItem";
 import { PiEyedropperSampleFill } from "react-icons/pi";
+import { decodeToken } from "./utils/decoder";
 
 export default function Layout({ children }) {
     const [hoveredItem, setHoveredItem] = useState(null);
     const [expanded, setExpanded] = useState(window.innerWidth > 768);
+
+    const [role, setRole] = useState('');
+
+    useEffect(() => {
+        const jwt = localStorage.getItem('jwt');
+        if (jwt) {
+            const getUser = decodeToken(jwt);
+            setRole(getUser.role);
+        }
+    }, []);
 
     function handleMouseEnter(eventKey) {
         setHoveredItem(eventKey);
@@ -37,9 +48,13 @@ export default function Layout({ children }) {
                         <Nav>
                             <UserInfo expanded={expanded} />
                             <CustomNavItem eventKey="2" label="Área de trabajo" hoveredItem={hoveredItem} disabled expanded={expanded} />
-                            <CustomNavItem eventKey="3" icon={<FaVial />} label="Laboratorio" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/homefilelabo'} expanded={expanded} />
-                            <CustomNavItem eventKey="4" icon={<PiEyedropperSampleFill />} label="Muestras" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/samples'} expanded={expanded} />
+                            {role !== 'Doctor' && (
+                                <CustomNavItem eventKey="3" icon={<FaVial />} label="Laboratorio" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/homefilelabo'} expanded={expanded} />
+                            )}
                             <CustomNavItem eventKey="5" icon={<FaFileInvoice />} label="Fichas DE.CHI.KA" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/homefiledoctor'} expanded={expanded} />
+                            {role !== 'Doctor' && (
+                                <CustomNavItem eventKey="4" icon={<PiEyedropperSampleFill />} label="Muestras" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/samples'} expanded={expanded} />
+                            )}
                             <CustomNavItem eventKey="6" icon={<FaCloudDownloadAlt />} label="Descargas" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />
                             <CustomNavItem eventKey="7" icon={<FaChartBar />} label="Reportes" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/consolidatereport'} expanded={expanded} />
                             <CustomNavItem eventKey="8" icon={<FaUserAlt />} label="Cuenta" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />

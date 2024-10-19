@@ -1,23 +1,11 @@
-import { useEffect, useState } from "react";
 import { Table } from "rsuite";
 import { Cell, HeaderCell } from "rsuite-table";
 import Column from "rsuite/esm/Table/TableColumn";
-import { getSamplesAsync } from "../services/sampleService"
 
-export default function SamplesTable() {
-
-    const [samples, setSamples] = useState([]);
-
-    useEffect(() => {
-        async function fetchData() {
-            const data = await getSamplesAsync(null)
-            setSamples(data)
-        }
-        fetchData()
-    }, [])
+export default function SamplesTable({ args }) {
 
     return (
-        <Table style={{ fontSize: 16 }} headerHeight={50} height={600} data={samples}>
+        <Table style={{ fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle' }} headerHeight={50} height={600} data={args}>
             <Column width={150} align="center" fixed>
                 <HeaderCell style={{ fontWeight: 'bolder', fontSize: 17 }}>Código</HeaderCell>
                 <Cell dataKey="sampleId" />
@@ -34,6 +22,12 @@ export default function SamplesTable() {
                 <HeaderCell style={{ fontWeight: 'bolder', fontSize: 17 }}>Paciente</HeaderCell>
                 <Cell dataKey="patientFullName" />
             </Column>
+            {false && (
+                <Column flexGrow={1}>
+                    <HeaderCell style={{ fontWeight: 'bolder', fontSize: 17 }}>Enfermedad</HeaderCell>
+                    <Cell dataKey="diseaseId" />
+                </Column>
+            )}
             <Column flexGrow={1}>
                 <HeaderCell style={{ fontWeight: 'bolder', fontSize: 17 }}>Enfermedad</HeaderCell>
                 <Cell dataKey="diseaseName" />
