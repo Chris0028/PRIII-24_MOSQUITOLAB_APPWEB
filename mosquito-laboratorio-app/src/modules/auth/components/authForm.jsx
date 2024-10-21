@@ -26,6 +26,7 @@ export default function AuthForm() {
         e.preventDefault();
         const credentials = await authenticateAsync(authData);
         if (credentials != null) {
+            localStorage.setItem('jwt', credentials.jwt);
             dispatch(setUser(credentials));
             navigate('/samples');
         }
