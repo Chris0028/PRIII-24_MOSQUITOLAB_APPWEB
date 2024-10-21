@@ -1,8 +1,9 @@
 import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, InputGroup } from 'rsuite';
-import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaRegFilePdf } from 'react-icons/fa';
+import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaRegFilePdf, FaMicroscope } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { GetHistoryForLab } from '../services/historyForLab';
 import { useEffect, useState } from 'react';
+import TestForm from '../../test/components/testForm';
 
 
 const { Column, HeaderCell, Cell } = Table;
@@ -10,7 +11,7 @@ const { Column, HeaderCell, Cell } = Table;
 const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
   let backgroundColor = '';
 
-  switch (rowData.result) { 
+  switch (rowData.result) {
     case 'Positivo':
       backgroundColor = '#8AABD6';
 
@@ -45,6 +46,11 @@ export default function RecordsView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const [showModal, setShowModal] = useState(false)
+
+  const handleOpenModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -78,7 +84,7 @@ export default function RecordsView() {
         <IconButton
           icon={<FaExclamation color="white" />}
           circle
-          style={{ backgroundColor: 'black', marginRight: '10px', fontSize: '12px'}}
+          style={{ backgroundColor: 'black', marginRight: '10px', fontSize: '12px' }}
         />
         <p style={{ margin: 0 }}>
           <strong style={{ fontSize: '17px' }}>Solo puede realizar dos descargas diarias.</strong>
@@ -106,7 +112,20 @@ export default function RecordsView() {
       {/* Contenedor para la tabla con scroll */}
       <div style={{ flex: 1, overflowY: 'auto', marginBottom: '20px' }}>
         {/* Tabla de Registros */}
-        <Table height={800} data={ historyFiles } rowHeight={100} style={{ fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle' }}>
+        <Table height={800} data={historyFiles} rowHeight={100} style={{ fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle' }}>
+
+          <Column width={100} fixed="right" >
+            <HeaderCell style={{ fontSize: '16px' }}>Resultado</HeaderCell>
+            <Cell >
+              <Whisper placement="top" trigger="hover" speaker={<Tooltip>Crear</Tooltip>}>
+                <IconButton
+                  icon={<FaMicroscope />}
+                  appearance="ghost"
+                  onClick={handleOpenModal} />
+              </Whisper>
+            </Cell>
+          </Column>
+
           <Column width={90} fixed >
             <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Acciones</HeaderCell>
             <Cell >
@@ -132,10 +151,10 @@ export default function RecordsView() {
             </Cell>
           </Column>
           {false && (
-          <Column width={120} resizable>
-            <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>id</HeaderCell>
-            <ColoredCell dataKey="id" />
-          </Column>
+            <Column width={120} resizable>
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>id</HeaderCell>
+              <ColoredCell dataKey="id" />
+            </Column>
           )}
           <Column width={120} resizable >
             <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Estado</HeaderCell>
@@ -221,6 +240,8 @@ export default function RecordsView() {
           <FaDownload style={{ marginRight: 10 }} /> Descargar
         </Button>
       </div>
+
+      <TestForm open={showModal} hiddeModal={handleCloseModal} />
     </div>
   );
 }
