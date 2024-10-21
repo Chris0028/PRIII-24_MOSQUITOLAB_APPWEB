@@ -7,10 +7,10 @@ export const caseOptions = [
 
 //PARA LA LISTA DE SUBSECTORES DE LOS CENTROS DE SALUD
 export const subSectorOptions = [
-    { label: 'Público', value: 'Publica' },
-    { label: 'Seguro Salud', value: 'Seguro Salud' },
-    { label: 'Privado', value: 'Privado'},
-    { label: 'Otro', value: 'Otro'},
+    { label: 'Público', value: 1 },
+    { label: 'Seguro Salud', value: 2 },
+    { label: 'Privado', value: 3 },
+    { label: 'Otro', value: 4 },
 ];
 
 //PARA LAS OPCIONES DE SEXO DEL PACIENTE
