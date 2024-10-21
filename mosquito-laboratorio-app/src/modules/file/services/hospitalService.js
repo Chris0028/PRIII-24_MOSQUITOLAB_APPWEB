@@ -7,4 +7,8 @@ export async function GetHospitals(){
     } else {
         console.log('Error de Comunicacion');
     }
-}
+};
+
+export async function GetDoctorData(){
+
+};

@@ -5,7 +5,7 @@ import { useFetchMunicipalities, useFetchStates } from '../repositories/location
 import { caseOptions, subSectorOptions, healthStablishmentOptions } from '../utils/pickerOptions';
 import { createHandleDateChange, createHandleInputChange } from '../utils/stepOneUtil'; // Asegúrate de usar la ruta correcta
 import { useEffect, useState } from '../hooks/useReacts';
-import { useFetchHospitals } from '../repositories/hospitalRepository';
+import { useFetchHospitals, useFetchNetworks } from '../repositories/hospitalRepository';
 
 // Función para convertir la fecha almacenada (string) a un objeto Date
 const parseDate = (dateString) => {
@@ -25,24 +25,13 @@ export default function FormStepOne() {
   const municipalities = useFetchMunicipalities();
   const states = useFetchStates();
   const hospitals = useFetchHospitals();
+  const networks = useFetchNetworks();
 
   const [userData, setUserData] = useState({hospitalDoctor: '', 
                                             hospitalContactDoctor: '', hospitalNetworkDoctor: '',
                                             stateDoctor: '', municipalityDoctor: ''});
-  const userSelector = useSelector((state) => state.user)
 
-  useEffect(() => {
-    const getUser = userSelector.user.info;
-    setUserData({
-      hospitalDoctor: getUser.hospital,
-      hospitalContactDoctor:getUser.hospitalContact,
-      hospitalNetworkDoctor:getUser.hospitalNetwork,
-      stateDoctor: getUser.state,
-      municipalityDoctor: getUser.municipality
-    })
-    console.log(userData)
-  }, [])
-
+  const userSelector = useSelector((state) => state.user);
 
   const handleSelect = (value, name) => {
     setUserData((prevData) => ({
@@ -65,7 +54,7 @@ export default function FormStepOne() {
               block
               size="lg"
               style={{ width: '100%' }}
-              data={ municipalities || []}
+              data={ hospitals || []}
             />
           </FormGroup>
           <FormGroup>
@@ -91,7 +80,7 @@ export default function FormStepOne() {
               block
               size="lg"
               style={{ width: '100%' }}
-              data={[]} // Asegúrate de tener las opciones disponibles
+              data={ networks || []} // Asegúrate de tener las opciones disponibles
             />
           </FormGroup>
           <FormGroup>

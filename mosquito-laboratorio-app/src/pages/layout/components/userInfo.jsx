@@ -19,7 +19,7 @@ export default function UserInfo({ expanded }) {
                 setUserAuth({ username: getUser.sub, role: 'Doctor' });
             }
         }
-    }, [])
+    }, []);
 
     return (
         <NavItem eventKey="1" style={{ ...styles.userInfo, justifyContent: expanded ? 'flex-start' : 'center' }}>
