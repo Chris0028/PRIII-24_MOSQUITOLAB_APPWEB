@@ -2,9 +2,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Form, DatePicker, FlexboxGrid, InputPicker } from 'rsuite';
 import { FormControl, FormGroup } from '../hooks/useForms';
 import { useFetchMunicipalities, useFetchStates } from '../repositories/locationRepository';
-import { caseOptions, subSectorOptions, healthStablishmentOptions } from '../utils/pickerOptions';
+import { caseOptions, subSectorOptions } from '../utils/pickerOptions';
 import { createHandleDateChange, createHandleInputChange } from '../utils/stepOneUtil'; // Asegúrate de usar la ruta correcta
-import { useEffect, useState } from '../hooks/useReacts';
 import { useFetchHospitals, useFetchNetworks } from '../repositories/hospitalRepository';
 
 // Función para convertir la fecha almacenada (string) a un objeto Date
@@ -27,18 +26,11 @@ export default function FormStepOne() {
   const hospitals = useFetchHospitals();
   const networks = useFetchNetworks();
 
-  const [userData, setUserData] = useState({hospitalDoctor: '', 
-                                            hospitalContactDoctor: '', hospitalNetworkDoctor: '',
-                                            stateDoctor: '', municipalityDoctor: ''});
-
   const userSelector = useSelector((state) => state.user);
 
-  const handleSelect = (value, name) => {
-    setUserData((prevData) => ({
-      ...prevData,
-      [name]: value // Actualiza el campo seleccionado
-    }));
-  };
+  const userInfo = userSelector.user;
+  console.log(userInfo)
+
 
   return (
     <Form fluid>
@@ -48,7 +40,7 @@ export default function FormStepOne() {
             <Form.ControlLabel>Establecimiento de Salud Notificante *</Form.ControlLabel>
             <InputPicker
               name="healthEstablishment"
-              value={formData.healthEstablishment || userData.hospitalDoctor} // Carga los datos actuales o cadena vacía
+              value={formData.healthEstablishment || [] } // Carga los datos actuales o cadena vacía
               onChange={(value) => handleInputChange('healthEstablishment', value)}
               placeholder="Seleccione el establecimiento"
               block

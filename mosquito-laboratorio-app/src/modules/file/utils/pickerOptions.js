@@ -19,14 +19,6 @@ export const sexOptions = [
     { label: 'Femenino', value: 'F' },
 ];
 
-//PARA LA LISTA DE CENTROS DE SALUD (FALTA IMPLEMENTAR EN LA BDD)
-export const healthStablishmentOptions = [
-    { label: 'Hospital Mexico', value: '1' },
-    { label: 'Hospital Viedma', value: '2' },
-    { label: 'Hospital Los Angeles', value: '3' },
-    { label: 'Clinica Arevalo', value: '4' },
-];
-
 //PARA LA LISTA DE PAISES (FALATA IMPLEMENTAR EN LA BDD)
 export const countriesOptions = [
     { label: 'Argentina', value: '1' },
