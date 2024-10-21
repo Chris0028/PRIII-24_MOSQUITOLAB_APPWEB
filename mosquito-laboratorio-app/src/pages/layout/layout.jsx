@@ -7,6 +7,7 @@ import CustomNavItem from "./components/customNavItem";
 import NavItem from "rsuite/esm/Nav/NavItem";
 import { PiEyedropperSampleFill } from "react-icons/pi";
 import { decodeToken } from "./utils/decoder";
+import { useSelector } from "react-redux";
 
 export default function Layout({ children }) {
     const [hoveredItem, setHoveredItem] = useState(null);
@@ -14,10 +15,11 @@ export default function Layout({ children }) {
 
     const [role, setRole] = useState('');
 
+    const user = useSelector((state) => state.user.user)
+
     useEffect(() => {
-        const jwt = localStorage.getItem('jwt');
-        if (jwt) {
-            const getUser = decodeToken(jwt);
+        if (user.jwt) {
+            const getUser = decodeToken(user.jwt);
             setRole(getUser.role);
         }
     }, []);
