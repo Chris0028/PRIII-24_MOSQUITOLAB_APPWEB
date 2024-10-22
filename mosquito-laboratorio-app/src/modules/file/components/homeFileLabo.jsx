@@ -48,8 +48,15 @@ export default function RecordsView() {
 
   const [showModal, setShowModal] = useState(false)
 
-  const handleOpenModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false);
+  function handleOpenModal() {
+    setShowModal(true);
+  }
+
+  function handleCloseModal() {
+    setShowModal(false);
+  }
+
+  const [fileId, setFileId] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -117,12 +124,17 @@ export default function RecordsView() {
           <Column width={100} fixed="right" >
             <HeaderCell style={{ fontSize: '16px' }}>Resultado</HeaderCell>
             <Cell >
-              <Whisper placement="top" trigger="hover" speaker={<Tooltip>Crear</Tooltip>}>
-                <IconButton
-                  icon={<FaMicroscope />}
-                  appearance="ghost"
-                  onClick={handleOpenModal} />
-              </Whisper>
+              {(rowData) => (
+                <Whisper placement="top" trigger="hover" speaker={<Tooltip>Crear</Tooltip>}>
+                  <IconButton
+                    icon={<FaMicroscope />}
+                    appearance="ghost"
+                    onClick={() => {
+                      setFileId(rowData.id);
+                      handleOpenModal();
+                    }} />
+                </Whisper>
+              )}
             </Cell>
           </Column>
 
@@ -241,7 +253,7 @@ export default function RecordsView() {
         </Button>
       </div>
 
-      <TestForm open={showModal} hiddeModal={handleCloseModal} />
+      <TestForm open={showModal} hiddeModal={handleCloseModal} fileId={fileId} />
     </div>
   );
 }
