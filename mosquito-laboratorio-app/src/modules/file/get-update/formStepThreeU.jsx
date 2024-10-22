@@ -3,24 +3,55 @@ import { useFetchMunicipalities, useFetchStates } from '../repositories/location
 import { countriesOptions } from '../utils/pickerOptions';
 import { FormControl, FormGroup } from '../hooks/useForms';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateStepThree } from '../../../redux/fileSlice';
+import {  UpdateFile } from '../services/GetUpdateFile'; //
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
-
-export default function FormStepThree() {
+export default function FormStepThreeU() {
+    //GET-UPDATE
+    const { fileID } = useParams();
     //USO DE REDUX
     const dispatch = useDispatch();
     
     // Obtener los datos del paso 3 del store de Redux
-    const formData = useSelector((state) => state.file?.stepThree || {});
-
-    // Función para manejar cambios en los campos del formulario
-    const handleChange = (value, name) => {
-        dispatch(updateStepThree({ [name]: value }));
-    };
-
+    //const fileU = useSelector((state) => state.getFile || {});
     const municipalities = useFetchMunicipalities();
     const states = useFetchStates();
 
+    const [loading, setLoading] = useState(true);   
+    const [fileU, setFileU] = useState(null);
+    useEffect(() => {
+        function fetchFileDetails() {
+          const storedData = localStorage.getItem('updateFile');
+          if (storedData) {
+            const parsedData = JSON.parse(storedData);
+            setFileU(parsedData);
+            console.log(parsedData); // Ahora verás las propiedades del objeto
+          } else {
+            console.log('No hay datos en el localStorage');
+          }
+          setLoading(false);
+        }
+          fetchFileDetails();
+        }, [fileID]);
+        // Manejar cambios en los campos del formulario
+        const handleChange = (value, name) => {
+          //dispatch(updateStepSix({ [name]: value }));
+        };
+
+  // Manejar la acción del botón para enviar la ficha epidemiológica
+  const handleSave = async () => {
+    try {
+      await UpdateFile(fileU);
+      alert('Ficha epidemiológica enviada exitosamente.');
+    } catch (error) {
+      console.error('Error al enviar la ficha epidemiológica:', error);
+      alert('Ocurrió un error al enviar la ficha epidemiológica. Inténtelo de nuevo.');
+    }
+  };
+
+  if (loading) return <p>Cargando...</p>;                   ////
+    
     return (
         <Form fluid>
             <Panel bordered bodyFill style={{ marginBottom: 20, padding: 10, backgroundColor: '#E0ECF8' }}>
@@ -36,7 +67,7 @@ export default function FormStepThree() {
                         <Form.ControlLabel>País / Lugar *</Form.ControlLabel>
                         <InputPicker
                             name="countryPlace"
-                            value={formData.countryOrPlace || ''}
+                            value={fileU.contagionCountry || ''}
                             onChange={(value) => handleChange(value, 'countryOrPlace')}
                             placeholder="Seleccione el país o lugar"
                             block
@@ -49,7 +80,7 @@ export default function FormStepThree() {
                         <Form.ControlLabel>Provincia / Municipio *</Form.ControlLabel>
                         <InputPicker
                             name="provinceMunicipality"
-                            value={formData.provinceOrMunicipality || ''}
+                            value={fileU.contagionMunicipality || ''}
                             onChange={(value) => handleChange(value, 'provinceOrMunicipality')}
                             placeholder="Seleccione la provincia o municipio"
                             block
@@ -62,7 +93,7 @@ export default function FormStepThree() {
                         <Form.ControlLabel>Barrio / Zona / U.V *</Form.ControlLabel>
                         <FormControl
                             name="neighborhoodZone"
-                            value={formData.neighborhood || ''}
+                            value={fileU.contagionNeighborhood || ''}
                             onChange={(value) => handleChange(value, 'neighborhood')}
                             placeholder="Ingrese el barrio, zona o U.V"
                             style={{ width: '100%' }}
@@ -76,7 +107,7 @@ export default function FormStepThree() {
                         <Form.ControlLabel>Departamento *</Form.ControlLabel>
                         <InputPicker
                             name="department"
-                            value={formData.state || ''}
+                            value={fileU.contagionState || ''}
                             onChange={(value) => handleChange(value, 'state')}
                             placeholder="Seleccione el departamento"
                             block
@@ -89,7 +120,7 @@ export default function FormStepThree() {
                         <Form.ControlLabel>Ciudad / Localidad / Comunidad *</Form.ControlLabel>
                         <FormControl
                             name="cityLocality"
-                            value={formData.city || ''}
+                            value={fileU.contagionCity || ''}
                             onChange={(value) => handleChange(value, 'city')}
                             placeholder="Ingrese la ciudad, localidad o comunidad"
                             style={{ width: '100%' }}

@@ -91,6 +91,7 @@ const initialState = {
   },
 };
 
+
 const fileSlice = createSlice({
   name: 'file',
   initialState,
@@ -113,6 +114,7 @@ const fileSlice = createSlice({
     updateStepSix(state, action) {
         state.stepSix = { ...state.stepSix, ...action.payload };
     },
+    
     // Puedes agregar otros reducers para actualizar los otros pasos
   },
 });

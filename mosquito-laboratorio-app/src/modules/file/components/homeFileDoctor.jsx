@@ -3,7 +3,7 @@ import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, 
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { GetHistoryFileByHospital } from '../services/historyByHospital';
-//PREGUNTARLE AL INGENIERO COMO CAMBIAR EL COLOR
+
 const { Column, HeaderCell, Cell } = Table;
 
 const ColoredCell = ({ rowData, dataKey, children, ...props }) => {

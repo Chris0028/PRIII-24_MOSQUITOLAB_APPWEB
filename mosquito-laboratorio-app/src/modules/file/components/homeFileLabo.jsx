@@ -3,6 +3,9 @@ import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, 
 import { useNavigate } from 'react-router-dom';
 import { GetHistoryForLab } from '../services/historyForLab';
 import { useEffect, useState } from 'react';
+import { GetFileDetails } from '../services/GetUpdateFile';
+import { useDispatch } from 'react-redux';
+import { setUpdateFile } from '../../../redux/updateFileSlice';
 
 
 const { Column, HeaderCell, Cell } = Table;
@@ -40,7 +43,7 @@ function formatDate(date) {
 
 export default function RecordsView() {
   const navigate = useNavigate()
-
+  const dispatch = useDispatch()
   const [historyFiles, setHistoryFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -61,6 +64,19 @@ export default function RecordsView() {
 
     fetchData();
   }, []);
+
+  const handleEdit = async (fileId) => {
+    // Asegúrate de que fileId sea un valor válido antes de navegar
+    if (fileId) {
+      const data = await GetFileDetails(fileId);
+      localStorage.setItem('updateFile', JSON.stringify(data));
+      
+      navigate(`/fileformu/${fileId}`);
+    } else {
+      console.error('File ID is undefined or null');
+      // Opcionalmente, puedes mostrar un mensaje de error al usuario
+    }
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', padding: '20px' }}>
@@ -117,6 +133,7 @@ export default function RecordsView() {
                       icon={<FaEdit />}
                       appearance="ghost"
                       style={{ color: 'black', border: 'Transparent', fontSize: '18px' }}
+                      onClick={() => handleEdit(rowData.id)}
                     />
                   </Whisper>
                   <Whisper placement="top" trigger="hover" speaker={<Tooltip>Reporte PDF</Tooltip>}>

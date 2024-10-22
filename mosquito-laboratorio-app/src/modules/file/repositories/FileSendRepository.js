@@ -1,5 +1,5 @@
 import { PostFile } from "../services/fileSendService";
-
+import { httpClient } from "../../../api/httpClient/httpClient"
 /**
  * Transforma los datos del formulario almacenados en Redux a un payload compatible con la API.
  * @param {Object} state El estado actual de Redux (file).
@@ -62,6 +62,43 @@ export function createFilePayload(state) {
   };
 
   return payload;
+}
+
+
+/**
+ * Obtiene los detalles del archivo por ID.
+ * @param {number} fileID - El ID del archivo.
+ * @returns {Promise<Object>} - Los detalles del archivo.
+ */
+export async function GetFileDetails(fileID) {
+  try {
+      const res = await httpClient.post('/File/GetFileDetails', { fileID });
+      if (res.status === 200) {
+          return res.data;
+      } else {
+          console.log('Error de Comunicación');
+      }
+  } catch (error) {
+      console.error('Error al obtener los detalles del archivo:', error);
+  }
+}
+
+/**
+ * Actualiza los detalles del archivo.
+ * @param {Object} fileData - Los datos del archivo a actualizar.
+ * @returns {Promise<Object>} - La respuesta de la API.
+ */
+export async function UpdateFile(fileData) {
+  try {
+      const res = await httpClient.patch('/File/UpdateFile', fileData);
+      if (res.status === 200) {
+          return res.data;
+      } else {
+          console.log('Error de Comunicación');
+      }
+  } catch (error) {
+      console.error('Error al actualizar el archivo:', error);
+  }
 }
 
 // Función para convertir el nombre de la enfermedad a un ID (ejemplo)

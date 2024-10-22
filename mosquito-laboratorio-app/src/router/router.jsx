@@ -6,7 +6,7 @@ import FileForm from "../modules/file/components/fileForm";
 import HomeFileDoctor from "../modules/file/components/homeFileDoctor";
 import HomeFileLabo from "../modules/file/components/homeFileLabo";
 import ConsolidateReport from "../modules/report/components/consolidatedReport";
-
+import FileFormU from "../modules/file/get-update/fileFormU";
 
 export default function Routing() {
     return (
@@ -17,7 +17,8 @@ export default function Routing() {
             <Route path='/homefiledoctor' element={<Layout children={<HomeFileDoctor />} />} />
             <Route path='/homefilelabo' element={<Layout children={<HomeFileLabo />} />} />
             <Route path='/consolidatereport' element={<Layout children={<ConsolidateReport />} />} />
-
+            <Route path='/fileformu/:fileID' element={<Layout children={< FileFormU />} />} />
+           
         </Routes>
     )
 }
