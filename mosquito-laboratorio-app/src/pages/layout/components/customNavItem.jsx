@@ -1,12 +1,20 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import NavItem from "rsuite/esm/Nav/NavItem";
 
 export default function CustomNavItem({ eventKey, icon, label, hoveredItem, handleMouseEnter, handleMouseLeave, disabled = false, url, expanded }) {
     const adjustedIcon = icon ? React.cloneElement(icon, { size: expanded ? '1em' : '1.5em' }) : null;
 
+    const navigate = useNavigate();
+
+    function handleClick() {
+        if (!disabled) {
+            navigate(url);
+        }
+    }
     return (
         <NavItem
-            href={url}
+            onClick={handleClick}
             eventKey={eventKey}
             icon={adjustedIcon}
             style={{
