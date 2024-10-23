@@ -1,8 +1,8 @@
 import { httpClient } from "../../../api/httpClient/httpClient"
 
-export async function GetHistoryFileByHospital() {
+export async function GetHistoryFileByHospital(hospitalId) {
 
-    const res = await httpClient.post('/File/HistoryFileByHospital', 1);
+    const res = await httpClient.post('/File/HistoryFileByHospital', hospitalId);
     if (res.status == 200) {
         return res.data;
     } else {

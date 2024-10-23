@@ -1,3 +1,5 @@
+import { httpClient } from "../../../api/httpClient/httpClient";
+
 export function diagnosticMethodsByDisease(diseaseId) {
 
     let diagnosticMethods = [];
@@ -18,9 +20,21 @@ export function diagnosticMethodsByDisease(diseaseId) {
 }
 
 export function sampleTypes() {
-    return ['Suero', 'Orina', 'Otro'];
+    return ['Suero', 'Orina'];
 }
 
 export function laboratoryResults() {
     return ['Positivo', 'Negativo'];
+}
+
+export async function createResultAsync(test) {
+
+    console.log(test);
+
+    const res = await httpClient.patch(`/Test/UpdateTestSample`, test);
+    if (res.status === 200) {
+        console.log('Resultado guardado');
+    } else {
+        throw new Error('An exception ocurring');
+    }
 }

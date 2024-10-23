@@ -3,13 +3,15 @@ import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, 
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { GetHistoryFileByHospital } from '../services/historyByHospital';
+import { useSelector } from 'react-redux';
+import { decodeToken } from '../../../pages/layout/utils/decoder';
 
 const { Column, HeaderCell, Cell } = Table;
 
 const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
   let backgroundColor = '';
 
-  switch (rowData.result) { 
+  switch (rowData.result) {
     case 'Positivo':
       backgroundColor = '#8AABD6';
       break;
@@ -24,7 +26,7 @@ const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
   }
 
   return (
-    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle'}}>
+    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle' }}>
       {children ? children(rowData) : rowData[dataKey]}
     </Cell>
   );
@@ -43,10 +45,19 @@ export default function RecordsView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const userInfo = useSelector((state) => state.user.user);
+
   useEffect(() => {
+    let data = [];
+    let userRole = decodeToken(userInfo.jwt);
+
     const fetchData = async () => {
       try {
-        const data = await GetHistoryFileByHospital();
+        if (userRole.role === 'Doctor') {
+          data = await GetHistoryFileByHospital(userInfo.info.hospitalId);
+        } else {
+          data = await GetHistoryFileByHospital(null);
+        }
         if (data != null) {
           setHistoryFiles(data);
         }
@@ -76,7 +87,7 @@ export default function RecordsView() {
         <IconButton
           icon={<FaExclamation color="white" />}
           circle
-          style={{ backgroundColor: 'black', marginRight: '10px', fontSize: '12px'}}
+          style={{ backgroundColor: 'black', marginRight: '10px', fontSize: '12px' }}
         />
         <p style={{ margin: 0 }}>
           <strong style={{ fontSize: '17px' }}>Solo puede realizar dos descargas diarias.</strong>
@@ -104,7 +115,7 @@ export default function RecordsView() {
       {/* Contenedor para la tabla con scroll */}
       <div style={{ flex: 1, overflowY: 'auto', marginBottom: '20px' }}>
         {/* Tabla de Registros */}
-        <Table height={800} data={ historyFiles } rowHeight={100} style={{ fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle' }}>
+        <Table height={800} data={historyFiles} rowHeight={100} style={{ fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle' }}>
           <Column width={90} fixed >
             <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Acciones</HeaderCell>
             <Cell >
@@ -130,14 +141,14 @@ export default function RecordsView() {
             </Cell>
           </Column>
           {false && (
-          <Column width={120} resizable>
-            <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>id</HeaderCell>
-            <ColoredCell dataKey="id" />
-          </Column>
+            <Column width={120} resizable>
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>id</HeaderCell>
+              <ColoredCell dataKey="id" />
+            </Column>
           )}
           <Column width={120} resizable >
             <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Estado</HeaderCell>
-            <ColoredCell  dataKey="result" />
+            <ColoredCell dataKey="result" />
           </Column>
 
           <Column width={180} resizable>

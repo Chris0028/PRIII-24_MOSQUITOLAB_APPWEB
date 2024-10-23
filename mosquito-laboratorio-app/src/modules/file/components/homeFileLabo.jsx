@@ -7,6 +7,8 @@ import { GetFileDetails } from '../services/GetUpdateFile';
 import { useDispatch } from 'react-redux';
 import { setUpdateFile } from '../../../redux/updateFileSlice';
 import TestForm from '../../test/components/testForm';
+import { useSelector } from 'react-redux';
+import { decodeToken } from '../../../pages/layout/utils/decoder';
 
 
 
@@ -49,16 +51,31 @@ export default function RecordsView() {
   const [historyFiles, setHistoryFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
   const [showModal, setShowModal] = useState(false)
+  const [fileId, setFileId] = useState(0);
 
-  const handleOpenModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false);
+  const userInfo = useSelector((state) => state.user.user);
+
+  function handleOpenModal() {
+    setShowModal(true);
+  }
+
+  function handleCloseModal() {
+    setShowModal(false);
+  }
+
 
   useEffect(() => {
+    let data = [];
+    let userRole = decodeToken(userInfo.jwt);
     const fetchData = async () => {
       try {
-        const data = await GetHistoryForLab();
+        if (userRole.role === 'Employee') {
+          data = await GetHistoryForLab(parseInt(userInfo.info.laboratoryId));
+        } else {
+          data = await GetHistoryForLab(null);
+        }
+
         if (data != null) {
           setHistoryFiles(data);
         }
@@ -134,12 +151,17 @@ export default function RecordsView() {
           <Column width={100} fixed="right" >
             <HeaderCell style={{ fontSize: '16px' }}>Resultado</HeaderCell>
             <Cell >
-              <Whisper placement="top" trigger="hover" speaker={<Tooltip>Crear</Tooltip>}>
-                <IconButton
-                  icon={<FaMicroscope />}
-                  appearance="ghost"
-                  onClick={handleOpenModal} />
-              </Whisper>
+              {(rowData) => (
+                <Whisper placement="top" trigger="hover" speaker={<Tooltip>Crear</Tooltip>}>
+                  <IconButton
+                    icon={<FaMicroscope />}
+                    appearance="ghost"
+                    onClick={() => {
+                      setFileId(rowData.id);
+                      handleOpenModal();
+                    }} />
+                </Whisper>
+              )}
             </Cell>
           </Column>
 
@@ -259,7 +281,7 @@ export default function RecordsView() {
         </Button>
       </div>
 
-      <TestForm open={showModal} hiddeModal={handleCloseModal} />
+      <TestForm open={showModal} hiddeModal={handleCloseModal} fileId={fileId} />
     </div>
   );
 }
