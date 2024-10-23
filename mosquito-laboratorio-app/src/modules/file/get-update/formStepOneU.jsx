@@ -1,11 +1,10 @@
 import { useState, useEffect } from '../hooks/useReacts';
-import { Form, DatePicker, FlexboxGrid, InputPicker } from 'rsuite';
+import { Form, DatePicker, FlexboxGrid, InputPicker, Input } from 'rsuite';
 import { FormControl, FormGroup } from '../hooks/useForms';
 import { useFetchMunicipalities, useFetchStates } from '../repositories/locationRepository';
 import { caseOptions, subSectorOptions, healthStablishmentOptions } from '../utils/pickerOptions';
 import { UpdateFile } from '../services/GetUpdateFile'; //
 import { useParams } from 'react-router-dom';
-
 
 // Función para convertir la fecha almacenada (string) a un objeto Date
 const parseDate = (dateString) => {
@@ -59,7 +58,7 @@ export default function formStepOneU() {
         <FlexboxGrid.Item colspan={11}>
           <FormGroup>
             <Form.ControlLabel>Establecimiento de Salud Notificante *</Form.ControlLabel>
-            <FormControl
+            <InputPicker
               name="hospitalName"
               defaultValue={fileU.hospitalName || ''} // Carga los datos actuales o cadena vacía
               onChange={(value) => handleInputChange('hospitalName', value)}
@@ -73,7 +72,7 @@ export default function formStepOneU() {
           </FormGroup>
           <FormGroup>
             <Form.ControlLabel>Municipio *</Form.ControlLabel>
-            <FormControl
+            <InputPicker
               name="municipality"
               defaultValue={fileU.municipalityName || ''} // Carga los datos actuales o cadena vacía
               onChange={(value) => handleInputChange('municipality', value)}
@@ -95,7 +94,7 @@ export default function formStepOneU() {
           </FormGroup>
           <FormGroup>
             <Form.ControlLabel>Cómo se Descubrió el Caso *</Form.ControlLabel>
-            <FormControl
+            <InputPicker
               name="discoveryMethod"
               value={fileU.discoveryMethod || ''} // Carga los datos actuales o cadena vacía
               onChange={(value) => handleInputChange('discoveryMethod', value)}
@@ -111,7 +110,7 @@ export default function formStepOneU() {
         <FlexboxGrid.Item colspan={11}>
           <FormGroup>
             <Form.ControlLabel>Departamento *</Form.ControlLabel>
-            <FormControl
+            <InputPicker
               name="department"
               value={fileU.stateName || ''} // Carga los datos actuales o cadena vacía
               onChange={(value) => handleInputChange('department', value)}
@@ -124,7 +123,7 @@ export default function formStepOneU() {
           </FormGroup>
           <FormGroup>
             <Form.ControlLabel>Subsector *</Form.ControlLabel>
-            <FormControl
+            <InputPicker
               name="subsector"
               value={fileU.typeHospital || ''} // Carga los datos actuales o cadena vacía
               onChange={(value) => handleInputChange('subsector', value)}
