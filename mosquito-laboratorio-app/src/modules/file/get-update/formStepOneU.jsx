@@ -1,10 +1,13 @@
 import { useState, useEffect } from '../hooks/useReacts';
-import { Form, DatePicker, FlexboxGrid, InputPicker, Input } from 'rsuite';
+import { Form, DatePicker, FlexboxGrid, InputPicker } from 'rsuite';
 import { FormControl, FormGroup } from '../hooks/useForms';
 import { useFetchMunicipalities, useFetchStates } from '../repositories/locationRepository';
 import { caseOptions, subSectorOptions, healthStablishmentOptions } from '../utils/pickerOptions';
 import { UpdateFile } from '../services/GetUpdateFile'; //
+import { fetchFileById } from '../../../redux/updateFileSlice';
 import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { createHandleInputChange } from '../utils/stepOneUtil';
 
 // Función para convertir la fecha almacenada (string) a un objeto Date
 const parseDate = (dateString) => {
@@ -14,31 +17,19 @@ const parseDate = (dateString) => {
 export default function formStepOneU() {
   //GET-UPDATE
   const { fileID } = useParams();
-
+  const dispatch = useDispatch();
+  const { file, loading, error } = useSelector((state) => state.updateFile);
+  //
   const municipalities = useFetchMunicipalities();
   const states = useFetchStates();
-  const [loading, setLoading] = useState(true);
-
-  const [fileU, setFileU] = useState(null);
+  const handleInputChange = createHandleInputChange(dispatch);
 
   useEffect(() => {
-  function fetchFileDetails() {
-    const storedData = localStorage.getItem('updateFile');
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      setFileU(parsedData);
-      console.log(parsedData); // Ahora verás las propiedades del objeto
-    } else {
-      console.log('No hay datos en el localStorage');
+    if (fileID) {
+      dispatch(fetchFileById(fileID)); // Llama al thunk para obtener los datos del archivo
     }
-    setLoading(false);
-  }
-    fetchFileDetails();
-  }, [fileID]);
-  // Manejar cambios en los campos del formulario
-  const handleChange = (value, name) => {
-    //dispatch(updateStepSix({ [name]: value }));
-  };
+  }, [dispatch, fileID]);
+  
   
   // Manejar la acción del botón para enviar la ficha epidemiológica
   const handleSave = async () => {
@@ -51,7 +42,8 @@ export default function formStepOneU() {
     }
   };
 
-  if (loading) return <p>Cargando...</p>;                   ////
+  if (loading) return <p>Cargando...</p>;
+  if (error) return <p>Error al cargar los datos: {error}</p>;
   return (
     <Form fluid>
       <FlexboxGrid justify="space-between">
@@ -60,7 +52,7 @@ export default function formStepOneU() {
             <Form.ControlLabel>Establecimiento de Salud Notificante *</Form.ControlLabel>
             <InputPicker
               name="hospitalName"
-              defaultValue={fileU.hospitalName || ''} // Carga los datos actuales o cadena vacía
+              defaultValue={file?.hospitalName || ''} // Carga los datos actuales o cadena vacía
               onChange={(value) => handleInputChange('hospitalName', value)}
               placeholder="Seleccione el establecimiento"
               block
