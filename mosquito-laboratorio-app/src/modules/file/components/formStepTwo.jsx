@@ -19,16 +19,14 @@ export default function FormStepTwo() {
   const handleMarkerDragEnds = createHandleMarkerDragEnd(dispatch);
   const handleBirthDateChange = createHandleBirthDateChange(dispatch);
 
-  // Hook Toggles - Para manejo local de los toggles
-  const { isPregnant, handleToggleChange, isInsured, handleToggleChange1 } = Toggles();
 
   // Obtener los datos de municipios
   const municipalities = useFetchMunicipalities();
 
   // Estado local para el marcador de Google Maps
   const [markerPosition, setMarkerPosition] = useState({
-    lat: formData.latitude || -17.388283899568613,
-    lng: formData.longitude || -66.14925111256666,
+    lat: formData.directionLatitude || -17.388283899568613,
+    lng: formData.directionLongitude || -66.14925111256666,
   });
 
   // Maneja el evento de clic en el marcador para mostrar la información
@@ -59,12 +57,12 @@ return (
         <FormGroup>
           <Form.ControlLabel>Número de Documento *</Form.ControlLabel>
           <FormControl
-            name="documentNumber"
+            name="patientCi"
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese su carnet de identidad"
-            value={formData.documentNumber || ''}
-            onChange={(value) => handleInputChanges(value, 'documentNumber')}
+            value={formData.patientCi || ''}
+            onChange={(value) => handleInputChanges(value, 'patientCi')}
           />
         </FormGroup>
       </FlexboxGrid.Item>
@@ -73,9 +71,9 @@ return (
           <FormGroup>
             <Form.ControlLabel>Fecha de Nacimiento *</Form.ControlLabel>
             <DatePicker
-              name="birthDate"
+              name="patientBirthDate"
               style={{ width: '100%' }}
-              value={formData.birthDate ? new Date(formData.birthDate) : null}
+              value={formData.patientBirthDate ? new Date(formData.patientBirthDate) : null}
               onChange={(value) => handleBirthDateChange(value)}
               disabledDate={(date) => date > new Date()} // Deshabilitar fechas futuras
             />
@@ -101,20 +99,20 @@ return (
           <FormGroup>
             <Form.ControlLabel>Sexo *</Form.ControlLabel>
             <InputPicker
-              name="gender"
+              name="patientGender"
               data={sexOptions}
               block
               size="lg"
               placeholder="Seleccione su sexo"
               style={{ width: '100%' }}
-              value={formData.gender || ''}
-              onChange={(value) => handleInputChanges(value, 'gender')}
+              value={formData.patientGender || ''}
+              onChange={(value) => handleInputChanges(value, 'patientGender')}
             />
           </FormGroup>
         </FlexboxGrid.Item>
 
       {/* Tercera Fila: Toggle y Nombre del Apoderado */}
-      {formData.gender === 'F' && (
+      {formData.patientGender === 'F' && (
         <FlexboxGrid.Item colspan={11} style={{ marginBottom: 30 }}>
           <FormGroup>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -146,19 +144,19 @@ return (
         <FormGroup>
           <Form.ControlLabel>Nombre del Apoderado</Form.ControlLabel>
           <FormControl
-            name="guardianName"
+            name="childParent"
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese el nombre del apoderado"
-            value={formData.guardianName || ''}
-            onChange={(value) => handleInputChanges(value, 'guardianName')}
+            value={formData.childParent || ''}
+            onChange={(value) => handleInputChanges(value, 'childParent')}
             disabled={formData.age >= 18} // Deshabilitar si la edad es mayor o igual a 18
           />
         </FormGroup>
       </FlexboxGrid.Item>
 
       {/* Divider para secciones adicionales */}
-      {formData.isPregnant && formData.gender === 'F' && (
+      {formData.isPregnant && formData.patientGender === 'F' && (
         <>
           <FlexboxGrid.Item colspan={24}>
             <Divider>Datos Adicionales para Pacientes Embarazadas</Divider>
@@ -169,13 +167,13 @@ return (
             <FormGroup>
               <Form.ControlLabel>FUM (Fecha de Última Menstruación)</Form.ControlLabel>
               <DatePicker
-                name="lastMenstruationDate"
+                name="pregnantLastMenstruationDate"
                 style={{ width: '100%' }}
-                value={formData.lastMenstruationDate ? new Date(formData.lastMenstruationDate) : null}
+                value={formData.pregnantLastMenstruationDate ? new Date(formData.pregnantLastMenstruationDate) : null}
                 onChange={(value) => {
                   // Solo convertir a ISO si value es una instancia de Date válida
                   const dateValue = value instanceof Date && !isNaN(value) ? value.toISOString() : null;
-                  handleInputChanges(dateValue, 'lastMenstruationDate');
+                  handleInputChanges(dateValue, 'pregnantLastMenstruationDate');
                 }}
                 disabledDate={(date) => date > new Date()} // Deshabilitar fechas futuras
               />
@@ -186,13 +184,13 @@ return (
             <FormGroup>
               <Form.ControlLabel>Fecha Posible de Parto</Form.ControlLabel>
               <DatePicker
-                name="estimatedBirthDate"
+                name="pregnantChildBirthDate"
                 style={{ width: '100%' }}
-                value={formData.estimatedBirthDate ? new Date(formData.estimatedBirthDate) : null}
+                value={formData.pregnantChildBirthDate ? new Date(formData.pregnantChildBirthDate) : null}
                 onChange={(value) => {
                   // Solo convertir a ISO si value es una instancia de Date válida
                   const dateValue = value instanceof Date && !isNaN(value) ? value.toISOString() : null;
-                  handleInputChanges(dateValue, 'estimatedBirthDate');
+                  handleInputChanges(dateValue, 'pregnantChildBirthDate');
                 }}
               />
             </FormGroup>
@@ -218,12 +216,12 @@ return (
             <FormGroup>
               <Form.ControlLabel>Especificar</Form.ControlLabel>
               <FormControl
-                name="specify"
+                name="pregnantDisease"
                 type="text"
                 style={{ width: '100%' }}
                 placeholder="Especifique las enfermedades de base"
-                value={formData.specify || ''}
-                onChange={(value) => handleInputChanges(value, 'specify')}
+                value={formData.pregnantDisease || ''}
+                onChange={(value) => handleInputChanges(value, 'pregnantDisease')}
               />
             </FormGroup>
           </FlexboxGrid.Item>
@@ -239,12 +237,12 @@ return (
         <FormGroup>
           <Form.ControlLabel>Nombres *</Form.ControlLabel>
           <FormControl
-            name="names"
+            name="patientName"
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese sus nombres"
-            value={formData.names || ''}
-            onChange={(value) => handleInputChanges(value, 'names')}
+            value={formData.patientName || ''}
+            onChange={(value) => handleInputChanges(value, 'patientName')}
           />
         </FormGroup>
       </FlexboxGrid.Item>
@@ -252,12 +250,12 @@ return (
         <FormGroup>
           <Form.ControlLabel>Apellido Paterno *</Form.ControlLabel>
           <FormControl
-            name="lastName"
+            name="patientLastName"
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese su apellido paterno"
-            value={formData.lastName || ''}
-            onChange={(value) => handleInputChanges(value, 'lastName')}
+            value={formData.patientLastName || ''}
+            onChange={(value) => handleInputChanges(value, 'patientLastName')}
           />
         </FormGroup>
       </FlexboxGrid.Item>
@@ -267,12 +265,12 @@ return (
         <FormGroup>
           <Form.ControlLabel>Apellido Materno *</Form.ControlLabel>
           <FormControl
-            name="secondLastName"
+            name="patientSecondLastName"
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese su apellido materno"
-            value={formData.secondLastName || ''}
-            onChange={(value) => handleInputChanges(value, 'secondLastName')}
+            value={formData.patientSecondLastName || ''}
+            onChange={(value) => handleInputChanges(value, 'patientSecondLastName')}
           />
         </FormGroup>
       </FlexboxGrid.Item>
@@ -280,14 +278,14 @@ return (
         <FormGroup>
           <Form.ControlLabel>País de Procedencia *</Form.ControlLabel>
           <InputPicker
-            name="originCountry"
+            name="countryOrigin"
             data={countriesOptions}
             block
             size="lg"
             placeholder="Seleccione su país de nacimiento"
             style={{ width: '100%' }}
-            value={formData.originCountry || ''}
-            onChange={(value) => handleInputChanges(value, 'originCountry')}
+            value={formData.countryOrigin || ''}
+            onChange={(value) => handleInputChanges(value, 'countryOrigin')}
           />
         </FormGroup>
       </FlexboxGrid.Item>
@@ -297,25 +295,25 @@ return (
         <FormGroup>
           <Form.ControlLabel>Número de Teléfono *</Form.ControlLabel>
           <FormControl
-            name="phoneNumber"
+            name="patientPhone"
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese su número de celular"
-            value={formData.phoneNumber || ''}
-            onChange={(value) => handleInputChanges(value, 'phoneNumber')}
+            value={formData.patientPhone || ''}
+            onChange={(value) => handleInputChanges(value, 'patientPhone')}
           />
         </FormGroup>
       </FlexboxGrid.Item>
       <FlexboxGrid.Item colspan={11} style={{ marginBottom: 30 }}>
         <FormGroup>
-          <Form.ControlLabel>Dirección de Residencia *</Form.ControlLabel>
+          <Form.ControlLabel>Ciudad *</Form.ControlLabel>
           <FormControl
-            name="address"
+            name="directionCity"
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese su dirección"
-            value={formData.address || ''}
-            onChange={(value) => handleInputChanges(value, 'address')}
+            value={formData.directionCity || ''}
+            onChange={(value) => handleInputChanges(value, 'directionCity')}
           />
         </FormGroup>
       </FlexboxGrid.Item>
@@ -325,12 +323,12 @@ return (
         <FormGroup>
           <Form.ControlLabel>Barrio / Localidad *</Form.ControlLabel>
           <FormControl
-            name="neighborhood"
+            name="directionNeighborhood"
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese el nombre de su barrio"
-            value={formData.neighborhood || ''}
-            onChange={(value) => handleInputChanges(value, 'neighborhood')}
+            value={formData.directionNeighborhood || ''}
+            onChange={(value) => handleInputChanges(value, 'directionNeighborhood')}
           />
         </FormGroup>
       </FlexboxGrid.Item>
@@ -338,14 +336,14 @@ return (
         <FormGroup>
           <Form.ControlLabel>Municipio / Departamento *</Form.ControlLabel>
           <InputPicker
-            name="municipalityDepartment"
+            name="municipalityOrState"
             block
             size="lg"
             placeholder="Ingrese el nombre de su municipio"
             style={{ width: '100%' }}
             data={municipalities}
-            value={formData.municipalityDepartment || ''}
-            onChange={(value) => handleInputChanges(value, 'municipalityDepartment')}
+            value={formData.municipalityOrState || ''}
+            onChange={(value) => handleInputChanges(value, 'municipalityOrState')}
           />
         </FormGroup>
       </FlexboxGrid.Item>
@@ -387,12 +385,12 @@ return (
             <FormGroup>
               <Form.ControlLabel>Nombre de la Empresa *</Form.ControlLabel>
               <FormControl
-                name="companyName"
+                name="insuranceId"
                 type="text"
                 style={{ width: '100%' }}
                 placeholder="Ingrese el nombre de la empresa"
-                value={formData.companyName || ''}
-                onChange={(value) => handleInputChanges(value, 'companyName')}
+                value={formData.insuranceId || ''}
+                onChange={(value) => handleInputChanges(value, 'insuranceId')}
               />
             </FormGroup>
           </FlexboxGrid.Item>
@@ -401,14 +399,14 @@ return (
             <FormGroup>
               <Form.ControlLabel>Caja o Seguro *</Form.ControlLabel>
               <InputPicker
-                name="boxInsurance"
+                name="ipTypeInsured"
                 block
                 size="lg"
                 placeholder="Seleccione"
                 style={{ width: '100%' }}
                 data={secureOptions || []}
-                value={formData.boxInsurance || ''}
-                onChange={(value) => handleInputChanges(value, 'boxInsurance')}
+                value={formData.ipTypeInsured || ''}
+                onChange={(value) => handleInputChanges(value, 'ipTypeInsured')}
               />
             </FormGroup>
           </FlexboxGrid.Item>
@@ -417,12 +415,12 @@ return (
             <FormGroup>
               <Form.ControlLabel>Matrícula de Asegurado *</Form.ControlLabel>
               <FormControl
-                name="insuredRegistration"
+                name="ipInsuredRecord"
                 type="text"
                 style={{ width: '100%' }}
                 placeholder="Ingrese su matrícula"
-                value={formData.insuredRegistration || ''}
-                onChange={(value) => handleInputChanges(value, 'insuredRegistration')}
+                value={formData.ipInsuredRecord || ''}
+                onChange={(value) => handleInputChanges(value, 'ipInsuredRecord')}
               />
             </FormGroup>
           </FlexboxGrid.Item>
@@ -431,12 +429,12 @@ return (
             <FormGroup>
               <Form.ControlLabel>Especificar</Form.ControlLabel>
               <FormControl
-                name="specifyInsured"
+                name="specifySecure"
                 type="text"
                 style={{ width: '100%' }}
                 placeholder="Especifique"
-                value={formData.specifyInsured || ''}
-                onChange={(value) => handleInputChanges(value, 'specifyInsured')}
+                value={formData.specifySecure || ''}
+                onChange={(value) => handleInputChanges(value, 'specifySecure')}
               />
             </FormGroup>
           </FlexboxGrid.Item>

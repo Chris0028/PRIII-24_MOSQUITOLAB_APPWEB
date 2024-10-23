@@ -1,8 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { Form, DatePicker, FlexboxGrid, InputPicker } from 'rsuite';
 import { FormControl, FormGroup } from '../hooks/useForms';
-import { caseOptions, subSectorOptions } from '../utils/pickerOptions';
-import { createHandleDateChange, createHandleInputChange } from '../utils/stepOneUtil'; // Asegúrate de usar la ruta correcta
+import { caseOptions } from '../utils/pickerOptions';
+import { createHandleInputChange } from '../utils/stepOneUtil'; // Asegúrate de usar la ruta correcta
 
 // Función para convertir la fecha almacenada (string) a un objeto Date
 const parseDate = (dateString) => {
@@ -17,13 +17,11 @@ export default function FormStepOne() {
   const formData = useSelector((state) => state.file.stepOne);
 
   // Crear las funciones para manejar los cambios utilizando la utilidad
-  const handleDateChange = createHandleDateChange(dispatch);
   const handleInputChange = createHandleInputChange(dispatch);
 
   const userSelector = useSelector((state) => state.user);
 
   const userInfo = userSelector.user;
-  console.log(userInfo)
 
   return (
     <Form fluid>
@@ -34,7 +32,6 @@ export default function FormStepOne() {
             <FormControl
               name="healthEstablishment"
               value={userInfo.info.hospital || [] } // Carga los datos actuales o cadena vacía
-              onChange={(value) => handleInputChange('healthEstablishment', value)}
               placeholder="Seleccione el establecimiento"
               block
               size="lg"
@@ -47,7 +44,6 @@ export default function FormStepOne() {
             <FormControl
               name="municipality"
               value={userInfo.info.municipality} // Carga los datos actuales o cadena vacía
-              onChange={(value) => handleInputChange('municipality', value)}
               placeholder="Seleccione el municipio"
               block
               size="lg"
@@ -60,7 +56,6 @@ export default function FormStepOne() {
             <FormControl
               name="healthNetwork"
               value={userInfo.info.hospitalNetwork || [] } // Carga los datos actuales o cadena vacía
-              onChange={(value) => handleInputChange('healthNetwork', value)}
               placeholder="Seleccione la red de salud"
               block
               size="lg"
@@ -73,7 +68,6 @@ export default function FormStepOne() {
             <DatePicker
               name="notificationDate"
               value={ new Date } // Convierte la cadena almacenada en un objeto Date
-              onChange={(value) => handleDateChange('notificationDate', value)}
               style={{ width: '100%' }}
               disabled
             />
@@ -85,7 +79,6 @@ export default function FormStepOne() {
             <FormControl
               name="department"
               value={ userInfo.info.state } // Carga los datos actuales o cadena vacía
-              onChange={(value) => handleInputChange('department', value)}
               placeholder="Seleccione el departamento"
               block
               size="lg"
@@ -98,7 +91,6 @@ export default function FormStepOne() {
             <FormControl
               name="subsector"
               value={'Publico'} // Carga los datos actuales o cadena vacía
-              onChange={(value) => handleInputChange('subsector', value)}
               placeholder="Seleccione el subsector"
               block
               size="lg"
@@ -124,7 +116,6 @@ export default function FormStepOne() {
             <FormControl
               name="contactInfo"
               value={ userInfo.info.hospitalContact || 'No tiene numero o correo'} // Carga los datos actuales o cadena vacía
-              onChange={(value) => handleInputChange('contactInfo', value)}
               type="text"
               placeholder="Ingrese teléfono o correo electrónico"
               style={{ width: '100%' }}
