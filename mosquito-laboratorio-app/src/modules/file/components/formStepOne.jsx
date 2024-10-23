@@ -1,9 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { Form, DatePicker, FlexboxGrid, InputPicker } from 'rsuite';
 import { FormControl, FormGroup } from '../hooks/useForms';
-import { useFetchMunicipalities, useFetchStates } from '../repositories/locationRepository';
-import { caseOptions, subSectorOptions, healthStablishmentOptions } from '../utils/pickerOptions';
-import { createHandleDateChange, createHandleInputChange } from '../utils/stepOneUtil'; // Asegúrate de usar la ruta correcta
+import { caseOptions } from '../utils/pickerOptions';
+import { createHandleInputChange } from '../utils/stepOneUtil'; // Asegúrate de usar la ruta correcta
 
 // Función para convertir la fecha almacenada (string) a un objeto Date
 const parseDate = (dateString) => {
@@ -13,15 +12,16 @@ const parseDate = (dateString) => {
 export default function FormStepOne() {
   // Uso de REDUX
   const dispatch = useDispatch();
+  
   // Obtener los datos del estado de Redux
   const formData = useSelector((state) => state.file.stepOne);
 
   // Crear las funciones para manejar los cambios utilizando la utilidad
-  const handleDateChange = createHandleDateChange(dispatch);
   const handleInputChange = createHandleInputChange(dispatch);
 
-  const municipalities = useFetchMunicipalities();
-  const states = useFetchStates();
+  const userSelector = useSelector((state) => state.user);
+
+  const userInfo = userSelector.user;
 
   return (
     <Form fluid>
@@ -29,37 +29,73 @@ export default function FormStepOne() {
         <FlexboxGrid.Item colspan={11}>
           <FormGroup>
             <Form.ControlLabel>Establecimiento de Salud Notificante *</Form.ControlLabel>
-            <InputPicker
+            <FormControl
               name="healthEstablishment"
-              value={formData.healthEstablishment || ''} // Carga los datos actuales o cadena vacía
-              onChange={(value) => handleInputChange('healthEstablishment', value)}
+              value={userInfo.info.hospital || [] } // Carga los datos actuales o cadena vacía
               placeholder="Seleccione el establecimiento"
               block
               size="lg"
               style={{ width: '100%' }}
-              data={healthStablishmentOptions || []}
+              disabled
             />
           </FormGroup>
           <FormGroup>
             <Form.ControlLabel>Municipio *</Form.ControlLabel>
-            <InputPicker
+            <FormControl
               name="municipality"
-              value={formData.municipality || ''} // Carga los datos actuales o cadena vacía
-              onChange={(value) => handleInputChange('municipality', value)}
+              value={userInfo.info.municipality} // Carga los datos actuales o cadena vacía
               placeholder="Seleccione el municipio"
               block
               size="lg"
               style={{ width: '100%' }}
-              data={municipalities || []}
+              disabled
+            />
+          </FormGroup>
+          <FormGroup>
+            <Form.ControlLabel>Red de Salud *</Form.ControlLabel>
+            <FormControl
+              name="healthNetwork"
+              value={userInfo.info.hospitalNetwork || [] } // Carga los datos actuales o cadena vacía
+              placeholder="Seleccione la red de salud"
+              block
+              size="lg"
+              style={{ width: '100%' }}
+              disabled
             />
           </FormGroup>
           <FormGroup>
             <Form.ControlLabel>Fecha de Notificación *</Form.ControlLabel>
             <DatePicker
               name="notificationDate"
-              value={parseDate(formData.notificationDate)} // Convierte la cadena almacenada en un objeto Date
-              onChange={(value) => handleDateChange('notificationDate', value)}
+              value={ new Date } // Convierte la cadena almacenada en un objeto Date
               style={{ width: '100%' }}
+              disabled
+            />
+          </FormGroup>
+        </FlexboxGrid.Item>
+        <FlexboxGrid.Item colspan={11}>
+          <FormGroup>
+            <Form.ControlLabel>Departamento *</Form.ControlLabel>
+            <FormControl
+              name="department"
+              value={ userInfo.info.state } // Carga los datos actuales o cadena vacía
+              placeholder="Seleccione el departamento"
+              block
+              size="lg"
+              style={{ width: '100%' }}
+              disabled
+            />
+          </FormGroup>
+          <FormGroup>
+            <Form.ControlLabel>Subsector *</Form.ControlLabel>
+            <FormControl
+              name="subsector"
+              value={'Publico'} // Carga los datos actuales o cadena vacía
+              placeholder="Seleccione el subsector"
+              block
+              size="lg"
+              style={{ width: '100%' }}
+              disabled
             />
           </FormGroup>
           <FormGroup>
@@ -75,43 +111,15 @@ export default function FormStepOne() {
               data={caseOptions || []}
             />
           </FormGroup>
-        </FlexboxGrid.Item>
-        <FlexboxGrid.Item colspan={11}>
-          <FormGroup>
-            <Form.ControlLabel>Departamento *</Form.ControlLabel>
-            <InputPicker
-              name="department"
-              value={formData.department || ''} // Carga los datos actuales o cadena vacía
-              onChange={(value) => handleInputChange('department', value)}
-              placeholder="Seleccione el departamento"
-              block
-              size="lg"
-              style={{ width: '100%' }}
-              data={states || []}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Form.ControlLabel>Subsector *</Form.ControlLabel>
-            <InputPicker
-              name="subsector"
-              value={formData.subsector || ''} // Carga los datos actuales o cadena vacía
-              onChange={(value) => handleInputChange('subsector', value)}
-              placeholder="Seleccione el subsector"
-              block
-              size="lg"
-              style={{ width: '100%' }}
-              data={subSectorOptions || []}
-            />
-          </FormGroup>
           <FormGroup>
             <Form.ControlLabel>Teléfono o Correo Electrónico del Establecimiento *</Form.ControlLabel>
             <FormControl
               name="contactInfo"
-              value={formData.contactInfo || ''} // Carga los datos actuales o cadena vacía
-              onChange={(value) => handleInputChange('contactInfo', value)}
+              value={ userInfo.info.hospitalContact || 'No tiene numero o correo'} // Carga los datos actuales o cadena vacía
               type="text"
               placeholder="Ingrese teléfono o correo electrónico"
               style={{ width: '100%' }}
+              disabled
             />
           </FormGroup>
         </FlexboxGrid.Item>

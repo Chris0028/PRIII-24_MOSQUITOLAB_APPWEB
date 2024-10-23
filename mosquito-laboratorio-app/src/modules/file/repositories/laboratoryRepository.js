@@ -24,4 +24,4 @@ export function useFetchLaboratories() {
     }, []);
   
     return laboratories;
-  };
+};
