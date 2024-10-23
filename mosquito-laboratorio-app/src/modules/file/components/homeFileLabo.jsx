@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { GetHistoryForLab } from '../services/historyForLab';
 import { useEffect, useState } from 'react';
 import TestForm from '../../test/components/testForm';
+import { useSelector } from 'react-redux';
+import { decodeToken } from '../../../pages/layout/utils/decoder';
 
 
 const { Column, HeaderCell, Cell } = Table;
@@ -45,8 +47,10 @@ export default function RecordsView() {
   const [historyFiles, setHistoryFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
   const [showModal, setShowModal] = useState(false)
+  const [fileId, setFileId] = useState(0);
+
+  const userInfo = useSelector((state) => state.user.user);
 
   function handleOpenModal() {
     setShowModal(true);
@@ -56,12 +60,18 @@ export default function RecordsView() {
     setShowModal(false);
   }
 
-  const [fileId, setFileId] = useState(0);
 
   useEffect(() => {
+    let data = [];
+    let userRole = decodeToken(userInfo.jwt);
     const fetchData = async () => {
       try {
-        const data = await GetHistoryForLab();
+        if (userRole.role === 'Employee') {
+          data = await GetHistoryForLab(parseInt(userInfo.info.laboratoryId));
+        } else {
+          data = await GetHistoryForLab(null);
+        }
+
         if (data != null) {
           setHistoryFiles(data);
         }
