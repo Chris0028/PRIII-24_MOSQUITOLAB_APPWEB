@@ -64,7 +64,14 @@ export default function Layout({ children }) {
                     </SidenavBody>
                     <Nav style={{ marginTop: expanded ? '10vh' : '2vh' }}>
                         <Divider />
-                        <CustomNavItem eventKey="9" icon={<FaSignOutAlt />} label="Cerrar sesión" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} expanded={expanded} />
+                        <CustomNavItem
+                            eventKey="9"
+                            icon={<FaSignOutAlt />}
+                            label="Cerrar sesión"
+                            hoveredItem={hoveredItem}
+                            handleMouseEnter={handleMouseEnter}
+                            handleMouseLeave={handleMouseLeave}
+                            expanded={expanded} />
                     </Nav>
                 </Sidenav>
             </Sidebar>

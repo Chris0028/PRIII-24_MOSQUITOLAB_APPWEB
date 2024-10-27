@@ -27,13 +27,19 @@ export function laboratoryResults() {
     return ['Positivo', 'Negativo'];
 }
 
-export async function createResultAsync(test) {
+export function getCaseTypes() {
+    return ['Sospechoso', 'Confirmado'];
+}
 
-    console.log(test);
+export function getCaseMethods() {
+    return ['Por laboratorio', 'Por nexo epidemiológico'];
+}
+
+export async function createResultAsync(test) {
 
     const res = await httpClient.patch(`/Test/UpdateTestSample`, test);
     if (res.status === 200) {
-        console.log('Resultado guardado');
+        return true;
     } else {
         throw new Error('An exception ocurring');
     }

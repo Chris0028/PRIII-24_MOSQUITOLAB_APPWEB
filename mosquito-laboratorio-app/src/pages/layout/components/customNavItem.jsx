@@ -1,15 +1,27 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import NavItem from "rsuite/esm/Nav/NavItem";
+import { clearUser } from '../../../redux/userSlice';
 
 export default function CustomNavItem({ eventKey, icon, label, hoveredItem, handleMouseEnter, handleMouseLeave, disabled = false, url, expanded }) {
     const adjustedIcon = icon ? React.cloneElement(icon, { size: expanded ? '1em' : '1.5em' }) : null;
 
+    const dispatch = useDispatch();
+
     const navigate = useNavigate();
 
+    function signOut() {
+        dispatch(clearUser());
+    }
+
     function handleClick() {
-        if (!disabled) {
-            navigate(url);
+        if (label === 'Cerrar sesión') {
+            signOut();
+        } else {
+            if (!disabled) {
+                navigate(url);
+            }
         }
     }
     return (
