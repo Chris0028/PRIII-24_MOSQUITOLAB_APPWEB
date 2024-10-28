@@ -8,7 +8,7 @@ import HomeFileLabo from "../modules/file/components/homeFileLabo";
 import ConsolidateReport from "../modules/report/components/consolidatedReport";
 import { useSelector } from "react-redux";
 import PrivateRoute from "./privateRoute";
-
+import FileFormU from "../modules/file/get-update/fileFormU";
 
 export default function Routing() {
 
@@ -24,6 +24,7 @@ export default function Routing() {
                 <Route path='/homefiledoctor' element={<Layout children={<HomeFileDoctor />} />} />
                 <Route path='/homefilelabo' element={<Layout children={<HomeFileLabo />} />} />
                 <Route path='/consolidatereport' element={<Layout children={<ConsolidateReport />} />} />
+                <Route path='/fileformu/:fileID' element={<Layout children={< FileFormU />} />} />
             </Route>
         </Routes>
     )
