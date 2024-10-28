@@ -7,9 +7,10 @@ import { FormControl, FormGroup } from '../hooks/useForms';
 import { useDispatch, useSelector } from 'react-redux';
 import { createHandleInputChange, createHandleToggleChange, createHandleMarkerDragEnd } from '../utils/stepTwoUtil';
 import { handleBirthDateChange as createHandleBirthDateChange } from '../utils/stepTwoUtil';
-import { UpdateFile } from '../services/GetUpdateFile'; //
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
+import { GetFileDetails } from '../services/GetUpdateFile';
+import { setUpdateFile } from '../../../redux/updateFileSlice';
 
 export default function FormStepTwoU() {
   //GET-UPDATE
@@ -17,7 +18,8 @@ export default function FormStepTwoU() {
   // Inicializar el dispatch de Redux y obtener datos del estado
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.getFile || {});
-
+  const fileSelector = useSelector((state) => state.updateFile);
+  //const { loading, error } = useSelector((state) => state.updateFile);
   // Funciones de manejo desde stepTwoUtil.js
   const handleInputChanges = createHandleInputChange(dispatch);
   const handleToggleChanges = createHandleToggleChange(dispatch);
@@ -56,39 +58,18 @@ export default function FormStepTwoU() {
     handleMarkerDragEnds(newLat, newLng);
   }, [handleMarkerDragEnds]);
 
-  const [loading, setLoading] = useState(true);   
-  const [fileU, setFileU] = useState(null);
+  //Cargado de datos
   useEffect(() => {
-    function fetchFileDetails() {
-      const storedData = localStorage.getItem('updateFile');
-      if (storedData) {
-        const parsedData = JSON.parse(storedData);
-        setFileU(parsedData);
-        console.log(parsedData); // Ahora verás las propiedades del objeto
-      } else {
-        console.log('No hay datos en el localStorage');
-      }
-      setLoading(false);
+    let data = null;
+    const getFile = async () =>{
+      data = await GetFileDetails(fileID)
+      dispatch(setUpdateFile(data));
     }
-      fetchFileDetails();
-    }, [fileID]);
-    // Manejar cambios en los campos del formulario
-    const handleChange = (value, name) => {
-      //dispatch(updateStepSix({ [name]: value }));
-  };
+    getFile();
+  }, [fileID]);
 
-  // Manejar la acción del botón para enviar la ficha epidemiológica
-  const handleSave = async () => {
-    try {
-      await UpdateFile(formData);
-      alert('Ficha epidemiológica enviada exitosamente.');
-    } catch (error) {
-      console.error('Error al enviar la ficha epidemiológica:', error);
-      alert('Ocurrió un error al enviar la ficha epidemiológica. Inténtelo de nuevo.');
-    }
-  };
-
-  if (loading) return <p>Cargando...</p>;                   ////
+  // if (loading) return <p>Cargando...</p>;
+  // if (error) return <p>Error al cargar los datos: {error}</p>;
 return (
   <Form fluid>
     <FlexboxGrid justify="space-between" align="middle">
@@ -101,7 +82,7 @@ return (
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese su carnet de identidad"
-            value={fileU.ci || ''}
+            defaultValue={fileSelector?.file.ci}
             onChange={(value) => handleInputChanges(value, 'documentNumber')}
           />
         </FormGroup>
@@ -113,7 +94,7 @@ return (
             <DatePicker
               name="birthDate"
               style={{ width: '100%' }}
-              value={fileU.birthDate ? new Date(fileU.birthDate) : null}
+              defaultValue={fileSelector?.file.birthDate ? new Date(fileSelector?.file.birthDate) : null}
               onChange={(value) => handleBirthDateChange(value)}
               disabledDate={(date) => date > new Date()} // Deshabilitar fechas futuras
             />
@@ -130,7 +111,7 @@ return (
               type="number"
               style={{ width: '100%' }}
               placeholder="Ingrese su edad"
-              value={fileU.age !== null ? fileU.age : ''}
+              value={fileSelector?.file.age !== null ? fileSelector?.file.age : ''}
             />
           </FormGroup>
         </FlexboxGrid.Item>
@@ -140,13 +121,13 @@ return (
             <Form.ControlLabel>Sexo *</Form.ControlLabel>
             <InputPicker
               name="gender"
-              data={sexOptions}
+              onChange={(value) => handleInputChanges(value, 'gender')}
               block
               size="lg"
               placeholder="Seleccione su sexo"
               style={{ width: '100%' }}
-              value={fileU.gender || ''}
-              onChange={(value) => handleInputChanges(value, 'gender')}
+              defaultValue={fileSelector?.file.gender}
+              data={sexOptions.map(c=>({ label: c.label, value: c.value}))}
             />
           </FormGroup>
         </FlexboxGrid.Item>
@@ -169,7 +150,7 @@ return (
               </div>
               <Toggle
                 name="isPregnant"
-                checked={fileU.isPregnant} // Sincronizar el estado con Redux
+                checked={fileSelector?.file.isPregnant} // Sincronizar el estado con Redux
                 onChange={(value) => {
                   handleToggleChanges(value, 'isPregnant'); // Actualizar en Redux
                 }}
@@ -188,9 +169,9 @@ return (
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese el nombre del apoderado"
-            value={fileU.guardianName || ''}
+            defaultValue={fileSelector?.file.guardianName || 'No tiene asignado un apoderado'}
             onChange={(value) => handleInputChanges(value, 'guardianName')}
-            disabled={fileU.age >= 18} // Deshabilitar si la edad es mayor o igual a 18
+            disabled={fileSelector?.file.age >= 18} // Deshabilitar si la edad es mayor o igual a 18
           />
         </FormGroup>
       </FlexboxGrid.Item>
@@ -209,7 +190,7 @@ return (
               <DatePicker
                 name="lastMenstruationDate"
                 style={{ width: '100%' }}
-                value={fileU.lastMenstruationDate ? new Date(fileU.lastMenstruationDate) : null}
+                value={fileSelector?.file.lastMenstruationDate ? new Date(fileSelector?.file.lastMenstruationDate) : null}
                 onChange={(value) => {
                   // Solo convertir a ISO si value es una instancia de Date válida
                   const dateValue = value instanceof Date && !isNaN(value) ? value.toISOString() : null;
@@ -226,7 +207,7 @@ return (
               <DatePicker
                 name="estimatedBirthDate"
                 style={{ width: '100%' }}
-                value={fileU.estimatedBirthDate ? new Date(fileU.estimatedBirthDate) : null}
+                value={fileSelector?.file.estimatedBirthDate ? new Date(fileSelector?.file.estimatedBirthDate) : null}
                 onChange={(value) => {
                   // Solo convertir a ISO si value es una instancia de Date válida
                   const dateValue = value instanceof Date && !isNaN(value) ? value.toISOString() : null;
@@ -246,7 +227,7 @@ return (
                 type="text"
                 style={{ width: '100%' }}
                 placeholder="Ingrese su comorbilidad"
-                value={fileU.comorbidity || ''}
+                value={fileSelector?.file.comorbidity || ''}
                 onChange={(value) => handleInputChanges(value, 'comorbidity')}
               />
             </FormGroup>
@@ -260,7 +241,7 @@ return (
                 type="text"
                 style={{ width: '100%' }}
                 placeholder="Especifique las enfermedades de base"
-                value={fileU.specify || ''}
+                value={fileSelector?.file.specify || ''}
                 onChange={(value) => handleInputChanges(value, 'specify')}
               />
             </FormGroup>
@@ -281,7 +262,7 @@ return (
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese sus nombres"
-            value={fileU.patientName || ''}
+            defaultValue={fileSelector?.file.patientName || ''}
             onChange={(value) => handleInputChanges(value, 'names')}
           />
         </FormGroup>
@@ -294,7 +275,7 @@ return (
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese su apellido paterno"
-            value={fileU.patientLastName || ''}
+            defaultValue={fileSelector?.file.patientLastName || ''}
             onChange={(value) => handleInputChanges(value, 'lastName')}
           />
         </FormGroup>
@@ -309,7 +290,7 @@ return (
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese su apellido materno"
-            value={fileU.patientSecondLastName || ''}
+            defaultValue={fileSelector?.file.patientSecondLastName || 'No Tiene Segundo Apellido'}
             onChange={(value) => handleInputChanges(value, 'secondLastName')}
           />
         </FormGroup>
@@ -319,12 +300,12 @@ return (
           <Form.ControlLabel>País de Procedencia *</Form.ControlLabel>
           <InputPicker
             name="originCountry"
-            data={countriesOptions}
+            data={countriesOptions.map(c=>({ label: c.label, value: c.value }))}
             block
             size="lg"
             placeholder="Seleccione su país de nacimiento"
             style={{ width: '100%' }}
-            value={fileU.originCountry || ''}
+            defaultValue={fileSelector?.file.originCountry}
             onChange={(value) => handleInputChanges(value, 'originCountry')}
           />
         </FormGroup>
@@ -336,10 +317,10 @@ return (
           <Form.ControlLabel>Número de Teléfono *</Form.ControlLabel>
           <FormControl
             name="phoneNumber"
-            type="text"
+            type="number"
             style={{ width: '100%' }}
             placeholder="Ingrese su número de celular"
-            value={fileU.phone || ''}
+            defaultValue={fileSelector?.file.phone || 'No tiene número de Celular'}
             onChange={(value) => handleInputChanges(value, 'phoneNumber')}
           />
         </FormGroup>
@@ -352,7 +333,7 @@ return (
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese su dirección"
-            value={fileU.directionCity || ''}
+            defaultValue={fileSelector?.file.directionCity || ''}
             onChange={(value) => handleInputChanges(value, 'address')}
           />
         </FormGroup>
@@ -367,7 +348,7 @@ return (
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese el nombre de su barrio"
-            value={fileU.directionNeighborhood || ''}
+            defaultValue={fileSelector?.file.directionNeighborhood || ''}
             onChange={(value) => handleInputChanges(value, 'neighborhood')}
           />
         </FormGroup>
@@ -381,8 +362,8 @@ return (
             size="lg"
             placeholder="Ingrese el nombre de su municipio"
             style={{ width: '100%' }}
-            data={municipalities}
-            value={fileU.municipalityDepartment || ''}
+            data={municipalities.map(c=>({ label: c.label, value: c.value }))}
+            defaultValue={fileSelector?.file.municipalityDepartment || ''}
             onChange={(value) => handleInputChanges(value, 'municipalityDepartment')}
           />
         </FormGroup>
@@ -429,7 +410,7 @@ return (
                 type="text"
                 style={{ width: '100%' }}
                 placeholder="Ingrese el nombre de la empresa"
-                value={fileU.companyName || ''}
+                defaultValue={fileSelector?.file.companyName || ''}
                 onChange={(value) => handleInputChanges(value, 'companyName')}
               />
             </FormGroup>
@@ -445,7 +426,7 @@ return (
                 placeholder="Seleccione"
                 style={{ width: '100%' }}
                 data={secureOptions || []}
-                value={fileU.boxInsurance || ''}
+                defaultValue={fileSelector?.file.boxInsurance || ''}
                 onChange={(value) => handleInputChanges(value, 'boxInsurance')}
               />
             </FormGroup>
@@ -459,7 +440,7 @@ return (
                 type="text"
                 style={{ width: '100%' }}
                 placeholder="Ingrese su matrícula"
-                value={fileU.insuredRegistration || ''}
+                defaultValue={fileSelector?.file.insuredRegistration || ''}
                 onChange={(value) => handleInputChanges(value, 'insuredRegistration')}
               />
             </FormGroup>
@@ -473,7 +454,7 @@ return (
                 type="text"
                 style={{ width: '100%' }}
                 placeholder="Especifique"
-                value={fileU.specifyInsured || ''}
+                defaultValue={fileSelector?.file.specifyInsured || ''}
                 onChange={(value) => handleInputChanges(value, 'specifyInsured')}
               />
             </FormGroup>

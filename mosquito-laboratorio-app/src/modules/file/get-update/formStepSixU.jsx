@@ -6,53 +6,34 @@ import { FaSave } from 'react-icons/fa';
 import { useFetchLaboratories } from '../repositories/laboratoryRepository';
 import { updateStepSix } from '../../../redux/fileSlice';
 import { useSelector, useDispatch } from 'react-redux';
-import { sendFile, GetFileDetails, UpdateFile } from '../repositories/FileSendRepository';
-import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { sendFile } from '../repositories/FileSendRepository';
 
 export default function FormStepSixU() {
-  //GET-UPDATE
-  const { fileID } = useParams();
   // Uso de REDUX
   const dispatch = useDispatch();
   // Obtener los datos del estado de Redux
-  //const formData = useSelector((state) => state.getFile);
+  const formData = useSelector((state) => state.file);
   const stepSixData = useSelector((state) => state.file.stepSix);
   const laboratories = useFetchLaboratories();
   
-  const [loading, setLoading] = useState(true);
-  const [fileU, setFileU] = useState(null);
-  useEffect(() => {
-    function fetchFileDetails() {
-      const storedData = localStorage.getItem('updateFile');
-      if (storedData) {
-        const parsedData = JSON.parse(storedData);
-        setFileU(parsedData);
-        console.log(parsedData); // Ahora verás las propiedades del objeto
-      } else {
-        console.log('No hay datos en el localStorage');
-      }
-      setLoading(false);
-    }
-      fetchFileDetails();
-    }, [fileID]);
-    // Manejar cambios en los campos del formulario
-    const handleChange = (value, name) => {
-      //dispatch(updateStepSix({ [name]: value }));
+  // Manejar cambios en los campos del formulario
+  const handleChange = (value, name) => {
+    dispatch(updateStepSix({ [name]: value }));
   };
 
   // Manejar la acción del botón para enviar la ficha epidemiológica
-  const handleSave = async () => {
-    try {
-      await UpdateFile(fileU);
-      alert('Ficha epidemiológica enviada exitosamente.');
-    } catch (error) {
-      console.error('Error al enviar la ficha epidemiológica:', error);
-      alert('Ocurrió un error al enviar la ficha epidemiológica. Inténtelo de nuevo.');
-    }
+  const handleSave = () => {
+    // Llamar a la función sendFile() y enviar los datos actuales del estado de Redux
+    sendFile(formData)
+      .then((response) => {
+        console.log("Ficha epidemiológica enviada con éxito:", response);
+        alert("Ficha epidemiológica enviada exitosamente.");
+      })
+      .catch((error) => {
+        console.error("Error al enviar la ficha epidemiológica:", error);
+        alert("Ocurrió un error al enviar la ficha epidemiológica. Inténtelo de nuevo.");
+      });
   };
-
-  if (loading) return <p>Cargando...</p>;                   ////
 
   return (
     <Form fluid>
@@ -73,7 +54,7 @@ export default function FormStepSixU() {
               style={{ width: '100%' }}
               placeholder="Seleccione el laboratorio"
               size="lg"
-              value={ fileU.laboratorySend || ''}
+              value={ stepSixData.laboratorySend || ''}
               onChange={(value) => handleChange(value, 'laboratorySend')}
             />
           </FormGroup>
@@ -88,7 +69,7 @@ export default function FormStepSixU() {
               name="doctorFullName"
               placeholder="Ingrese el nombre del médico"
               type="text"
-              value={ fileU.doctorName || ''}
+              value={ stepSixData.doctorName || ''}
               onChange={(value) => handleChange(value, 'doctorName')}
             />
           </FormGroup>
@@ -100,7 +81,7 @@ export default function FormStepSixU() {
               name="notifyingMedicalCenter"
               placeholder="Ingrese el centro médico notificante"
               type="text"
-              value={ fileU.healthEstablishmentNotifier || ''}
+              value={ stepSixData.healthEstablishmentNotifier || ''}
               onChange={(value) => handleChange(value, 'healthEstablishmentNotifier')}
             />
           </FormGroup>

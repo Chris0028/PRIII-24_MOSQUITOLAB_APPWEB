@@ -1,8 +1,8 @@
 //PARA LA LISTA DE OPCIONES DE CASO DETECTADO
 export const caseOptions = [
-    { label: 'Caso Captado en Búsqueda Activa', value: 'ActiveSearch' },
-    { label: 'Atención en Servicio de Salud', value: 'MedicalCenter' },
-    { label: 'Otro', value: 'Other'},
+    { label: 'Caso Captado en Búsqueda Activa', value: 'Caso Captado en Búsqueda Activa' },
+    { label: 'Atención en Servicio de Salud', value: 'Atención en Servicio de Salud' },
+    { label: 'Otro', value: 'Otro'},
 ];
 
 //PARA LA LISTA DE SUBSECTORES DE LOS CENTROS DE SALUD

@@ -4,11 +4,6 @@ import { FormControl, FormGroup } from '../hooks/useForms';
 import { caseOptions } from '../utils/pickerOptions';
 import { createHandleInputChange } from '../utils/stepOneUtil'; // Asegúrate de usar la ruta correcta
 
-// Función para convertir la fecha almacenada (string) a un objeto Date
-const parseDate = (dateString) => {
-  return dateString ? new Date(dateString) : null;
-};
-
 export default function FormStepOne() {
   // Uso de REDUX
   const dispatch = useDispatch();
