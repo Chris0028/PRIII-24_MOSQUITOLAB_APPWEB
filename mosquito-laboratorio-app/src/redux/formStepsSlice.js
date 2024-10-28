@@ -89,8 +89,8 @@ const initialState = {
 };
 
 
-const fileSlice = createSlice({
-  name: 'file',
+const formStepsSlice = createSlice({
+  name: 'formSteps',
   initialState,
   reducers: {
     updateStepOne(state, action) {
@@ -113,9 +113,14 @@ const fileSlice = createSlice({
     },
     
     // Puedes agregar otros reducers para actualizar los otros pasos
+    clearFormData: (state) => {
+        // Opcionalmente, puedes limpiar los datos cuando sea necesario
+        state = initialState;
+      }
   },
 });
 
-export const { updateStepOne, updateStepTwo, updateStepThree, updateStepFour, updateStepFive, updateStepSix } = fileSlice.actions;
+export const { updateStepOne, updateStepTwo, updateStepThree, updateStepFour, updateStepFive, updateStepSix } = formStepsSlice.actions;
 
-export default fileSlice.reducer;
+export default formStepsSlice.reducer;
+

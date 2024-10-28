@@ -1,22 +1,43 @@
-import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from '../hooks/useReacts';
 import { Form, DatePicker, FlexboxGrid, InputPicker } from 'rsuite';
 import { FormControl, FormGroup } from '../hooks/useForms';
 import { caseOptions } from '../utils/pickerOptions';
-import { createHandleInputChange } from '../utils/stepOneUtil'; // Asegúrate de usar la ruta correcta
+import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { createHandleInputChange } from '../utils/stepOneUtil';
+import { GetFileDetails } from '../services/GetUpdateFile';
+import { setUpdateFile } from '../../../redux/updateFileSlice';
+import { updateStepOne } from '../../../redux/fileSlice';
+import { useState } from 'react';
 
-export default function FormStepOne() {
-  // Uso de REDUX
+export default function formStepOneU() {
+  //GET-UPDATE
+  const { fileID } = useParams();
+  //const [ stepOne, setStepOne ] = useState({ discoveryMethod: '' })
+  // Inicializar el dispatch de Redux y obtener datos del estado
   const dispatch = useDispatch();
-  
-  // Obtener los datos del estado de Redux
-  const formData = useSelector((state) => state.file.stepOne);
-
-  // Crear las funciones para manejar los cambios utilizando la utilidad
-  const handleInputChange = createHandleInputChange(dispatch);
+  //const { loading, error } = useSelector((state) => state.updateFile);
+  //const handleInputChange = createHandleInputChange(dispatch);
 
   const userSelector = useSelector((state) => state.user);
-
+  const fileSelector = useSelector((state) => state.updateFile); //
   const userInfo = userSelector.user;
+  
+  //hacer una peticion a la api para traer todos los discoveryMethod
+  //Cargado de datos
+  useEffect(() => {
+    const getFile = async () => {
+      if (!fileSelector.file) {  // Solo carga los datos si el estado está vacío
+        const data = await GetFileDetails(fileID);
+        dispatch(setUpdateFile(data));
+      }
+    };
+    getFile();
+  }, [fileID]);
+
+  const handleInputChange = (name, value) => {
+    dispatch(updateStepOne({ [name]: value }));  // Actualiza Redux con los cambios
+  };
 
   return (
     <Form fluid>
@@ -24,7 +45,7 @@ export default function FormStepOne() {
         <FlexboxGrid.Item colspan={11}>
           <FormGroup>
             <Form.ControlLabel>Establecimiento de Salud Notificante *</Form.ControlLabel>
-            <FormControl
+            <InputPicker
               name="healthEstablishment"
               value={userInfo.info.hospital || [] } // Carga los datos actuales o cadena vacía
               placeholder="Seleccione el establecimiento"
@@ -36,7 +57,7 @@ export default function FormStepOne() {
           </FormGroup>
           <FormGroup>
             <Form.ControlLabel>Municipio *</Form.ControlLabel>
-            <FormControl
+            <InputPicker
               name="municipality"
               value={userInfo.info.municipality} // Carga los datos actuales o cadena vacía
               placeholder="Seleccione el municipio"
@@ -67,7 +88,7 @@ export default function FormStepOne() {
               disabled
             />
           </FormGroup>
-        </FlexboxGrid.Item>
+          </FlexboxGrid.Item>
         <FlexboxGrid.Item colspan={11}>
           <FormGroup>
             <Form.ControlLabel>Departamento *</Form.ControlLabel>
@@ -97,26 +118,30 @@ export default function FormStepOne() {
             <Form.ControlLabel>Cómo se Descubrió el Caso *</Form.ControlLabel>
             <InputPicker
               name="discoveryMethod"
-              value={formData.discoveryMethod || ''} // Carga los datos actuales o cadena vacía
-              onChange={(value) => handleInputChange('discoveryMethod', value)}
+              value={ fileSelector?.file?.discoveryMethod }
+              onChange={(value) => {
+                handleChange(value, 'discoveryMethod') 
+              }}
               placeholder="Seleccione el método"
               block
               size="lg"
               style={{ width: '100%' }}
-              data={caseOptions || []}
+              data={caseOptions.map(c => ({ label: c.label, value: c.value }))}
             />
           </FormGroup>
           <FormGroup>
             <Form.ControlLabel>Teléfono o Correo Electrónico del Establecimiento *</Form.ControlLabel>
             <FormControl
               name="contactInfo"
-              value={ userInfo.info.hospitalContact || 'No tiene numero o correo'} // Carga los datos actuales o cadena vacía
+              value={ userInfo.info.hospitalContact || 'No tiene número o correo'} // Carga los datos actuales o cadena vacía
               type="text"
               placeholder="Ingrese teléfono o correo electrónico"
               style={{ width: '100%' }}
               disabled
             />
           </FormGroup>
+        </FlexboxGrid.Item>
+        <FlexboxGrid.Item colspan={11}>
         </FlexboxGrid.Item>
       </FlexboxGrid>
     </Form>

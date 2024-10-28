@@ -1,24 +1,24 @@
-import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, InputGroup } from 'rsuite';
+import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, InputGroup, Loader } from 'rsuite';
 import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaChartLine } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { GetHistoryFileByHospital } from '../services/historyByHospital';
 import { useSelector } from 'react-redux';
 import { decodeToken } from '../../../pages/layout/utils/decoder';
-//PREGUNTARLE AL INGENIERO COMO CAMBIAR EL COLOR
+//El doctor no puede editar, verificar eso
 const { Column, HeaderCell, Cell } = Table;
 
 const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
   let backgroundColor = '';
 
-  switch (rowData.result) {
-    case 'Positivo':
+  switch (rowData.result?.toLowerCase()) {
+    case 'positivo':
       backgroundColor = '#8AABD6';
       break;
-    case 'Pendiente':
+    case 'pendiente':
       backgroundColor = '#BFCDE0';
       break;
-    case 'Negativo':
+    case 'negativo':
       backgroundColor = '#FFFFFF';
       break;
     default:
@@ -26,7 +26,7 @@ const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
   }
 
   return (
-    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle' }}>
+    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle', fontSize:16  }}>
       {children ? children(rowData) : rowData[dataKey]}
     </Cell>
   );
@@ -70,7 +70,37 @@ export default function RecordsView() {
 
     fetchData();
   }, []);
+  
+  //CODIGO PARA ACTUALIZAR LAS FICHAS
+  const fetchData = async () => {
+    setLoading(true);
+    let data = [];
+    let userRole = decodeToken(userInfo.jwt);
 
+    try {
+      if (userRole.role === 'Doctor') {
+        data = await GetHistoryFileByHospital(userInfo.info.hospitalId);
+      } else {
+        data = await GetHistoryFileByHospital(null);
+      }
+      if (data != null) {
+        setHistoryFiles(data);
+      }
+    } catch (err) {
+      setError('Error al cargar los datos');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleRefresh = () => {
+    fetchData();
+  };
+  //
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', padding: '20px' }}>
       {/* Alerta de Descarga */}
@@ -90,7 +120,7 @@ export default function RecordsView() {
           style={{ backgroundColor: 'black', marginRight: '10px', fontSize: '12px' }}
         />
         <p style={{ margin: 0 }}>
-          <strong style={{ fontSize: '17px' }}>Solo puede realizar dos descargas diarias.</strong>
+          <strong style={{ fontSize: '17px' }}>Puede visualizar el historial del Paciente.</strong>
         </p>
       </div>
 
@@ -101,110 +131,120 @@ export default function RecordsView() {
             <InputGroup.Addon>
               <FaFilter />
             </InputGroup.Addon>
-            <Input placeholder="Buscar..." style={{ width: '100%' }} />
+            <Input placeholder="Buscar..." style={{ width: '100%', fontSize:18}} />
             <InputGroup.Addon>
               <FaSearch />
             </InputGroup.Addon>
           </InputGroup>
         </FlexboxGrid.Item>
         <FlexboxGrid.Item colspan={1}>
-          <IconButton icon={<FaSync />} circle size="lg" style={{ marginLeft: 20 }} />
+          <IconButton icon={<FaSync />} circle size="lg" style={{ marginLeft: 20 }} onClick={handleRefresh} />
         </FlexboxGrid.Item>
       </FlexboxGrid>
 
       {/* Contenedor para la tabla con scroll */}
       <div style={{ flex: 1, overflowY: 'auto', marginBottom: '20px' }}>
         {/* Tabla de Registros */}
-        <Table height={800} data={historyFiles} rowHeight={100} style={{ fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle' }}>
-          <Column width={90} fixed >
-            <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Acciones</HeaderCell>
-            <Cell >
-              {(rowData) => (
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                  <Whisper placement="top" trigger="hover" speaker={<Tooltip>Editar</Tooltip>}>
-                    <IconButton
-                      icon={<FaEdit />}
-                      appearance="ghost"
-                      style={{ color: 'black', border: 'Transparent', fontSize: '18px' }}
-                    />
-                  </Whisper>
-                  <Whisper placement="top" trigger="hover" speaker={<Tooltip>Historial</Tooltip>}>
-                    <IconButton
-                      icon={<FaChartLine />}
-                      appearance="ghost"
-                      color="blue"
-                      style={{ color: 'black', border: 'Transparent', marginTop: 3, fontSize: '18px' }}
-                    />
-                  </Whisper>
-                </div>
-              )}
-            </Cell>
-          </Column>
-          {false && (
-            <Column width={120} resizable>
-              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>id</HeaderCell>
-              <ColoredCell dataKey="id" />
+        {loading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <Loader size="lg" content="Cargando..." />
+          </div>
+        ) : (
+          <Table height={600} data={historyFiles} rowHeight={100} style={{ fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle' }}>
+            <Column width={85} fixed >
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Acciones</HeaderCell>
+              <Cell >
+                {(rowData) => (
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Editar</Tooltip>}>
+                      <IconButton
+                        icon={<FaEdit />}
+                        appearance="ghost"
+                        style={{ color: 'black', border: 'Transparent', fontSize: '22px', padding:5}}
+                      />
+                    </Whisper>
+                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Historial</Tooltip>}>
+                      <IconButton
+                        icon={<FaChartLine />}
+                        appearance="ghost"
+                        color="blue"
+                        style={{ color: 'black', border: 'Transparent', marginTop: 5, fontSize: '24px', padding:5}}
+                      />
+                    </Whisper>
+                  </div>
+                )}
+              </Cell>
             </Column>
-          )}
-          <Column width={120} resizable >
-            <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Estado</HeaderCell>
-            <ColoredCell dataKey="result" />
-          </Column>
+            {false && (
+              <Column width={120} resizable>
+                <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>id</HeaderCell>
+                <ColoredCell dataKey="id" />
+              </Column>
+            )}
+            <Column width={120} resizable >
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Estado</HeaderCell>
+              <ColoredCell dataKey="result" />
+            </Column>
 
-          <Column width={180} resizable>
-            <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Estado de muestra</HeaderCell>
-            <ColoredCell dataKey="status">
-              {(rowData) => (
-                <span>
-                  {rowData.status === 0 ? 'Sin resultado' : rowData.status === 1 ? 'Con resultado' : rowData.status}
-                </span>
-              )}
-            </ColoredCell>
-          </Column>
+            <Column width={180} resizable>
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Estado de muestra</HeaderCell>
+              <ColoredCell dataKey="status">
+                {(rowData) => (
+                  <span>
+                    {rowData.status === 0 ? 'Sin resultado' : rowData.status === 1 ? 'Con resultado' : rowData.status}
+                  </span>
+                )}
+              </ColoredCell>
+            </Column>
+            
+            <Column width={140} resizable>
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Enfermedad</HeaderCell>
+              <ColoredCell dataKey="diseaseName"/>
+            </Column>
 
-          <Column width={120} resizable>
-            <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Código</HeaderCell>
-            <ColoredCell dataKey="code" >
-              {(rowData) => <span>{rowData.code || 'N/A'}</span>}
-            </ColoredCell>
-          </Column>
+            <Column width={120} resizable>
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Código</HeaderCell>
+              <ColoredCell dataKey="code" >
+                {(rowData) => <span>{rowData.code || 'N/A'}</span>}
+              </ColoredCell>
+            </Column>
 
-          <Column width={120} resizable>
-            <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>CI</HeaderCell>
-            <ColoredCell dataKey="ci" />
-          </Column>
+            <Column width={120} resizable>
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>CI</HeaderCell>
+              <ColoredCell dataKey="ci" />
+            </Column>
 
-          <Column width={150} resizable>
-            <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Nombres</HeaderCell>
-            <ColoredCell dataKey="names" />
-          </Column>
+            <Column width={150} resizable>
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Nombres</HeaderCell>
+              <ColoredCell dataKey="names" />
+            </Column>
 
-          <Column width={150} resizable>
-            <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Primer Apellido</HeaderCell>
-            <ColoredCell dataKey="lastName" />
-          </Column>
+            <Column width={150} resizable>
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Primer Apellido</HeaderCell>
+              <ColoredCell dataKey="lastName" />
+            </Column>
 
-          <Column width={180} resizable>
-            <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Segundo Apellido</HeaderCell>
-            <ColoredCell dataKey="secondLastName">
-              {(rowData) => <span>{rowData.secondLastName || 'N/A'}</span>}
-            </ColoredCell>
-          </Column>
+            <Column width={180} resizable>
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Segundo Apellido</HeaderCell>
+              <ColoredCell dataKey="secondLastName">
+                {(rowData) => <span>{rowData.secondLastName || 'N/A'}</span>}
+              </ColoredCell>
+            </Column>
 
-          <Column width={180} resizable>
-            <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Fecha de Nacimiento</HeaderCell>
-            <ColoredCell dataKey="birthDate">
-              {(rowData) => <span>{formatDate(rowData.birthDate)}</span>}
-            </ColoredCell>
-          </Column>
-
-          <Column width={180} resizable>
-            <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Fecha de Notificación</HeaderCell>
-            <ColoredCell dataKey="registerDate">
-              {(rowData) => <span>{formatDate(rowData.registerDate)}</span>}
-            </ColoredCell>
-          </Column>
-        </Table>
+            <Column width={180} resizable>
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Fecha de Nacimiento</HeaderCell>
+              <ColoredCell dataKey="birthDate">
+                {(rowData) => <span>{formatDate(rowData.birthDate)}</span>}
+              </ColoredCell>
+            </Column>
+            <Column width={180} resizable>
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Fecha de Notificación</HeaderCell>
+              <ColoredCell dataKey="registerDate">
+                {(rowData) => <span>{formatDate(rowData.registerDate)}</span>}
+              </ColoredCell>
+            </Column>
+          </Table>
+        )}
       </div>
 
       {/* Footer Fijo con los botones de Agregar y Descargar */}

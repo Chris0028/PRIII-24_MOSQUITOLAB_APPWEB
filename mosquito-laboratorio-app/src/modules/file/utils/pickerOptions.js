@@ -1,30 +1,22 @@
 //PARA LA LISTA DE OPCIONES DE CASO DETECTADO
 export const caseOptions = [
-    { label: 'Caso Captado en Búsqueda Activa', value: 'ActiveSearch' },
-    { label: 'Atención en Servicio de Salud', value: 'MedicalCenter' },
-    { label: 'Otro', value: 'Other'},
+    { label: 'Caso Captado en Búsqueda Activa', value: 'Caso Captado en Búsqueda Activa' },
+    { label: 'Atención en Servicio de Salud', value: 'Atención en Servicio de Salud' },
+    { label: 'Otro', value: 'Otro'},
 ];
 
 //PARA LA LISTA DE SUBSECTORES DE LOS CENTROS DE SALUD
 export const subSectorOptions = [
-    { label: 'Público', value: 'Publica' },
-    { label: 'Seguro Salud', value: 'Seguro Salud' },
-    { label: 'Privado', value: 'Privado'},
-    { label: 'Otro', value: 'Otro'},
+    { label: 'Público', value: 1 },
+    { label: 'Seguro Salud', value: 2 },
+    { label: 'Privado', value: 3 },
+    { label: 'Otro', value: 4 },
 ];
 
 //PARA LAS OPCIONES DE SEXO DEL PACIENTE
 export const sexOptions = [
     { label: 'Masculino', value: 'M' },
     { label: 'Femenino', value: 'F' },
-];
-
-//PARA LA LISTA DE CENTROS DE SALUD (FALTA IMPLEMENTAR EN LA BDD)
-export const healthStablishmentOptions = [
-    { label: 'Hospital Mexico', value: '1' },
-    { label: 'Hospital Viedma', value: '2' },
-    { label: 'Hospital Los Angeles', value: '3' },
-    { label: 'Clinica Arevalo', value: '4' },
 ];
 
 //PARA LA LISTA DE PAISES (FALATA IMPLEMENTAR EN LA BDD)
