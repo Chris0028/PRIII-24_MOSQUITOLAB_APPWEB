@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { GetHistoryFileByHospital } from '../services/historyByHospital';
 import { useSelector } from 'react-redux';
 import { decodeToken } from '../../../pages/layout/utils/decoder';
+import FileViewer from './fileViewer';
 //PREGUNTARLE AL INGENIERO COMO CAMBIAR EL COLOR
 const { Column, HeaderCell, Cell } = Table;
 
@@ -226,6 +227,7 @@ export default function RecordsView() {
         </Button>
 
         {/* Botón para Descargar */}
+        <FileViewer />
         <Button appearance="primary" color="blue" size="lg">
           <FaDownload style={{ marginRight: 10 }} /> Descargar
         </Button>
