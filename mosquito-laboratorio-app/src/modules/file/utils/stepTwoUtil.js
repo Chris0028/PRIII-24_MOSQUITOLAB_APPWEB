@@ -1,7 +1,5 @@
 import { updateStepTwo } from "../../../redux/fileSlice";
-
 // stepTwoUtil.js
-
 
 // 1. Crear manejador para actualizar campos individuales del formulario.
 export const createHandleInputChange = (dispatch) => (value, name) => {
@@ -35,13 +33,26 @@ export const calculateAge = (birthDate) => {
 export const handleBirthDateChange = (dispatch) => (value) => {
   if (value instanceof Date && !isNaN(value)) {
     // Solo si `value` es una instancia válida de Date
-    const birthDate = value.toISOString();
-    const age = calculateAge(birthDate);
+    const patientBirthDate = value.toISOString();
+    const age = calculateAge(patientBirthDate);
 
     // Si la edad es menor de 18, inicializar guardianName como vacío
-    dispatch(updateStepTwo({ birthDate, age, guardianName: age < 18 ? '' : '' }));
+    dispatch(updateStepTwo({ patientBirthDate, age, childParent: age < 18 ? '' : '' }));
   } else {
     // Si `value` no es una fecha válida, actualizar los campos como `null`
-    dispatch(updateStepTwo({ birthDate: null, age: null, guardianName: '' }));
+    dispatch(updateStepTwo({ patientBirthDate: null, age: null, childParent: '' }));
+  }
+};
+
+
+// 6. Manejo de cambio de Seguros
+export const handleInsuranceChange = (dispatch, insurances) => (value) => {
+  const selectedInsurance = insurances.find(insurance => insurance.value === value);
+  
+  if (selectedInsurance) {
+    dispatch(updateStepTwo({
+      insuranceId: selectedInsurance.value,
+      ipInsuredName: selectedInsurance.name,
+    }));
   }
 };

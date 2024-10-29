@@ -53,4 +53,13 @@ export const medicalDischargeOptions = [
     { label: 'Fuga', value: 'Fuga' },
     { label: 'Defuncion', value: 'Defuncion' },
 ];
-  
+
+export const typesInsurances = [
+    { label: 'Seguro Completo', value: 'Seguro Completo' },
+    { label: 'Seguro de Hospitalizacion', value: 'Seguro de Hospitalizacion' },
+    { label: 'Seguro de Enfermedades Graves', value: 'Seguro de Enfermedades Graves' },
+    { label: 'Seguro de Atencion a Largo Plazo', value: 'Seguro de Atencion a Largo Plazo' },
+    { label: 'Seguro de Rehabilitacion', value: 'Seguro de Rehabilitacion' },
+    { label: 'Seguro de Accidentes', value: 'Seguro de Accidentes' },
+    
+];

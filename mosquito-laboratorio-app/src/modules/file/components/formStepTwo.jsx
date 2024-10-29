@@ -1,12 +1,14 @@
 import { Form, DatePicker, Toggle, FlexboxGrid, InputPicker, Divider } from 'rsuite';
-import { sexOptions, countriesOptions, secureOptions } from '../utils/pickerOptions';
+import { sexOptions, countriesOptions, typesInsurances } from '../utils/pickerOptions';
 import { APIProvider, Map, Marker, InfoWindow } from '../hooks/useMaps';
 import { useFetchMunicipalities } from '../repositories/locationRepository';
-import { React, useState, useCallback, Toggles } from '../hooks/useReacts';
+import { React, useState, useCallback } from '../hooks/useReacts';
 import { FormControl, FormGroup } from '../hooks/useForms';
 import { useDispatch, useSelector } from 'react-redux';
-import { createHandleInputChange, createHandleToggleChange, createHandleMarkerDragEnd } from '../utils/stepTwoUtil';
+import { createHandleInputChange, createHandleToggleChange, createHandleMarkerDragEnd, handleInsuranceChange } from '../utils/stepTwoUtil';
 import { handleBirthDateChange as createHandleBirthDateChange } from '../utils/stepTwoUtil';
+import { useFetchInsurances } from '../repositories/insuranceRepository';
+
 
 export default function FormStepTwo() {
   // Inicializar el dispatch de Redux y obtener datos del estado
@@ -19,10 +21,10 @@ export default function FormStepTwo() {
   const handleMarkerDragEnds = createHandleMarkerDragEnd(dispatch);
   const handleBirthDateChange = createHandleBirthDateChange(dispatch);
 
-
   // Obtener los datos de municipios
   const municipalities = useFetchMunicipalities();
-
+  const insurances = useFetchInsurances();
+  const typeInsurance = typesInsurances;
   // Estado local para el marcador de Google Maps
   const [markerPosition, setMarkerPosition] = useState({
     lat: formData.directionLatitude || -17.388283899568613,
@@ -384,29 +386,30 @@ return (
           <FlexboxGrid.Item colspan={11} style={{ marginBottom: 30 }}>
             <FormGroup>
               <Form.ControlLabel>Nombre de la Empresa *</Form.ControlLabel>
-              <FormControl
+              <InputPicker
                 name="insuranceId"
-                type="text"
+                block
+                size="lg"
+                placeholder="Seleccione"
                 style={{ width: '100%' }}
-                placeholder="Ingrese el nombre de la empresa"
+                data={insurances || []}
                 value={formData.insuranceId || ''}
-                onChange={(value) => handleInputChanges(value, 'insuranceId')}
+                onChange={(value) => handleInsuranceChange(dispatch, insurances)(value)}
               />
             </FormGroup>
           </FlexboxGrid.Item>
 
           <FlexboxGrid.Item colspan={11} style={{ marginBottom: 30 }}>
             <FormGroup>
-              <Form.ControlLabel>Caja o Seguro *</Form.ControlLabel>
-              <InputPicker
-                name="ipTypeInsured"
+              <Form.ControlLabel>Nombre del Seguro *</Form.ControlLabel>
+              <FormControl
+                name="ipInsuredName"
                 block
                 size="lg"
-                placeholder="Seleccione"
+                placeholder="Cargando"
                 style={{ width: '100%' }}
-                data={secureOptions || []}
-                value={formData.ipTypeInsured || ''}
-                onChange={(value) => handleInputChanges(value, 'ipTypeInsured')}
+                value={formData.ipInsuredName || ''}
+                disabled
               />
             </FormGroup>
           </FlexboxGrid.Item>
@@ -427,14 +430,15 @@ return (
 
           <FlexboxGrid.Item colspan={11} style={{ marginBottom: 30 }}>
             <FormGroup>
-              <Form.ControlLabel>Especificar</Form.ControlLabel>
-              <FormControl
-                name="specifySecure"
+              <Form.ControlLabel>Tipo de Seguro *</Form.ControlLabel>
+              <InputPicker
+                name="ipTypeInsured"
                 type="text"
                 style={{ width: '100%' }}
-                placeholder="Especifique"
-                value={formData.specifySecure || ''}
-                onChange={(value) => handleInputChanges(value, 'specifySecure')}
+                placeholder="Ejemplo: Seguro de Cobertura Completa"
+                data={typeInsurance || ''}
+                value={formData.ipTypeInsured || ''}
+                onChange={(value) => handleInputChanges(value, 'ipTypeInsured')}
               />
             </FormGroup>
           </FlexboxGrid.Item>

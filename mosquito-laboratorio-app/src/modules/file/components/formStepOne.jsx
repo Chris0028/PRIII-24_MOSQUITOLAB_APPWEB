@@ -22,6 +22,7 @@ export default function FormStepOne() {
   const userSelector = useSelector((state) => state.user);
 
   const userInfo = userSelector.user;
+  console.log(userInfo)
 
   return (
     <Form fluid>
@@ -115,7 +116,7 @@ export default function FormStepOne() {
             <Form.ControlLabel>Teléfono o Correo Electrónico del Establecimiento *</Form.ControlLabel>
             <FormControl
               name="contactInfo"
-              value={ userInfo.info.hospitalContact || 'No tiene numero o correo'} // Carga los datos actuales o cadena vacía
+              value={ userInfo.info.hospitalContact || 'No tiene numero o correo'} // Carga los datos actuales o No tiene numero o correo
               type="text"
               placeholder="Ingrese teléfono o correo electrónico"
               style={{ width: '100%' }}

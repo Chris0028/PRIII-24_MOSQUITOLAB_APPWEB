@@ -16,6 +16,10 @@ export default function FormStepSix() {
   const stepSixData = useSelector((state) => state.file.stepSix);
   const laboratories = useFetchLaboratories();
   
+  const userSelector = useSelector((state) => state.user);
+  const doctorFullName = userSelector.user.info.names + ' ' + userSelector.user.info.lastName + ' ' + userSelector.user.info.secondLastName;
+  const hospitalDoctor = userSelector.user.info.hospital;
+
   // Manejar cambios en los campos del formulario
   const handleChange = (value, name) => {
     dispatch(updateStepSix({ [name]: value }));
@@ -34,7 +38,7 @@ export default function FormStepSix() {
         alert("Ocurrió un error al enviar la ficha epidemiológica. Inténtelo de nuevo.");
       });
   };
-
+  
   return (
     <Form fluid>
       {/* Panel de Advertencia */}
@@ -54,8 +58,8 @@ export default function FormStepSix() {
               style={{ width: '100%' }}
               placeholder="Seleccione el laboratorio"
               size="lg"
-              value={ stepSixData.laboratorySend || ''}
-              onChange={(value) => handleChange(value, 'laboratorySend')}
+              value={ stepSixData.testLaboratoryId || ''}
+              onChange={(value) => handleChange(value, 'testLaboratoryId')}
             />
           </FormGroup>
         </FlexboxGrid.Item>
@@ -69,8 +73,8 @@ export default function FormStepSix() {
               name="doctorFullName"
               placeholder="Ingrese el nombre del médico"
               type="text"
-              value={ stepSixData.doctorName || ''}
-              onChange={(value) => handleChange(value, 'doctorName')}
+              value={ doctorFullName || ''}
+              disabled
             />
           </FormGroup>
         </FlexboxGrid.Item>
@@ -81,8 +85,8 @@ export default function FormStepSix() {
               name="notifyingMedicalCenter"
               placeholder="Ingrese el centro médico notificante"
               type="text"
-              value={ stepSixData.healthEstablishmentNotifier || ''}
-              onChange={(value) => handleChange(value, 'healthEstablishmentNotifier')}
+              value={ hospitalDoctor || ''}
+              disabled
             />
           </FormGroup>
         </FlexboxGrid.Item>
