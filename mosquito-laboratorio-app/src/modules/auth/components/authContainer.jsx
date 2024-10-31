@@ -1,6 +1,7 @@
 import { Container, Content, FlexboxGrid, Header, Panel } from "rsuite";
 import AuthForm from "./authForm";
 import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
+import { CgEnter } from "react-icons/cg";
 
 export default function AuthContainer() {
     return (
@@ -19,7 +20,7 @@ export default function AuthContainer() {
             <Content style={{ marginTop: '60px' }}>
                 <FlexboxGrid justify="center" align="middle">
                     <FlexboxGridItem style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        <Panel header="Por seguridad jamás revele sus datos" bordered style={{ width: 400, height: 300, borderColor: '#1D3B72' }}>
+                        <Panel header="Por seguridad jamás revele sus datos" bordered style={{ textAlign:'center', width: 400, height: 300, borderColor: '#1D3B72' }}>
                             <AuthForm />
                         </Panel>
                     </FlexboxGridItem>

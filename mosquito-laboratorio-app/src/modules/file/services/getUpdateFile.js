@@ -12,7 +12,7 @@ export async function GetFileDetails(fileID) {
         console.error('Error al obtener los detalles del archivo:', error);
     }
 };
-
+//fileReducer, llamar a una funcion que asigne los datos de la respuesta del servidor al paso 1 paso 2 paso 3, etc, y lo voy mostrando en el componente, si tarda meter un loader
 export async function UpdateFile(fileData) {
     try {
         const res = await httpClient.patch('/File/UpdateFile', fileData);

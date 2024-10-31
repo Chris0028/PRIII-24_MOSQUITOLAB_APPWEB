@@ -51,7 +51,9 @@ export default function AuthForm() {
                     <FormControl name="password" type="password" placeholder="Contraseña" value={authData.password} onChange={(value) => handleChange(value, 'password')} />
                 </InputGroup>
             </FormGroup>
-            <Button appearance="link" color="blue">¿Olvidó su contraseña?</Button>
+            <FormGroup style={{ textAlign:'right', marginTop:-20}}>
+                <Button appearance="link" color="blue">¿Olvidó su contraseña?</Button>
+            </FormGroup>
             <FormGroup>
                 <ButtonToolbar>
                     <Button block appearance="primary" onClick={(e) => signIn(e)}>Ingresar</Button>
