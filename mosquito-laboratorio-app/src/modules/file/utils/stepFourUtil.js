@@ -165,6 +165,7 @@ export const getEpidemiologicalWeek = (date) => {
     if (day <= 14) return '37';
     if (day <= 21) return '38';
     if (day <= 28) return '39';
+    if (day <= 30) return '40';
   }
 
   // Octubre

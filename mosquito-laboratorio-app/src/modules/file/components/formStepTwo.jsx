@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createHandleInputChange, createHandleToggleChange, createHandleMarkerDragEnd, handleInsuranceChange } from '../utils/stepTwoUtil';
 import { handleBirthDateChange as createHandleBirthDateChange } from '../utils/stepTwoUtil';
 import { useFetchInsurances } from '../repositories/insuranceRepository';
-import { PieChart } from '../../report/graphs/components/genderGraph';
 
 export default function FormStepTwo() {
   // Inicializar el dispatch de Redux y obtener datos del estado

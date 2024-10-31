@@ -6,6 +6,7 @@ import FileForm from "../modules/file/components/fileForm";
 import HomeFileDoctor from "../modules/file/components/homeFileDoctor";
 import HomeFileLabo from "../modules/file/components/homeFileLabo";
 import ConsolidateReport from "../modules/report/components/consolidatedReport";
+import PieGraph from "../modules/report/graphs/components/genderGraph";
 
 
 export default function Routing() {
@@ -17,7 +18,7 @@ export default function Routing() {
             <Route path='/homefiledoctor' element={<Layout children={<HomeFileDoctor />} />} />
             <Route path='/homefilelabo' element={<Layout children={<HomeFileLabo />} />} />
             <Route path='/consolidatereport' element={<Layout children={<ConsolidateReport />} />} />
-
+            <Route path='/pieGraph' element={<Layout children={<PieGraph />} />} />
         </Routes>
     )
 }

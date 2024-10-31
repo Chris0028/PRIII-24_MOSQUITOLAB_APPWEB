@@ -3,11 +3,12 @@ import { Container, Content, Divider, Header, Nav, Navbar, Sidebar, Sidenav, Ico
 import SidenavBody from "rsuite/esm/Sidenav/SidenavBody";
 import { useEffect, useState } from "react";
 import UserInfo from "./components/userInfo";
-import CustomNavItem from "./components/customNavItem";
+import CustomNavItem, { CustomNavMenu } from "./components/customNavItem";
 import NavItem from "rsuite/esm/Nav/NavItem";
 import { PiEyedropperSampleFill } from "react-icons/pi";
 import { decodeToken } from "./utils/decoder";
 import { useSelector } from "react-redux";
+
 
 export default function Layout({ children }) {
     const [hoveredItem, setHoveredItem] = useState(null);
@@ -58,7 +59,20 @@ export default function Layout({ children }) {
                                 <CustomNavItem eventKey="4" icon={<PiEyedropperSampleFill />} label="Muestras" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/samples'} expanded={expanded} />
                             )}
                             <CustomNavItem eventKey="6" icon={<FaCloudDownloadAlt />} label="Descargas" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />
-                            <CustomNavItem eventKey="7" icon={<FaChartBar />} label="Reportes" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/consolidatereport'} expanded={expanded} />
+                            <CustomNavMenu
+                                eventKey="7"
+                                icon={<FaChartBar />}
+                                label="Reportes"
+                                hoveredItem={hoveredItem}
+                                handleMouseEnter={handleMouseEnter}
+                                handleMouseLeave={handleMouseLeave}
+                                expanded={expanded}
+                                menuItems={[
+                                    { label: 'Reporte Consolidado', url: '/consolidatereport' },
+                                    { label: 'Gráficos', url: '/pieGraph' }
+                                ]}
+                            />
+
                             <CustomNavItem eventKey="8" icon={<FaUserAlt />} label="Cuenta" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />
                         </Nav>
                     </SidenavBody>

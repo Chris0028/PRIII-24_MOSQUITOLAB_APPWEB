@@ -1,26 +1,45 @@
-import { Pie } from 'react-chartjs-2';
+import { Pie } from "react-chartjs-2";
+import { React, useEffect, useState} from "../hooks/useReacts"
+import { getGenderReportData, getAgeDistributionData } from "../repositories/reportRepository";
+import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 
-export const PieChart = () => {
-  const data = {
-    labels: ['Hombres', 'Mujeres'], // Etiquetas para cada segmento del gráfico
-    datasets: [
-      {
-        label: 'Distribución por Género',
-        data: [300, 200], // Datos correspondientes a hombres y mujeres
-        backgroundColor: ['#36A2EB', '#FF6384'], // Colores para cada segmento
-        hoverBackgroundColor: ['#36A2EB80', '#FF638480'] // Colores al pasar el mouse
+
+Chart.register(ArcElement, Tooltip, Legend);
+
+export function PieGraph2 () {
+  const [chartData, setChartData] = useState(null);
+
+  useEffect(() => {
+      async function fetchData() {
+          const data = await getGenderReportData();
+          setChartData(data);
       }
-    ]
-  };
+      fetchData();
+  }, []);
 
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-    },
-  };
+  return (
+      <div>
+          <h3>Distribución de Género</h3>
+          {chartData ? <Pie data={chartData} /> : <p>Cargando...</p>}
+      </div>
+  );
+};
 
-  return <Pie data={data} options={options} />;
+export default function PieGraph () {
+  const [chartData, setChartData] = useState(null);
+
+  useEffect(() => {
+      async function fetchData() {
+          const data = await getAgeDistributionData(); // Llama a la función del repositorio para obtener los datos
+          setChartData(data);
+      }
+      fetchData();
+  }, []);
+
+  return (
+      <div>
+          <h3>Distribución de Edad (Menores vs. Mayores)</h3>
+          {chartData ? <Pie data={chartData} /> : <p>Cargando...</p>}
+      </div>
+  );
 };
