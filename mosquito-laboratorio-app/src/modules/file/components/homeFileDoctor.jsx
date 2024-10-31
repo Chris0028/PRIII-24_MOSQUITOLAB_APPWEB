@@ -109,38 +109,38 @@ export default function RecordsView() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', padding: '20px' }}>
-      <div
-        style={{
-          backgroundColor: '#BFCDE0',
-          padding: '10px',
-          borderRadius: '4px',
-          marginBottom: '10px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <IconButton
-          icon={<FaExclamation color="white" />}
-          circle
-          style={{ backgroundColor: 'black', marginRight: '10px', fontSize: '12px' }}
-        />
-        <p style={{ margin: 0 }}>
-          <strong style={{ fontSize: '17px' }}>Puede visualizar el historial del Paciente.</strong>
-        </p>
-      </div>
+    <div style={{ display: 'flex', flexDirection: 'column', height: 'auto', padding: '20px', overflow: 'hidden' }}>
+      <FlexboxGrid justify="start" style={{ marginBottom: 10, gap: 20 }} gutter={10}>
+        {/* Primera Columna de Inputs */}
+        <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
+          <FormGroup controlId="patientCode">
+            <Input
+              placeholder="Código del paciente"
+              style={{ width: '100%' }}
+            />
+          </FormGroup>
+          <FormGroup controlId="ci">
+            <Input
+              placeholder="Cédula de identidad"
+              style={{ width: '100%', marginTop: 10 }}
+            />
+          </FormGroup>
+        </FlexboxGrid.Item>
 
-      <FlexboxGrid justify="space-between" style={{ marginBottom: 10 }}>
-        <FlexboxGrid.Item colspan={23}>
-          <InputGroup inside style={{ width: '100%' }} size="lg">
-            <InputGroup.Addon>
-              <FaFilter />
-            </InputGroup.Addon>
-            <Input placeholder="Buscar..." style={{ width: '100%', fontSize: 18 }} />
-            <InputGroup.Addon>
-              <FaSearch />
-            </InputGroup.Addon>
-          </InputGroup>
+        {/* Segunda Columna de Inputs */}
+        <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
+          <FormGroup controlId="names">
+            <Input
+              placeholder="Nombres"
+              style={{ width: '100%' }}
+            />
+          </FormGroup>
+          <FormGroup controlId="firstLastName">
+            <Input
+              placeholder="Primer Apellido"
+              style={{ width: '100%', marginTop: 10 }}
+            />
+          </FormGroup>
         </FlexboxGrid.Item>
 
         {/* Tercera Columna de Inputs */}
@@ -158,9 +158,7 @@ export default function RecordsView() {
           <Button appearance="primary" color="blue" size="md" style={{ fontSize: 16 }}>
             <FaSearch style={{ marginRight: 5, width: 25 }} /> Buscar
           </Button>
-
         </FlexboxGrid.Item>
-
       </FlexboxGrid>
 
       <div style={{ flex: 1, overflowY: 'auto', marginBottom: '20px' }}>
@@ -282,6 +280,7 @@ export default function RecordsView() {
           borderTop: '2px solid #ccc',
         }}
       >
+        <FileViewer pdfToView={pdfToView} />
         {/* Botón para Agregar Ficha */}
         <Button appearance="primary" color="blue" size="lg" onClick={() => navigate('/fileform')}>
           <FaPlus style={{ marginRight: 10 }} /> Agregar Ficha
