@@ -117,81 +117,81 @@ export const getEpidemiologicalWeek = (date) => {
   // Abril
   if (month === 4) {
     if (day <= 6) return '14';
-    if (day <= 13) return 15;
-    if (day <= 20) return 16;
-    if (day <= 27) return 17;
-    if (day <= 30) return 18;
+    if (day <= 13) return '15';
+    if (day <= 20) return '16';
+    if (day <= 27) return '17';
+    if (day <= 30) return '18';
   }
 
   // Mayo
   if (month === 5) {
-    if (day <= 4) return 18;
-    if (day <= 11) return 19;
-    if (day <= 18) return 20;
-    if (day <= 25) return 21;
-    if (day <= 31) return 22;
+    if (day <= 4) return '18';
+    if (day <= 11) return '19';
+    if (day <= 18) return '20';
+    if (day <= 25) return '21';
+    if (day <= 31) return '22';
   }
 
   // Junio
   if (month === 6) {
-    if (day <= 1) return 22;
-    if (day <= 8) return 23;
-    if (day <= 15) return 24;
-    if (day <= 22) return 25;
-    if (day <= 29) return 26;
+    if (day <= 1) return '22';
+    if (day <= 8) return '23';
+    if (day <= 15) return '24';
+    if (day <= 22) return '25';
+    if (day <= 29) return '26';
   }
 
   // Julio
   if (month === 7) {
-    if (day <= 6) return 27;
-    if (day <= 13) return 28;
-    if (day <= 20) return 29;
-    if (day <= 27) return 30;
-    if (day <= 31) return 31;
+    if (day <= 6) return '27';
+    if (day <= 13) return '28';
+    if (day <= 20) return '29';
+    if (day <= 27) return '30';
+    if (day <= 31) return '31';
   }
 
   // Agosto
   if (month === 8) {
-    if (day <= 3) return 31;
-    if (day <= 10) return 32;
-    if (day <= 17) return 33;
-    if (day <= 24) return 34;
-    if (day <= 31) return 35;
+    if (day <= 3) return '31';
+    if (day <= 10) return '32';
+    if (day <= 17) return '33';
+    if (day <= 24) return '34';
+    if (day <= 31) return '35';
   }
 
   // Septiembre
   if (month === 9) {
-    if (day <= 7) return 36;
-    if (day <= 14) return 37;
-    if (day <= 21) return 38;
-    if (day <= 28) return 39;
+    if (day <= 7) return '36';
+    if (day <= 14) return '37';
+    if (day <= 21) return '38';
+    if (day <= 28) return '39';
   }
 
   // Octubre
   if (month === 10) {
-    if (day <= 5) return 40;
-    if (day <= 12) return 41;
-    if (day <= 19) return 42;
-    if (day <= 26) return 43;
-    if (day <= 31) return 44;
+    if (day <= 5) return '40';
+    if (day <= 12) return '41';
+    if (day <= 19) return '42';
+    if (day <= 26) return '43';
+    if (day <= 31) return '44';
   }
 
   // Noviembre
   if (month === 11) {
-    if (day <= 2) return 44;
-    if (day <= 9) return 45;
-    if (day <= 16) return 46;
-    if (day <= 23) return 47;
-    if (day <= 30) return 48;
+    if (day <= 2) return '44';
+    if (day <= 9) return '45';
+    if (day <= 16) return '46';
+    if (day <= 23) return '47';
+    if (day <= 30) return '48';
   }
 
   // Diciembre
   if (month === 12) {
-    if (day <= 7) return 49;
-    if (day <= 14) return 50;
-    if (day <= 21) return 51;
-    if (day <= 28) return 52;
-    if (day <= 31) return 1; // Semanas epidemiológicas 2025
+    if (day <= 7) return '49';
+    if (day <= 14) return '50';
+    if (day <= 21) return '51';
+    if (day <= 28) return '52';
+    if (day <= 31) return '1'; // Semanas epidemiológicas 2025
   }
 
   // Si no encuentra la semana

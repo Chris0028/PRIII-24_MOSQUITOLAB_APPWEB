@@ -106,6 +106,7 @@ const fileSlice = createSlice({
     },
     updateStepFive(state, action) {
         state.stepFive = { ...state.stepFive, ...action.payload };
+        console.log(state.stepFive)
     },
     updateStepSix(state, action) {
         state.stepSix = { ...state.stepSix, ...action.payload };
