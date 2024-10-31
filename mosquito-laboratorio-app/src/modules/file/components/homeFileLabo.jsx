@@ -285,7 +285,7 @@ export default function RecordsView() {
             </Column>
 
             <Column width={120} resizable>
-              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Código</HeaderCell>
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Código De Ficha</HeaderCell>
               <ColoredCell dataKey="code">
                 {(rowData) => <span>{rowData.code || 'N/A'}</span>}
               </ColoredCell>
