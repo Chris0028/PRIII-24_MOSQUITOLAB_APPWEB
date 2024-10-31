@@ -1,4 +1,4 @@
-import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, InputGroup, Loader } from 'rsuite';
+import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, InputGroup, Loader, Pagination } from 'rsuite';
 import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaRegFilePdf, FaMicroscope } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { GetHistoryForLab } from '../services/historyForLab';
@@ -9,6 +9,7 @@ import { setUpdateFile } from '../../../redux/updateFileSlice';
 import TestForm from '../../test/components/testForm';
 import { useSelector } from 'react-redux';
 import { decodeToken } from '../../../pages/layout/utils/decoder';
+import FormGroup from 'rsuite/esm/FormGroup';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -130,44 +131,59 @@ export default function RecordsView() {
   };
   //
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', padding: '20px' }}>
-      {/* Alerta de Descarga */}
-      <div
-        style={{
-          backgroundColor: '#BFCDE0',
-          padding: '10px',
-          borderRadius: '4px',
-          marginBottom: '10px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <IconButton
-          icon={<FaExclamation color="white" />}
-          circle
-          style={{ backgroundColor: 'black', marginRight: '10px', fontSize: '12px' }}
-        />
-        <p style={{ margin: 0 }}>
-          <strong style={{ fontSize: '17px' }}>Puede Crear Resultados para las fichas de cada Paciente.</strong>
-        </p>
-      </div>
+    <div style={{ display: 'flex', flexDirection: 'column', height: 'auto', padding: '20px', overflow: 'hidden' }}>
+      {/* Filtros */}
+      <FlexboxGrid justify="start" style={{ marginBottom: 10, gap: 20 }} gutter={10}>
+        {/* Primera Columna de Inputs */}
+        <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
+          <FormGroup controlId="patientCode">
+            <Input 
+              placeholder="Código del paciente"
+              style={{ width: '100%' }}
+            />
+          </FormGroup>
+          <FormGroup controlId="ci">
+            <Input
+              placeholder="Cédula de identidad"
+              style={{ width: '100%', marginTop:10 }}
+            />
+          </FormGroup>
+        </FlexboxGrid.Item>
 
-      {/* Barra de búsqueda */}
-      <FlexboxGrid justify="space-between" style={{ marginBottom: 10 }}>
-        <FlexboxGrid.Item colspan={23}>
-          <InputGroup inside style={{ width: '100%' }} size="lg">
-            <InputGroup.Addon>
-              <FaFilter />
-            </InputGroup.Addon>
-            <Input placeholder="Buscar..." style={{ width: '100%', fontSize:18 }} />
-            <InputGroup.Addon>
-              <FaSearch />
-            </InputGroup.Addon>
-          </InputGroup>
+        {/* Segunda Columna de Inputs */}
+        <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
+          <FormGroup controlId="names">
+            <Input
+              placeholder="Nombres"
+              style={{ width: '100%' }}
+            />
+          </FormGroup>
+          <FormGroup controlId="firstLastName">
+            <Input
+              placeholder="Primer Apellido"
+              style={{ width: '100%', marginTop:10}}
+            />
+          </FormGroup>
         </FlexboxGrid.Item>
-        <FlexboxGrid.Item colspan={1}>
-          <IconButton icon={<FaSync />} circle size="lg" style={{ marginLeft: 20 }} onClick={handleRefresh} />
+
+        {/* Tercera Columna de Inputs */}
+        <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
+        <FormGroup controlId="secondLastName">
+            <Input
+              placeholder="Segundo Apellido"
+              style={{ width: '100%' }}
+            />
+          </FormGroup>
         </FlexboxGrid.Item>
+
+        {/* Botones de Buscar y Refrescar */}
+        <FlexboxGrid.Item colspan={3} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <Button appearance="primary" color="blue" size="md" style={{fontSize:16}}>
+            <FaSearch style={{ marginRight: 5, width:25 }} /> Buscar
+          </Button>
+
+        </FlexboxGrid.Item>
+        
       </FlexboxGrid>
 
       {/* Contenedor para la tabla con scroll */}
@@ -178,7 +194,7 @@ export default function RecordsView() {
             <Loader size="lg" content="Cargando..." />
           </div>
         ) : (
-          <Table height={600} data={historyFiles} rowHeight={100} style={{ fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle' }}>
+          <Table height={560} data={historyFiles} rowHeight={100} style={{ fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle' }}>
 
             <Column width={85} fixed >
               <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Acciones</HeaderCell>
@@ -231,7 +247,7 @@ export default function RecordsView() {
                 <ColoredCell dataKey="id" />
               </Column>
             )}
-            <Column width={95} resizable >
+            <Column width={110} resizable >
               <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Estado</HeaderCell>
               <ColoredCell dataKey="result" />
             </Column>
@@ -294,12 +310,12 @@ export default function RecordsView() {
                 {(rowData) => <span>{formatDate(rowData.registerDate)}</span>}
               </ColoredCell>
             </Column>
-
-            
           </Table>
         )}
       </div>
-
+      <div >
+        <Pagination prev next first last ellipsis boundaryLinks size="sm" maxButtons={5} layout={['-', 'pager']} />
+      </div>
       {/* Footer Fijo con los botones de Agregar y Descargar */}
       <div
         style={{
@@ -310,7 +326,7 @@ export default function RecordsView() {
           alignItems: 'center',
           backgroundColor: '#fff',
           padding: '10px 20px',
-          borderTop: '1px solid #ccc',
+          borderTop: '2px solid #ccc',
         }}
       >
         {/* Botón para Agregar Ficha */}
@@ -318,13 +334,14 @@ export default function RecordsView() {
           <FaPlus style={{ marginRight: 10 }} /> Agregar Ficha
         </Button>
 
-        {/* Botón para Descargar */}
-        <Button appearance="primary" color="blue" size="lg">
-          <FaDownload style={{ marginRight: 10 }} /> Descargar
+        {/* Botón para Actualizar */}
+        <Button appearance="primary" color="blue" size="lg" onClick={handleRefresh} >
+          <FaSync style={{ marginRight: 10 }} /> Actualizar
         </Button>
       </div>
 
       <TestForm open={showModal} hiddeModal={handleCloseModal} fileId={fileId} />
+      
     </div>
   );
 }
