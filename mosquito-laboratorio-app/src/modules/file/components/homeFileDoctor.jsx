@@ -1,11 +1,13 @@
 import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, InputGroup, Loader, Pagination } from 'rsuite';
-import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaChartLine } from 'react-icons/fa';
+import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaChartLine, FaRegFilePdf } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { GetHistoryFileByHospital } from '../services/historyByHospital';
 import { useSelector } from 'react-redux';
 import { decodeToken } from '../../../pages/layout/utils/decoder';
 import FormGroup from 'rsuite/esm/FormGroup';
+import FileViewer from '../../pdf/components/fileViewer';
+import FilePDF from '../../pdf/components/filePDF';
 //El doctor no puede editar, verificar eso
 const { Column, HeaderCell, Cell } = Table;
 
@@ -27,7 +29,7 @@ const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
   }
 
   return (
-    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle', fontSize:16  }}>
+    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle', fontSize: 16 }}>
       {children ? children(rowData) : rowData[dataKey]}
     </Cell>
   );
@@ -45,6 +47,7 @@ export default function RecordsView() {
   const [historyFiles, setHistoryFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [pdfToView, setPdfToView] = useState(null);
 
   const userInfo = useSelector((state) => state.user.user);
 
@@ -71,8 +74,7 @@ export default function RecordsView() {
 
     fetchData();
   }, []);
-  
-  //CODIGO PARA ACTUALIZAR LAS FICHAS
+
   const fetchData = async () => {
     setLoading(true);
     let data = [];
@@ -101,46 +103,49 @@ export default function RecordsView() {
   const handleRefresh = () => {
     fetchData();
   };
-  //
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: 'auto', padding: '20px', overflow: 'hidden'}}>
-      {/* Filtros */}
-      <FlexboxGrid justify="start" style={{ marginBottom: 10, gap: 20 }} gutter={10}>
-        {/* Primera Columna de Inputs */}
-        <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
-          <FormGroup controlId="patientCode">
-            <Input 
-              placeholder="Código del paciente"
-              style={{ width: '100%' }}
-            />
-          </FormGroup>
-          <FormGroup controlId="ci">
-            <Input
-              placeholder="Cédula de identidad"
-              style={{ width: '100%', marginTop:10 }}
-            />
-          </FormGroup>
-        </FlexboxGrid.Item>
 
-        {/* Segunda Columna de Inputs */}
-        <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
-          <FormGroup controlId="names">
-            <Input
-              placeholder="Nombres"
-              style={{ width: '100%' }}
-            />
-          </FormGroup>
-          <FormGroup controlId="firstLastName">
-            <Input
-              placeholder="Primer Apellido"
-              style={{ width: '100%', marginTop:10}}
-            />
-          </FormGroup>
+  function handleFilePreview(selectedId) {
+    setPdfToView(<FilePDF fileId={selectedId} />)
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', padding: '20px' }}>
+      <div
+        style={{
+          backgroundColor: '#BFCDE0',
+          padding: '10px',
+          borderRadius: '4px',
+          marginBottom: '10px',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <IconButton
+          icon={<FaExclamation color="white" />}
+          circle
+          style={{ backgroundColor: 'black', marginRight: '10px', fontSize: '12px' }}
+        />
+        <p style={{ margin: 0 }}>
+          <strong style={{ fontSize: '17px' }}>Puede visualizar el historial del Paciente.</strong>
+        </p>
+      </div>
+
+      <FlexboxGrid justify="space-between" style={{ marginBottom: 10 }}>
+        <FlexboxGrid.Item colspan={23}>
+          <InputGroup inside style={{ width: '100%' }} size="lg">
+            <InputGroup.Addon>
+              <FaFilter />
+            </InputGroup.Addon>
+            <Input placeholder="Buscar..." style={{ width: '100%', fontSize: 18 }} />
+            <InputGroup.Addon>
+              <FaSearch />
+            </InputGroup.Addon>
+          </InputGroup>
         </FlexboxGrid.Item>
 
         {/* Tercera Columna de Inputs */}
         <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
-        <FormGroup controlId="secondLastName">
+          <FormGroup controlId="secondLastName">
             <Input
               placeholder="Segundo Apellido"
               style={{ width: '100%' }}
@@ -150,17 +155,15 @@ export default function RecordsView() {
 
         {/* Botones de Buscar y Refrescar */}
         <FlexboxGrid.Item colspan={3} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Button appearance="primary" color="blue" size="md" style={{fontSize:16}}>
-            <FaSearch style={{ marginRight: 5, width:25 }} /> Buscar
+          <Button appearance="primary" color="blue" size="md" style={{ fontSize: 16 }}>
+            <FaSearch style={{ marginRight: 5, width: 25 }} /> Buscar
           </Button>
 
         </FlexboxGrid.Item>
-        
+
       </FlexboxGrid>
 
-      {/* Contenedor para la tabla con scroll */}
       <div style={{ flex: 1, overflowY: 'auto', marginBottom: '20px' }}>
-        {/* Tabla de Registros */}
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
             <Loader size="lg" content="Cargando..." />
@@ -169,22 +172,23 @@ export default function RecordsView() {
           <Table height={560} data={historyFiles} rowHeight={100} style={{ fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle' }}>
             <Column width={85} fixed >
               <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Acciones</HeaderCell>
-              <Cell >
+              <Cell>
                 {(rowData) => (
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
                     <Whisper placement="top" trigger="hover" speaker={<Tooltip>Editar</Tooltip>}>
                       <IconButton
                         icon={<FaEdit />}
                         appearance="ghost"
-                        style={{ color: 'black', border: 'Transparent', fontSize: '22px', padding:5}}
+                        style={{ color: 'black', border: 'Transparent', fontSize: '22px', padding: 5 }}
                       />
                     </Whisper>
-                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Historial</Tooltip>}>
+                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Ver ficha</Tooltip>}>
                       <IconButton
-                        icon={<FaChartLine />}
+                        icon={<FaRegFilePdf />}
                         appearance="ghost"
                         color="blue"
-                        style={{ color: 'black', border: 'Transparent', marginTop: 5, fontSize: '24px', padding:5}}
+                        onClick={() => handleFilePreview(rowData.id)}
+                        style={{ color: 'black', border: 'Transparent', marginTop: 5, fontSize: '24px', padding: 5 }}
                       />
                     </Whisper>
                   </div>
@@ -212,10 +216,10 @@ export default function RecordsView() {
                 )}
               </ColoredCell>
             </Column>
-            
+
             <Column width={140} resizable>
               <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Enfermedad</HeaderCell>
-              <ColoredCell dataKey="diseaseName"/>
+              <ColoredCell dataKey="diseaseName" />
             </Column>
 
             <Column width={120} resizable>
@@ -288,7 +292,7 @@ export default function RecordsView() {
           <FaSync style={{ marginRight: 10 }} /> Actualizar
         </Button>
       </div>
-    </div>
+    </div >
   );
 }
 

@@ -2,6 +2,7 @@ import { Container, Content, FlexboxGrid, Header, Panel } from "rsuite";
 import AuthForm from "./authForm";
 import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
 import { CgEnter } from "react-icons/cg";
+import escudo from '../../../../public/static/escudo-patrio.png'
 
 export default function AuthContainer() {
     return (
@@ -9,7 +10,7 @@ export default function AuthContainer() {
             <Header>
                 <FlexboxGrid>
                     <FlexboxGridItem colspan={24} style={{ textAlign: 'center' }}>
-                        <img src="https://th.bing.com/th/id/R.8dc8888d3baaaf89cca27a70a7ccdc7b?rik=Dh8kxUDrEx6F2w&pid=ImgRaw&r=0" alt="Escudo patrio" style={{ width: '240px' }} />
+                        <img src={escudo} alt="Escudo patrio" style={{ width: '240px' }} />
                         <h6 style={{ fontFamily: 'serif' }}>MINISTERIO DE SALUD Y DEPORTES</h6>
                     </FlexboxGridItem>
                     <FlexboxGridItem colspan={24} style={{ textAlign: 'center', marginTop: '40px' }}>
@@ -20,7 +21,7 @@ export default function AuthContainer() {
             <Content style={{ marginTop: '60px' }}>
                 <FlexboxGrid justify="center" align="middle">
                     <FlexboxGridItem style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        <Panel header="Por seguridad jamás revele sus datos" bordered style={{ textAlign:'center', width: 400, height: 300, borderColor: '#1D3B72' }}>
+                        <Panel header="Por seguridad jamás revele sus datos" bordered style={{ textAlign: 'center', width: 400, height: 300, borderColor: '#1D3B72' }}>
                             <AuthForm />
                         </Panel>
                     </FlexboxGridItem>
