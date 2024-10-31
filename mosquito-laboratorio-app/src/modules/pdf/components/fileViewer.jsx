@@ -3,15 +3,22 @@ import { useEffect } from 'react';
 
 export default function FileViewer({ pdfToView }) {
     useEffect(() => {
+        let url;
+
         if (pdfToView) {
             async function handlePreview() {
                 const blob = await pdf(pdfToView).toBlob();
-                const url = URL.createObjectURL(blob);
+                url = URL.createObjectURL(blob);
                 window.open(url, '_blank');
-                URL.revokeObjectURL(url);
             }
+
             handlePreview();
         }
+
+        return () => {
+            if (url) URL.revokeObjectURL(url);
+        };
     }, [pdfToView]);
+
     return null;
 }
