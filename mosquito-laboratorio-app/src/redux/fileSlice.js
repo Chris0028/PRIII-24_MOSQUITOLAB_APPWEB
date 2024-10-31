@@ -27,14 +27,14 @@ const initialState = {
     patientPhone: '',              // Número de teléfono, string vacío
     directionCity: '',         // Dirección de residencia, string vacío
     directionNeighborhood: '',
-    municipalityOrState: '',      // Municipio o departamento, string vacío
+    municipalityOrState: 0,      // Municipio o departamento, string vacío
     
     // Parte 3 - Información sobre seguro
-    isSecured: false,             // Booleano para indicar si está asegurado
-    insuranceId: 0,              // Nombre de la empresa aseguradora, string vacío
-    ipTypeInsured: '',          // Caja o seguro, string vacío
-    ipInsuredRecord: '',            // Número de matriculación del seguro, string vacío
-    specifySecure: '',            // Campo para especificar seguro si es necesario, string vacío
+    isSecured: false,               // Booleano para indicar si está asegurado
+    insuranceId: null,                 // Nombre de la empresa aseguradora, string vacío
+    ipTypeInsured: '',              // Caja o seguro, string vacío
+    ipInsuredRecord: '',  
+    ipInsuredName: '',          // Número de matriculación del seguro, string vacío
 
     // Parte 4 - Coordenadas del mapa
     directionLatitude: 0,                  // Coordenada de latitud inicial, valor predeterminado de 0
@@ -82,9 +82,7 @@ const initialState = {
     dischargeDate: '', // Inicializar como cadena vacía también
   },
   stepSix: {
-    testLaboratoryId: '',
-    doctorName: '',
-    healthEstablishmentNotifier: '',
+    testLaboratoryId: 0,
   },
 };
 
@@ -101,15 +99,19 @@ const fileSlice = createSlice({
     },
     updateStepThree(state, action) {
         state.stepThree = { ...state.stepThree, ...action.payload };
+        console.log(state.stepThree);
     },
     updateStepFour(state, action) {
         state.stepFour = { ...state.stepFour, ...action.payload };
+        console.log(state.stepFour);
     },
     updateStepFive(state, action) {
         state.stepFive = { ...state.stepFive, ...action.payload };
+        console.log(state.stepFive)
     },
     updateStepSix(state, action) {
         state.stepSix = { ...state.stepSix, ...action.payload };
+        console.log(state.stepSix)
     },
     
     // Puedes agregar otros reducers para actualizar los otros pasos

@@ -1,8 +1,8 @@
 import { Tabs, Form, DatePicker, FlexboxGrid, Checkbox, Input, Panel, SelectPicker } from 'rsuite';
 import { FormGroup } from '../hooks/useForms';
-import { useDiseaseTabs, useEffect } from '../hooks/useReacts';
-import { dengueOptions, dengueSymptoms, chikungunyaSymptoms, zikaSymptoms } from '../utils/symptonOptions';
-import { createHandleSymptomChange, createHandleOtherSymptomCheckboxChange, createHandleOtherSymptomInputChange } from '../utils/stepFourUtil';
+import { useDiseaseTabs, useEffect, useState } from '../hooks/useReacts';
+import { dengueOptions, dengueSymptoms, chikungunyaSymptoms, zikaSymptoms  } from '../utils/symptonOptions';
+import { createHandleSymptomChange, createHandleOtherSymptomCheckboxChange, createHandleOtherSymptomInputChange, getEpidemiologicalWeek } from '../utils/stepFourUtil';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateStepFour } from '../../../redux/fileSlice';
 
@@ -10,17 +10,43 @@ export default function FormStepFour() {
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.file?.stepFour || {});
 
-  // Uso del hook modificado useDiseaseTabs
+  // Manejo de enfermedades con el hook personalizado
   const { selectedTab, setSelectedTab, dengueCase, setDengueCase } = useDiseaseTabs();
 
-  // Crear las funciones desde stepFourUtil.js
+  // Crear manejadores de síntomas desde `stepFourUtil.js`
   const handleSymptomChange = createHandleSymptomChange(dispatch, selectedTab, dengueCase, formData.symptoms);
   const handleOtherSymptomCheckboxChange = createHandleOtherSymptomCheckboxChange(dispatch);
   const handleOtherSymptomInputChange = createHandleOtherSymptomInputChange(dispatch);
 
+  // Estado local para `fileSymptomsDate` y `fileEpidemiologicalWeek`
+  const [selectedDate, setSelectedDate] = useState(formData.fileSymptomsDate ? new Date(formData.fileSymptomsDate) : null);
+  const [fileEpidemiologicalWeek, setEpidemiologicalWeek] = useState(formData.fileEpidemiologicalWeek || '');
+
+  // Sincronizar la semana epidemiológica cuando cambia `selectedDate`
   useEffect(() => {
-    // No deseleccionar automáticamente "Otro" cada vez que cambia de enfermedad.
-    // Esto asegurará que el valor se mantenga si la enfermedad tiene un valor preexistente.
+    if (selectedDate) {
+      const week = getEpidemiologicalWeek(selectedDate); // Llama a la lógica para calcular la semana
+      setEpidemiologicalWeek(week);
+      dispatch(updateStepFour({ fileEpidemiologicalWeek: week })); // Actualiza la semana en Redux
+    }
+  }, [selectedDate, dispatch]);
+
+  // Sincronizar `selectedDate` con `formData.fileSymptomsDate` cada vez que cambia `formData`
+  useEffect(() => {
+    if (formData.fileSymptomsDate) {
+      setSelectedDate(new Date(formData.fileSymptomsDate));
+    }
+  }, [formData.fileSymptomsDate]);
+
+  // Manejar cambios en el `DatePicker`
+  const handleDateChange = (value) => {
+    setSelectedDate(value);
+    const dateValue = value instanceof Date ? value.toISOString() : null;
+    dispatch(updateStepFour({ fileSymptomsDate: dateValue })); // Actualiza `fileSymptomsDate` en Redux
+  };
+
+  // Sincronizar `otherSymptomChecked` en el Redux para la enfermedad seleccionada
+  useEffect(() => {
     if (!formData.otherSymptomChecked?.hasOwnProperty(selectedTab)) {
       dispatch(updateStepFour({
         otherSymptomChecked: {
@@ -33,38 +59,34 @@ export default function FormStepFour() {
         },
       }));
     }
-  }, [selectedTab]);
+  }, [selectedTab, dispatch, formData.otherSymptomChecked, formData.otherSymptom]);
 
   return (
     <Form fluid>
       <FlexboxGrid justify="space-between">
-      {/* Fecha de Inicio de Síntomas y Semana Epidemiológica */}
-      <FlexboxGrid.Item colspan={11}>
-        <FormGroup>
-          <Form.ControlLabel>Fecha de Inicio de Síntomas *</Form.ControlLabel>
-          <DatePicker
-            name="symptomStartDate"
-            format="yyyy/MM/dd"
-            style={{ width: '100%' }}
-            value={formData.symptomStartDate ? new Date(formData.symptomStartDate) : null}
-            onChange={(value) => {
-              // Convertir la fecha seleccionada a ISO si existe
-              const dateValue = value instanceof Date ? value.toISOString() : null;
-              dispatch(updateStepFour({ symptomStartDate: dateValue }));
-            }}
-          />
-        </FormGroup>
-      </FlexboxGrid.Item>
+        {/* Fecha de Inicio de Síntomas y Semana Epidemiológica */}
+        <FlexboxGrid.Item colspan={11}>
+          <FormGroup>
+            <Form.ControlLabel>Fecha de Inicio de Síntomas *</Form.ControlLabel>
+            <DatePicker
+              name="fileSymptomsDate"
+              format="yyyy/MM/dd"
+              style={{ width: '100%' }}
+              value={selectedDate}
+              onChange={handleDateChange}
+            />
+          </FormGroup>
+        </FlexboxGrid.Item>
 
         <FlexboxGrid.Item colspan={11}>
           <FormGroup>
             <Form.ControlLabel>Semana Epidemiológica *</Form.ControlLabel>
             <Input
-              name="epidemiologicalWeek"
+              name="fileEpidemiologicalWeek"
               placeholder="Ingrese la semana"
               style={{ width: '100%' }}
-              value={formData.epidemiologicalWeek}
-              onChange={(value) => dispatch(updateStepFour({ epidemiologicalWeek: value }))}
+              value={fileEpidemiologicalWeek || ''} // Muestra la semana calculada desde Redux
+              disabled // Solo lectura, calculada automáticamente
             />
           </FormGroup>
         </FlexboxGrid.Item>
@@ -88,9 +110,9 @@ export default function FormStepFour() {
               onSelect={(eventKey) => setSelectedTab(eventKey)}
               appearance="subtle"
             >
-              <Tabs.Tab eventKey="Zika" title="Zika" />
               <Tabs.Tab eventKey="Dengue" title="Dengue" />
               <Tabs.Tab eventKey="Chikungunya" title="Chikungunya" />
+              <Tabs.Tab eventKey="Zika" title="Zika" />
             </Tabs>
           </FormGroup>
         </FlexboxGrid.Item>
@@ -113,19 +135,19 @@ export default function FormStepFour() {
         </FlexboxGrid.Item>
       </FlexboxGrid>
 
-      {/* Síntomas */}
-      <FormGroup style={{ marginTop: 20 }}>
+        {/* Síntomas dinámicos basados en la enfermedad seleccionada */}
+        <FormGroup style={{ marginTop: 20 }}>
         <Form.ControlLabel>Síntomas *</Form.ControlLabel>
         <FlexboxGrid justify="space-around">
-          {selectedTab === 'Dengue' && dengueCase && dengueSymptoms[dengueCase] && (
+          {selectedTab === 'Dengue' && formData.dengueCase && (
             <>
-              {dengueSymptoms[dengueCase].map((symptom, index) => (
+              {dengueSymptoms[formData.dengueCase].map((symptom, index) => (
                 <FlexboxGrid.Item colspan={5} key={index}>
                   <Checkbox
-                    checked={formData.symptoms.dengue[dengueCase]?.includes(symptom.value) || false}
+                    checked={formData.symptoms.dengue[formData.dengueCase]?.includes(symptom.value) || false}
                     onChange={(_, isChecked) => handleSymptomChange(symptom.value, isChecked)}
                   >
-                    {symptom.label}  {/* Usar solo el 'label' para mostrar el nombre del síntoma */}
+                    {symptom.label}
                   </Checkbox>
                 </FlexboxGrid.Item>
               ))}
@@ -140,7 +162,7 @@ export default function FormStepFour() {
                     checked={formData.symptoms.chikungunya?.includes(symptom.value) || false}
                     onChange={(_, isChecked) => handleSymptomChange(symptom.value, isChecked)}
                   >
-                    {symptom.label}  {/* Usar solo el 'label' para mostrar el nombre del síntoma */}
+                    {symptom.label}
                   </Checkbox>
                 </FlexboxGrid.Item>
               ))}
@@ -155,20 +177,18 @@ export default function FormStepFour() {
                     checked={formData.symptoms.zika?.includes(symptom.value) || false}
                     onChange={(_, isChecked) => handleSymptomChange(symptom.value, isChecked)}
                   >
-                    {symptom.label}  {/* Usar solo el 'label' para mostrar el nombre del síntoma */}
+                    {symptom.label}
                   </Checkbox>
                 </FlexboxGrid.Item>
               ))}
             </>
           )}
 
-          {/* Checkbox e input para "Otro" */}
+          {/* Campo de "Otro" síntoma */}
           <FlexboxGrid.Item colspan={10} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Checkbox
               checked={formData.otherSymptomChecked?.[selectedTab] || false}
-              onChange={(_, isChecked) => {
-                handleOtherSymptomCheckboxChange(selectedTab, isChecked, formData);
-              }}
+              onChange={(_, isChecked) => handleOtherSymptomCheckboxChange(selectedTab, isChecked, formData)}
             >
               Otro
             </Checkbox>
@@ -177,9 +197,7 @@ export default function FormStepFour() {
               <Input
                 name="otherSymptom"
                 value={formData.otherSymptom?.[selectedTab] || ''}
-                onChange={(value) => {
-                  handleOtherSymptomInputChange(selectedTab, value, formData);
-                }}
+                onChange={(value) => handleOtherSymptomInputChange(selectedTab, value, formData)}
                 placeholder="Describir síntoma"
                 style={{ width: '70%' }}
               />
@@ -189,4 +207,6 @@ export default function FormStepFour() {
       </FormGroup>
     </Form>
   );
+
 };
+

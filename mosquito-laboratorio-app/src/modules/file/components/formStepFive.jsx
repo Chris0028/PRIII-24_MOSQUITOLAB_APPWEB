@@ -28,7 +28,7 @@ const parseDate = (dateString) => {
   
     // Lógica para determinar si se debe mostrar la fecha de alta o de defunción
     const showDischargeDate = wasHospitalized || utiHospitalized;
-    const isDeathDischarge = formData.medicalDischargeType === "Defuncion";
+    const isDeathDischarge = formData.dischargeType === "Defuncion";
   
     return (
       <Form fluid>
@@ -60,12 +60,12 @@ const parseDate = (dateString) => {
             <FormGroup>
               <Form.ControlLabel>Fecha de Hospitalización</Form.ControlLabel>
               <DatePicker
-                name="hospitalizationDate"
+                name="hospitalizedEntryDate"
                 format="yyyy/MM/dd"
                 style={{ width: '100%' }}
                 disabled={!wasHospitalized}
-                value={parseDate(formData.hospitalizationDate)}
-                onChange={(value) => handleDateChange('hospitalizationDate', value)}
+                value={parseDate(formData.hospitalizedEntryDate)}
+                onChange={(value) => handleDateChange('hospitalizedEntryDate', value)}
               />
             </FormGroup>
           </FlexboxGrid.Item>
@@ -74,12 +74,12 @@ const parseDate = (dateString) => {
         <FormGroup>
           <Form.ControlLabel>Establecimiento de Salud</Form.ControlLabel>
           <FormControl
-            name="hospitalName"
+            name="hospitalizedName"
             placeholder="Nombre del establecimiento de salud"
             style={{ width: '100%' }}
             disabled={!wasHospitalized}
-            value={formData.hospitalName || ''}
-            onChange={(value) => handleInputChange('hospitalName', value)}
+            value={formData.hospitalizedName || ''}
+            onChange={(value) => handleInputChange('hospitalizedName', value)}
           />
         </FormGroup>
   
@@ -134,15 +134,15 @@ const parseDate = (dateString) => {
             <FormGroup>
               <Form.ControlLabel>Tipo de Alta Médica</Form.ControlLabel>
               <InputPicker
-                name="medicalDischargeType"
+                name="dischargeType"
                 data={medicalDischargeOptions}
                 block
                 size="lg"
                 placeholder="Seleccione el tipo de alta médica"
                 disabled={!wasHospitalized && !utiHospitalized}
-                value={formData.medicalDischargeType || ''}
+                value={formData.dischargeType || ''}
                 onChange={(value) => {
-                  handlePickerChange('medicalDischargeType', value);
+                  handlePickerChange('dischargeType', value);
                   if (value !== "Defuncion") {
                     handleDateChange('dischargeDate', null);
                   }
