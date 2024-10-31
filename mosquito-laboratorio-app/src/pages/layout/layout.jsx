@@ -1,4 +1,4 @@
-import { FaChartBar, FaCloudDownloadAlt, FaFileInvoice, FaSignOutAlt, FaUserAlt, FaVial, FaBars } from "react-icons/fa";
+import { FaChartBar, FaCloudDownloadAlt, FaFileInvoice, FaSignOutAlt, FaUserAlt, FaVial, FaBars, FaUsers } from "react-icons/fa";
 import { Container, Content, Divider, Header, Nav, Navbar, Sidebar, Sidenav, IconButton } from "rsuite";
 import SidenavBody from "rsuite/esm/Sidenav/SidenavBody";
 import { useEffect, useState } from "react";
@@ -49,22 +49,32 @@ export default function Layout({ children }) {
                     <SidenavBody style={{ flexGrow: 1 }}>
                         <Nav>
                             <UserInfo expanded={expanded} />
-                            <CustomNavItem eventKey="2" label="Área de trabajo" hoveredItem={hoveredItem} disabled expanded={expanded} />
+                            <CustomNavItem eventKey="1" label="Área de trabajo" hoveredItem={hoveredItem} disabled expanded={expanded} />
                             {role !== 'Doctor' && (
-                                <CustomNavItem eventKey="3" icon={<FaVial />} label="Laboratorio" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/homefilelabo'} expanded={expanded} />
+                                <CustomNavItem eventKey="2" icon={<FaVial />} label="Laboratorio" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/homefilelabo'} expanded={expanded} />
                             )}
-                            <CustomNavItem eventKey="5" icon={<FaFileInvoice />} label="Fichas DE.CHI.KA" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/homefiledoctor'} expanded={expanded} />
+                            <CustomNavItem eventKey="3" icon={<FaFileInvoice />} label="Fichas DE.CHI.KA" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/homefiledoctor'} expanded={expanded} />
                             {role !== 'Doctor' && (
                                 <CustomNavItem eventKey="4" icon={<PiEyedropperSampleFill />} label="Muestras" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/samples'} expanded={expanded} />
                             )}
-                            <CustomNavItem eventKey="6" icon={<FaCloudDownloadAlt />} label="Descargas" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />
-                            <CustomNavItem eventKey="7" icon={<FaChartBar />} label="Reportes" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/consolidatereport'} expanded={expanded} />
+                            <CustomNavItem eventKey="5" icon={<FaCloudDownloadAlt />} label="Descargas" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />
+                            <CustomNavItem eventKey="6" icon={<FaChartBar />} label="Reportes" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/consolidatereport'} expanded={expanded} />
+                            {role === 'Admin' && (
+                                <CustomNavItem eventKey="7" icon={<FaUsers />} label="Usuarios" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />
+                            )}
                             <CustomNavItem eventKey="8" icon={<FaUserAlt />} label="Cuenta" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />
                         </Nav>
                     </SidenavBody>
                     <Nav style={{ marginTop: expanded ? '10vh' : '2vh' }}>
                         <Divider />
-                        <CustomNavItem eventKey="9" icon={<FaSignOutAlt />} label="Cerrar sesión" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} expanded={expanded} />
+                        <CustomNavItem
+                            eventKey="9"
+                            icon={<FaSignOutAlt />}
+                            label="Cerrar sesión"
+                            hoveredItem={hoveredItem}
+                            handleMouseEnter={handleMouseEnter}
+                            handleMouseLeave={handleMouseLeave}
+                            expanded={expanded} />
                     </Nav>
                 </Sidenav>
             </Sidebar>

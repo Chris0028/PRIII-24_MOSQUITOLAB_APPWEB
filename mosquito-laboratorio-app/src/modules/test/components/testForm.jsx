@@ -6,22 +6,28 @@ import ModalBody from "rsuite/esm/Modal/ModalBody";
 import ModalFooter from "rsuite/esm/Modal/ModalFooter";
 import ModalHeader from "rsuite/esm/Modal/ModalHeader";
 import ModalTitle from "rsuite/esm/Modal/ModalTitle";
-import { createResultAsync, diagnosticMethodsByDisease, laboratoryResults, sampleTypes } from "../services/testService";
+import { createResultAsync, diagnosticMethodsByDisease, getCaseMethods, getCaseTypes, laboratoryResults, sampleTypes } from "../services/testService";
 import FormControl from "rsuite/esm/FormControl";
 import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
 import { useSelector } from "react-redux";
 import { decodeToken } from "../../../pages/layout/utils/decoder";
+import { useNavigate } from "react-router-dom";
 
-export default function TestForm({ open, hiddeModal, fileId }) {
+export default function TestForm({ open, hiddeModal, fileId, diseaseName }) {
 
     const [diagnostics, setDiagnostics] = useState([]);
     const [samples, setSamples] = useState([]);
     const [results, setResults] = useState([]);
+    const [caseTypes, setCaseTypes] = useState([]);
+    const [caseMethods, setCaseMethods] = useState([]);
 
     const userInfo = useSelector((state) => state.user.user);
+    const navigate = useNavigate();
 
     const [test, setTest] = useState({
         fileId: 0,
+        caseType: '',
+        caseMethod: '',
         sampleType: '',
         sampleObservation: '',
         testDiagnosticMethod: '',
@@ -31,9 +37,11 @@ export default function TestForm({ open, hiddeModal, fileId }) {
     });
 
     useEffect(() => {
-        setDiagnostics(diagnosticMethodsByDisease(1));
+        setDiagnostics(diagnosticMethodsByDisease(diseaseName));
         setSamples(sampleTypes());
         setResults(laboratoryResults());
+        setCaseTypes(getCaseTypes());
+        setCaseMethods(getCaseMethods());
 
         const userCredentials = decodeToken(userInfo.jwt);
 
@@ -58,7 +66,10 @@ export default function TestForm({ open, hiddeModal, fileId }) {
         } else if (test.testObservation === '') {
             test.testObservation = null;
         }
-        await createResultAsync(test);
+        const success = await createResultAsync(test);
+        if (success) {
+            navigate('/samples');
+        }
     }
 
     return (
@@ -69,12 +80,37 @@ export default function TestForm({ open, hiddeModal, fileId }) {
             <ModalBody>
                 <Form fluid>
                     <FlexboxGrid justify="space-between" align="middle">
+
+                        <Divider style={{ fontWeight: 'bold' }}>Definición de caso</Divider>
+
+                        <FlexboxGridItem colspan={10} style={{ marginBottom: '20px' }}>
+                            <FormGroup controlId="caseType">
+                                <FormControlLabel>Tipo de caso</FormControlLabel>
+                                <InputPicker style={{ width: '100%' }}
+                                    placeholder="Seleccione tipo de caso"
+                                    onChange={(value) => handleChange(value, 'caseType')}
+                                    name="caseType"
+                                    data={caseTypes.map(caseType => ({ label: caseType, value: caseType }))} />
+                            </FormGroup>
+                        </FlexboxGridItem>
+                        <FlexboxGridItem colspan={12} style={{ marginBottom: '20px' }}>
+                            <FormGroup controlId="caseMethod">
+                                <FormControlLabel>Tipo de método de detección</FormControlLabel>
+                                <InputPicker style={{ width: '100%' }}
+                                    placeholder="Seleccione método de detección"
+                                    onChange={(value) => handleChange(value, 'caseMethod')}
+                                    name="caseMethod"
+                                    data={caseMethods.map(caseMethod => ({ label: caseMethod, value: caseMethod }))} />
+                            </FormGroup>
+                        </FlexboxGridItem>
+
                         <Divider style={{ fontWeight: 'bold' }}>Muestra</Divider>
+
                         <FlexboxGridItem colspan={10} style={{ marginBottom: '20px' }}>
                             <FormGroup controlId="sampleType">
                                 <FormControlLabel>Tipo de muestra tomada</FormControlLabel>
                                 <InputPicker style={{ width: '100%' }}
-                                    placeholder="Muestra"
+                                    placeholder="Seleccione el tipo de muestra"
                                     onChange={(value) => handleChange(value, 'sampleType')}
                                     name="sampleType"
                                     data={samples.map(sample => ({ label: sample, value: sample }))} />
@@ -110,7 +146,7 @@ export default function TestForm({ open, hiddeModal, fileId }) {
                                 <FormControlLabel>Método de diagnóstico</FormControlLabel>
                                 <InputPicker
                                     style={{ width: '100%' }}
-                                    placeholder="Diagnóstico"
+                                    placeholder="Seleccione el método de diagnóstico"
                                     onChange={(value) => handleChange(value, 'testDiagnosticMethod')}
                                     name="testDiagnosticMethod"
                                     data={diagnostics.map(diagnostic => ({ label: diagnostic, value: diagnostic }))} />
@@ -121,7 +157,7 @@ export default function TestForm({ open, hiddeModal, fileId }) {
                                 <FormControlLabel>Resultado de laboratorio</FormControlLabel>
                                 <InputPicker
                                     style={{ width: '100%' }}
-                                    placeholder="Resultado"
+                                    placeholder="Seleccione el resultado de laboratorio"
                                     onChange={(value) => handleChange(value, 'testResult')}
                                     name="testResult"
                                     data={results.map(result => ({ label: result, value: result }))} />

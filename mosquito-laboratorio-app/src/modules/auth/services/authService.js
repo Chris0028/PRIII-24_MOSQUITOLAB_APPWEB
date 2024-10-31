@@ -7,10 +7,12 @@ export async function authenticateAsync(user) {
         password: user.password
     };
 
-    const res = await httpClient.post('/Auth/SignIn', data);
-    if (res.status == 200) {
-        return res.data;
-    } else {
-        console.log('Error de autenticación');
+    try {
+        const res = await httpClient.post('/Auth/SignIn', data);
+        if (res.status == 200) {
+            return res.data;
+        }
+    } catch (error) {
+        return null;
     }
 }
