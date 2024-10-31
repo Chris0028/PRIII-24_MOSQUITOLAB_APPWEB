@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaKey, FaUser } from "react-icons/fa";
+import { FaKey, FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
 import { Button, ButtonToolbar, Form, InputGroup } from "rsuite";
 import FormControl from "rsuite/esm/FormControl";
 import FormGroup from "rsuite/esm/FormGroup";
@@ -13,13 +13,18 @@ export default function AuthForm() {
 
     const dispatch = useDispatch();
     const [authData, setAuthData] = useState({ username: '', password: '' });
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
-
+    
     function handleChange(value, name) {
         setAuthData({
             ...authData,
             [name]: value
         });
+    }
+
+    function togglePasswordVisibility() {
+        setShowPassword(!showPassword);
     }
 
     async function signIn(e) {
@@ -31,6 +36,8 @@ export default function AuthForm() {
             navigate('/samples');
         }
     }
+
+
 
     return (
         <Form fluid>
@@ -48,7 +55,10 @@ export default function AuthForm() {
                     <InputGroupAddon>
                         <FaKey />
                     </InputGroupAddon>
-                    <FormControl name="password" type="password" placeholder="Contraseña" value={authData.password} onChange={(value) => handleChange(value, 'password')} />
+                    <FormControl name="password" type={showPassword ? "text" : "password"} placeholder="Contraseña" value={authData.password} onChange={(value) => handleChange(value, 'password')} />
+                    <InputGroup.Button onClick={togglePasswordVisibility}>
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </InputGroup.Button>
                 </InputGroup>
             </FormGroup>
             <FormGroup style={{ textAlign:'right', marginTop:-20}}>
