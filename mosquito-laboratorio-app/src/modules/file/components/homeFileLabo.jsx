@@ -10,6 +10,7 @@ import TestForm from '../../test/components/testForm';
 import { useSelector } from 'react-redux';
 import { decodeToken } from '../../../pages/layout/utils/decoder';
 import FormGroup from 'rsuite/esm/FormGroup';
+import { historyFilterLAsync } from '../services/historyFileFilterL';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -52,7 +53,7 @@ export default function RecordsView() {
   const [showModal, setShowModal] = useState(false)
   const [fileId, setFileId] = useState(0);
   const [diseaseName, setDiseaseName] = useState('')
-
+  const [args, setArgs] = useState({});
   const userInfo = useSelector((state) => state.user.user);
 
   function handleOpenModal() {
@@ -130,38 +131,70 @@ export default function RecordsView() {
   const handleRefresh = () => {
     fetchData();
   };
-  //
+  
+  async function filter() {
+    let filteredArgs = { ...args };
+    Object.keys(filteredArgs).forEach(key => {
+        if (filteredArgs[key] === '' || filteredArgs[key] == null) {
+            delete filteredArgs[key];
+        }
+    });
+
+    console.log(filteredArgs);
+
+    const data = await historyFilterLAsync(filteredArgs);
+    setHistoryFiles(data);
+  }
+
+  function handleChange(value, name) {
+      if (value) {
+          setArgs({
+              ...args,
+              [name]: value
+          });
+      } else {
+          const newArgs = { ...args };
+          delete newArgs[name];
+          setArgs(newArgs);
+      }
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: 'auto', padding: '20px', overflow: 'hidden' }}>
       {/* Filtros */}
       <FlexboxGrid justify="start" style={{ marginBottom: 10, gap: 20 }} gutter={10}>
         {/* Primera Columna de Inputs */}
         <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
-          <FormGroup controlId="patientCode">
+          <FormGroup controlId="code">
             <Input
-              placeholder="Código del paciente"
+              onChange={(value) => handleChange(value, 'code')}
+              placeholder="Código de la ficha"
               style={{ width: '100%' }}
             />
           </FormGroup>
-          <FormGroup controlId="ci">
+          <FormGroup controlId="codePatient">
             <Input
-              placeholder="Cédula de identidad"
-              style={{ width: '100%', marginTop: 10 }}
+              onChange={(value) => handleChange(value, 'codePatient')}
+              placeholder="Código del paciente"
+              style={{ width: '100%' , marginTop: 10  }}
             />
           </FormGroup>
+          
         </FlexboxGrid.Item>
 
         {/* Segunda Columna de Inputs */}
         <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
-          <FormGroup controlId="names">
+        <FormGroup controlId="ci">
             <Input
-              placeholder="Nombres"
-              style={{ width: '100%' }}
+              onChange={(value) => handleChange(value, 'ci')}
+              placeholder="Cédula de identidad"
+              style={{ width: '100%'}}
             />
           </FormGroup>
-          <FormGroup controlId="firstLastName">
+          <FormGroup controlId="names">
             <Input
-              placeholder="Primer Apellido"
+              onChange={(value) => handleChange(value, 'names')}
+              placeholder="Nombres"
               style={{ width: '100%', marginTop: 10 }}
             />
           </FormGroup>
@@ -169,22 +202,28 @@ export default function RecordsView() {
 
         {/* Tercera Columna de Inputs */}
         <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
+        <FormGroup controlId="lastName">
+            <Input
+              onChange={(value) => handleChange(value, 'lastName')}
+              placeholder="Primer Apellido"
+              style={{ width: '100%' }}
+            />
+          </FormGroup>
           <FormGroup controlId="secondLastName">
             <Input
+              onChange={(value) => handleChange(value, 'secondLastName')}
               placeholder="Segundo Apellido"
-              style={{ width: '100%' }}
+              style={{ width: '100%', marginTop: 10 }}
             />
           </FormGroup>
         </FlexboxGrid.Item>
 
         {/* Botones de Buscar y Refrescar */}
         <FlexboxGrid.Item colspan={3} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Button appearance="primary" color="blue" size="md" style={{ fontSize: 16 }}>
+          <Button appearance="primary" color="blue" size="md" style={{ fontSize: 16 }} onClick={() => { filter(); }}>
             <FaSearch style={{ marginRight: 5, width: 25 }} /> Buscar
           </Button>
-
         </FlexboxGrid.Item>
-
       </FlexboxGrid>
 
       {/* Contenedor para la tabla con scroll */}
@@ -263,6 +302,14 @@ export default function RecordsView() {
                 <ColoredCell dataKey="id" />
               </Column>
             )}
+
+            <Column width={150} resizable>
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Código De Ficha</HeaderCell>
+              <ColoredCell dataKey="code" >
+                {(rowData) => <span>{rowData.code || 'N/A'}</span>}
+              </ColoredCell>
+            </Column>
+
             <Column width={110} resizable >
               <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Estado</HeaderCell>
               <ColoredCell dataKey="result" />
@@ -284,11 +331,9 @@ export default function RecordsView() {
               <ColoredCell dataKey="diseaseName" />
             </Column>
 
-            <Column width={120} resizable>
-              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Código De Ficha</HeaderCell>
-              <ColoredCell dataKey="code">
-                {(rowData) => <span>{rowData.code || 'N/A'}</span>}
-              </ColoredCell>
+            <Column width={160} resizable>
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Código De Paciente</HeaderCell>
+              <ColoredCell dataKey="codePatient" />
             </Column>
 
             <Column width={120} resizable>
