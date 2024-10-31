@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 import { decodeToken } from "../../../pages/layout/utils/decoder";
 import { useNavigate } from "react-router-dom";
 
-export default function TestForm({ open, hiddeModal, fileId }) {
+export default function TestForm({ open, hiddeModal, fileId, diseaseName }) {
 
     const [diagnostics, setDiagnostics] = useState([]);
     const [samples, setSamples] = useState([]);
@@ -37,7 +37,7 @@ export default function TestForm({ open, hiddeModal, fileId }) {
     });
 
     useEffect(() => {
-        setDiagnostics(diagnosticMethodsByDisease(1));
+        setDiagnostics(diagnosticMethodsByDisease(diseaseName));
         setSamples(sampleTypes());
         setResults(laboratoryResults());
         setCaseTypes(getCaseTypes());

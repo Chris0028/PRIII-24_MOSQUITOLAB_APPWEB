@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaKey, FaUser } from "react-icons/fa";
-import { Button, ButtonToolbar, Form, InputGroup } from "rsuite";
+import { Button, ButtonToolbar, Form, InputGroup, Notification, useToaster } from "rsuite";
 import FormControl from "rsuite/esm/FormControl";
 import FormGroup from "rsuite/esm/FormGroup";
 import InputGroupAddon from "rsuite/esm/InputGroup/InputGroupAddon";
@@ -14,6 +14,7 @@ export default function AuthForm() {
     const dispatch = useDispatch();
     const [authData, setAuthData] = useState({ username: '', password: '' });
     const navigate = useNavigate();
+    const toaster = useToaster();
 
     function handleChange(value, name) {
         setAuthData({
@@ -22,6 +23,16 @@ export default function AuthForm() {
         });
     }
 
+    function showErrorNotification() {
+        toaster.push(
+            <Notification type='error' header='Error de autenticación' closable>
+                <p>El usuario o la contraseña es incorrecta.</p>
+            </Notification>,
+            { placement: 'topCenter' }
+        )
+    }
+
+
     async function signIn(e) {
         e.preventDefault();
         const credentials = await authenticateAsync(authData);
@@ -29,6 +40,8 @@ export default function AuthForm() {
             localStorage.setItem('jwt', credentials.jwt);
             dispatch(setUser(credentials));
             navigate('/samples');
+        } else {
+            showErrorNotification();
         }
     }
 

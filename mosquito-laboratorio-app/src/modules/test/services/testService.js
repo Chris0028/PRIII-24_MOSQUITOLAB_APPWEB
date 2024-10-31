@@ -1,21 +1,16 @@
 import { httpClient } from "../../../api/httpClient/httpClient";
 
-export function diagnosticMethodsByDisease(diseaseId) {
+export function diagnosticMethodsByDisease(diseaseName) {
 
     let diagnosticMethods = [];
 
-    switch (diseaseId) {
-        case 1:
-            diagnosticMethods.push('RT-PCR en tiempo real', 'Elisa NS1', 'Mac Elisa IgM'); //dengue
-            break;
-        case 2:
-            diagnosticMethods.push('RT-PCR en tiempo real', 'Elisa IgM'); //chikungunya
-            break;
-        case 3:
-            diagnosticMethods.push('RT-PCR en tiempo real', 'Elisa IgM'); //zika
-            break;
+    if (diseaseName === 'Dengue') {
+        diagnosticMethods.push('RT-PCR en tiempo real', 'Elisa NS1', 'Mac Elisa IgM');
+    } else if (diseaseName === 'Chikungunya') {
+        diagnosticMethods.push('RT-PCR en tiempo real', 'Elisa IgM');
+    } else {
+        diagnosticMethods.push('RT-PCR en tiempo real', 'Elisa IgM');
     }
-
     return diagnosticMethods;
 }
 

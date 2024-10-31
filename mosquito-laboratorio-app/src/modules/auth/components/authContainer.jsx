@@ -1,6 +1,7 @@
 import { Container, Content, FlexboxGrid, Header, Panel } from "rsuite";
 import AuthForm from "./authForm";
 import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
+import escudo from '../../../../public/static/escudo-patrio.png'
 
 export default function AuthContainer() {
     return (
@@ -8,7 +9,7 @@ export default function AuthContainer() {
             <Header>
                 <FlexboxGrid>
                     <FlexboxGridItem colspan={24} style={{ textAlign: 'center' }}>
-                        <img src="https://th.bing.com/th/id/R.8dc8888d3baaaf89cca27a70a7ccdc7b?rik=Dh8kxUDrEx6F2w&pid=ImgRaw&r=0" alt="Escudo patrio" style={{ width: '240px' }} />
+                        <img src={escudo} alt="Escudo patrio" style={{ width: '240px' }} />
                         <h6 style={{ fontFamily: 'serif' }}>MINISTERIO DE SALUD Y DEPORTES</h6>
                     </FlexboxGridItem>
                     <FlexboxGridItem colspan={24} style={{ textAlign: 'center', marginTop: '40px' }}>

@@ -1,11 +1,12 @@
 import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, InputGroup, Loader } from 'rsuite';
-import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaChartLine } from 'react-icons/fa';
+import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaRegFilePdf } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { GetHistoryFileByHospital } from '../services/historyByHospital';
 import { useSelector } from 'react-redux';
 import { decodeToken } from '../../../pages/layout/utils/decoder';
-import FileViewer from './fileViewer';
+import FileViewer from '../../pdf/components/fileViewer';
+import FilePDF from '../../pdf/components/filePDF';
 //El doctor no puede editar, verificar eso
 const { Column, HeaderCell, Cell } = Table;
 
@@ -45,6 +46,7 @@ export default function RecordsView() {
   const [historyFiles, setHistoryFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [pdfToView, setPdfToView] = useState(null);
 
   const userInfo = useSelector((state) => state.user.user);
 
@@ -72,7 +74,6 @@ export default function RecordsView() {
     fetchData();
   }, []);
 
-  //CODIGO PARA ACTUALIZAR LAS FICHAS
   const fetchData = async () => {
     setLoading(true);
     let data = [];
@@ -101,10 +102,13 @@ export default function RecordsView() {
   const handleRefresh = () => {
     fetchData();
   };
-  //
+
+  function handleFilePreview(selectedId) {
+    setPdfToView(<FilePDF fileId={selectedId} />)
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', padding: '20px' }}>
-      {/* Alerta de Descarga */}
       <div
         style={{
           backgroundColor: '#BFCDE0',
@@ -125,7 +129,6 @@ export default function RecordsView() {
         </p>
       </div>
 
-      {/* Barra de búsqueda */}
       <FlexboxGrid justify="space-between" style={{ marginBottom: 10 }}>
         <FlexboxGrid.Item colspan={23}>
           <InputGroup inside style={{ width: '100%' }} size="lg">
@@ -143,9 +146,7 @@ export default function RecordsView() {
         </FlexboxGrid.Item>
       </FlexboxGrid>
 
-      {/* Contenedor para la tabla con scroll */}
       <div style={{ flex: 1, overflowY: 'auto', marginBottom: '20px' }}>
-        {/* Tabla de Registros */}
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
             <Loader size="lg" content="Cargando..." />
@@ -154,7 +155,7 @@ export default function RecordsView() {
           <Table height={600} data={historyFiles} rowHeight={100} style={{ fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle' }}>
             <Column width={85} fixed >
               <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Acciones</HeaderCell>
-              <Cell >
+              <Cell>
                 {(rowData) => (
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
                     <Whisper placement="top" trigger="hover" speaker={<Tooltip>Editar</Tooltip>}>
@@ -164,11 +165,12 @@ export default function RecordsView() {
                         style={{ color: 'black', border: 'Transparent', fontSize: '22px', padding: 5 }}
                       />
                     </Whisper>
-                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Historial</Tooltip>}>
+                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Ver ficha</Tooltip>}>
                       <IconButton
-                        icon={<FaChartLine />}
+                        icon={<FaRegFilePdf />}
                         appearance="ghost"
                         color="blue"
+                        onClick={() => handleFilePreview(rowData.id)}
                         style={{ color: 'black', border: 'Transparent', marginTop: 5, fontSize: '24px', padding: 5 }}
                       />
                     </Whisper>
@@ -248,7 +250,6 @@ export default function RecordsView() {
         )}
       </div>
 
-      {/* Footer Fijo con los botones de Agregar y Descargar */}
       <div
         style={{
           position: 'sticky',
@@ -261,13 +262,12 @@ export default function RecordsView() {
           borderTop: '1px solid #ccc',
         }}
       >
-        {/* Botón para Agregar Ficha */}
         <Button appearance="primary" color="blue" size="lg" onClick={() => navigate('/fileform')}>
           <FaPlus style={{ marginRight: 10 }} /> Agregar Ficha
         </Button>
 
-        {/* Botón para Descargar */}
-        <FileViewer />
+        <FileViewer pdfToView={pdfToView} />
+
         <Button appearance="primary" color="blue" size="lg">
           <FaDownload style={{ marginRight: 10 }} /> Descargar
         </Button>

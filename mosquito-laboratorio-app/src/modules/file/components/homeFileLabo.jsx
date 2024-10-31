@@ -1,5 +1,5 @@
 import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, InputGroup, Loader } from 'rsuite';
-import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaRegFilePdf, FaMicroscope } from 'react-icons/fa';
+import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaRegFilePdf, FaMicroscope, FaFlask } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { GetHistoryForLab } from '../services/historyForLab';
 import { useEffect, useState } from 'react';
@@ -30,7 +30,7 @@ const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
   }
 
   return (
-    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle', fontSize:16 }}>
+    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle', fontSize: 16 }}>
       {children ? children(rowData) : rowData[dataKey]}
     </Cell>
   );
@@ -50,6 +50,7 @@ export default function RecordsView() {
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false)
   const [fileId, setFileId] = useState(0);
+  const [diseaseName, setDiseaseName] = useState('')
 
   const userInfo = useSelector((state) => state.user.user);
 
@@ -91,14 +92,14 @@ export default function RecordsView() {
     if (fileId) {
       const data = await GetFileDetails(fileId);
       localStorage.setItem('updateFile', JSON.stringify(data));
-      
+
       navigate(`/fileformu/${fileId}`);
     } else {
       console.error('File ID is undefined or null');
       // Opcionalmente, puedes mostrar un mensaje de error al usuario
     }
   };
-  
+
   //CODIGO PARA ACTUALIZAR LAS FICHAS
   const fetchData = async () => {
     setLoading(true); // Muestra un indicador de carga mientras se actualizan los datos
@@ -159,7 +160,7 @@ export default function RecordsView() {
             <InputGroup.Addon>
               <FaFilter />
             </InputGroup.Addon>
-            <Input placeholder="Buscar..." style={{ width: '100%', fontSize:18 }} />
+            <Input placeholder="Buscar..." style={{ width: '100%', fontSize: 18 }} />
             <InputGroup.Addon>
               <FaSearch />
             </InputGroup.Addon>
@@ -171,7 +172,7 @@ export default function RecordsView() {
       </FlexboxGrid>
 
       {/* Contenedor para la tabla con scroll */}
-      <div style={{ flex: 1, overflowY: 'auto', marginBottom: '20px', position: 'relative'}}>
+      <div style={{ flex: 1, overflowY: 'auto', marginBottom: '20px', position: 'relative' }}>
         {/* Tabla de Registros */}
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
@@ -189,16 +190,16 @@ export default function RecordsView() {
                       <IconButton
                         icon={<FaEdit />}
                         appearance="ghost"
-                        style={{ color: 'black', border: 'Transparent', fontSize: '22px', padding:5}}
+                        style={{ color: 'black', border: 'Transparent', fontSize: '22px', padding: 5 }}
                         onClick={() => handleEdit(rowData.id)}
                       />
                     </Whisper>
-                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Reporte PDF</Tooltip>}>
+                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Vista previa</Tooltip>}>
                       <IconButton
                         icon={<FaRegFilePdf />}
                         appearance="ghost"
                         color="blue"
-                        style={{ color: 'black', border: 'Transparent', marginTop: 5, fontSize: '24px', padding:5}}
+                        style={{ color: 'black', border: 'Transparent', marginTop: 5, fontSize: '24px', padding: 5 }}
                       />
                     </Whisper>
                   </div>
@@ -210,17 +211,32 @@ export default function RecordsView() {
               <Cell>
                 {(rowData) => (
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <Whisper placement="top" trigger="hover" speaker={<Tooltip>Crear</Tooltip>}>
-                    <IconButton
-                      icon={<FaMicroscope />}
-                      appearance="ghost"
-                      onClick={() => {
-                        setFileId(rowData.id);
-                        handleOpenModal();
-                      }}
-                      style={{ color: 'black', border: 'Transparent', marginTop:18, fontSize: '24px', padding:5 }}
-                    />
-                  </Whisper>
+                    {rowData.status === 0 ? (
+                      <Whisper placement="top" trigger="hover" speaker={<Tooltip>Crear resultado</Tooltip>}>
+                        <IconButton
+                          icon={<FaMicroscope />}
+                          appearance="ghost"
+                          onClick={() => {
+                            setFileId(rowData.id);
+                            setDiseaseName(rowData.diseaseName)
+                            handleOpenModal();
+                          }}
+                          style={{ color: 'black', border: 'Transparent', marginTop: 18, fontSize: '24px', padding: 5 }}
+                        />
+                      </Whisper>
+                    ) : (
+                      <Whisper placement="top" trigger="hover" speaker={<Tooltip>Editar resultado</Tooltip>}>
+                        <IconButton
+                          icon={<FaFlask />}
+                          appearance="ghost"
+                          // onClick={() => {
+                          //   setFileId(rowData.id);
+                          //   handleOpenModal();
+                          // }}
+                          style={{ color: 'black', border: 'Transparent', marginTop: 18, fontSize: '24px', padding: 5 }}
+                        />
+                      </Whisper>
+                    )}
                   </div>
                 )}
               </Cell>
@@ -249,7 +265,7 @@ export default function RecordsView() {
 
             <Column width={140} resizable>
               <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Enfermedad</HeaderCell>
-              <ColoredCell dataKey="diseaseName"/>
+              <ColoredCell dataKey="diseaseName" />
             </Column>
 
             <Column width={120} resizable>
@@ -295,7 +311,7 @@ export default function RecordsView() {
               </ColoredCell>
             </Column>
 
-            
+
           </Table>
         )}
       </div>
@@ -324,8 +340,8 @@ export default function RecordsView() {
         </Button>
       </div>
 
-      <TestForm open={showModal} hiddeModal={handleCloseModal} fileId={fileId} />
-    </div>
+      <TestForm open={showModal} hiddeModal={handleCloseModal} fileId={fileId} diseaseName={diseaseName} />
+    </div >
   );
 }
 
