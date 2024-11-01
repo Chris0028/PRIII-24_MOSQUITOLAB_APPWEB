@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     },
 })
 
-export default function StepTwo() {
+export default function StepTwo({ patient }) {
     return (
         <>
             <View style={styles.sectionTitle}>
@@ -145,12 +145,15 @@ export default function StepTwo() {
             <View style={styles.row}>
                 <View style={styles.nameColumn}>
                     <Text style={styles.smallText}>Nombres:</Text>
+                    {/* <Text>{patient.name}</Text> */}
                 </View>
                 <View style={styles.surnameColumn}>
                     <Text style={styles.smallText}>Apellido Paterno:</Text>
+                    {/* <Text>{patient.lastName}</Text> */}
                 </View>
                 <View style={styles.maternalColumn}>
                     <Text style={styles.smallText}>Apellido Materno:</Text>
+                    {/* <Text>{patient.secondLastName}</Text> */}
                 </View>
                 <View style={styles.genderAgeSection}>
                     <Text style={styles.smallText}>Edad</Text>
@@ -167,9 +170,11 @@ export default function StepTwo() {
                 </View>
                 <View style={styles.idSection}>
                     <Text style={styles.smallText}>Carnet de identidad</Text>
+                    {/* <Text>{patient.ci}</Text> */}
                 </View>
                 <View style={styles.dateSection}>
                     <Text style={styles.smallText}>Fecha de nacimiento</Text>
+                    {/* <Text>{patient.birthDate}</Text> */}
                 </View>
             </View>
 

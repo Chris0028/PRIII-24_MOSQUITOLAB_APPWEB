@@ -8,6 +8,7 @@ import { authenticateAsync } from "../services/authService"
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../../redux/userSlice";
+import { decodeToken } from "../../../pages/layout/utils/decoder"
 
 export default function AuthForm() {
 
@@ -32,6 +33,10 @@ export default function AuthForm() {
         )
     }
 
+    function getRole(jwt) {
+        return decodeToken(jwt).role;
+    }
+
 
     async function signIn(e) {
         e.preventDefault();
@@ -39,7 +44,11 @@ export default function AuthForm() {
         if (credentials != null) {
             localStorage.setItem('jwt', credentials.jwt);
             dispatch(setUser(credentials));
-            navigate('/samples');
+            if (getRole(credentials.jwt) !== 'Doctor') {
+                navigate('/homefilelabo');
+            } else {
+                navigate('/homefiledoctor');
+            }
         } else {
             showErrorNotification();
             setAuthData({ username: '', password: '' })

@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export default function StepOne() {
+export default function StepOne({ notificationDate, discoveryMethod, info }) {
     return (
         <>
             <View style={styles.sectionTitle}>
@@ -80,25 +80,30 @@ export default function StepOne() {
                 </View>
                 <View style={styles.reducedColumn}>
                     <Text>Departamento:</Text>
+                    <Text>{'\n\t' + info.state}</Text>
                 </View>
                 <View style={styles.reducedColumn}>
                     <Text>Municipio:</Text>
+                    <Text>{'\n\t' + info.municipality}</Text>
                 </View>
                 <View style={styles.reducedColumn}>
                     <Text>Localidad/comunidad:</Text>
+                    <Text>{'\n\t' + info.municipality}</Text>
                 </View>
                 <View style={styles.reducedColumn}>
                     <Text>Red de Salud:</Text>
+                    <Text>{'\n\t' + info.hospitalNetwork}</Text>
                 </View>
             </View>
 
             <View style={styles.row}>
                 <View style={{ ...styles.column, flex: 1 }}>
                     <Text>Establecimiento de Salud notificante:</Text>
+                    <Text>{'\n\t' + info.hospital}</Text>
                 </View>
                 <View style={{ ...styles.column, flex: 0.5 }}>
                     <View style={styles.verticalOptions}>
-                        <Text style={styles.smallText}>Público ( )</Text>
+                        <Text style={styles.smallText}>Público (X)</Text>
                         <Text style={styles.smallText}>Seguro salud ( )</Text>
                         <Text style={styles.smallText}>Privado ( )</Text>
                         <Text style={styles.smallText}>Otro ( )</Text>
@@ -106,12 +111,23 @@ export default function StepOne() {
                 </View>
                 <View style={{ ...styles.column, flex: 1.2 }}>
                     <Text>Teléfono o correo electrónico del Establecimiento:</Text>
+                    <Text>{'\n\t' + info.hospitalContact}</Text>
                 </View>
                 <View style={{ ...styles.column, flex: 1 }}>
                     <View style={styles.verticalOptions}>
-                        <Text style={styles.smallText}>Caso captado en búsqueda activa ( )</Text>
-                        <Text style={styles.smallText}>Atención en servicio de salud ( )</Text>
-                        <Text style={styles.smallText}>Otro, especificar ( ) ______________________</Text>
+                        {discoveryMethod === 'Atención en Servicio de Salud' ? (
+                            <View>
+                                <Text style={styles.smallText}>Caso captado en búsqueda activa ( )</Text>
+                                <Text style={styles.smallText}>Atención en servicio de salud (X)</Text>
+                                <Text style={styles.smallText}>Otro, especificar ( ) ______________________</Text>
+                            </View>
+                        ) : (
+                            <View>
+                                <Text style={styles.smallText}>Caso captado en búsqueda activa (X)</Text>
+                                <Text style={styles.smallText}>Atención en servicio de salud ()</Text>
+                                <Text style={styles.smallText}>Otro, especificar ( ) ______________________</Text>
+                            </View>
+                        )}
                     </View>
                 </View>
             </View>

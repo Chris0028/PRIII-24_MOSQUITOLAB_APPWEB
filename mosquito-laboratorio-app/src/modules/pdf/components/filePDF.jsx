@@ -5,7 +5,7 @@ import StepThree from "./steps/step03";
 import StepFour from "./steps/step04";
 import StepFive from "./steps/step05";
 import StepSix from "./steps/step06";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getFileWithResultAsync } from "../services/pdfService"
 import StepSeven from "./steps/step07";
 import StepFinal from "./steps/finalStep";
@@ -18,11 +18,15 @@ const styles = StyleSheet.create({
     }
 });
 
-export default function FilePDF({ fileId }) {
+export default function FilePDF({ fileId, info }) {
+
+    const [data, setData] = useState({});
 
     useEffect(() => {
         async function getFile(id) {
-            await getFileWithResultAsync(id);
+            const fileData = await getFileWithResultAsync(id);
+            setData(fileData)
+            console.log(fileData);
         }
         getFile(fileId);
     }, [fileId]);
@@ -31,8 +35,8 @@ export default function FilePDF({ fileId }) {
         <Document>
             <Page size="legal" style={styles.page}>
                 <Header />
-                <StepOne />
-                <StepTwo />
+                <StepOne discoveryMethod={data.discoveryMethod} info={info} />
+                <StepTwo patient={data.patient} />
                 <StepThree />
                 <StepFour />
                 <StepFive />

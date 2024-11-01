@@ -1,5 +1,5 @@
-import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, InputGroup, Loader, Pagination } from 'rsuite';
-import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaChartLine, FaRegFilePdf } from 'react-icons/fa';
+import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, Loader, Pagination } from 'rsuite';
+import { FaEdit, FaSearch, FaSync, FaPlus, FaRegFilePdf } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { GetHistoryFileByHospital } from '../services/historyByHospital';
@@ -8,7 +8,7 @@ import { decodeToken } from '../../../pages/layout/utils/decoder';
 import FormGroup from 'rsuite/esm/FormGroup';
 import FileViewer from '../../pdf/components/fileViewer';
 import FilePDF from '../../pdf/components/filePDF';
-//El doctor no puede editar, verificar eso
+
 const { Column, HeaderCell, Cell } = Table;
 
 const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
@@ -35,7 +35,6 @@ const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
   );
 };
 
-//Funcion para filtrar correctamente las fechas
 function formatDate(date) {
   const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
   return new Date(date).toLocaleDateString('es-ES', options);
@@ -48,40 +47,21 @@ export default function RecordsView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [pdfToView, setPdfToView] = useState(null);
+  const [activeRole, setActiveRole] = useState('');
 
   const userInfo = useSelector((state) => state.user.user);
 
   useEffect(() => {
-    let data = [];
-    let userRole = decodeToken(userInfo.jwt);
-
-    const fetchData = async () => {
-      try {
-        if (userRole.role === 'Doctor') {
-          data = await GetHistoryFileByHospital(userInfo.info.hospitalId);
-        } else {
-          data = await GetHistoryFileByHospital(null);
-        }
-        if (data != null) {
-          setHistoryFiles(data);
-        }
-      } catch (err) {
-        setError('Error al cargar los datos');
-      } finally {
-        setLoading(false);
-      }
-    };
-
+    setActiveRole(decodeToken(userInfo.jwt).role);
     fetchData();
   }, []);
 
   const fetchData = async () => {
     setLoading(true);
     let data = [];
-    let userRole = decodeToken(userInfo.jwt);
 
     try {
-      if (userRole.role === 'Doctor') {
+      if (activeRole === 'Doctor') {
         data = await GetHistoryFileByHospital(userInfo.info.hospitalId);
       } else {
         data = await GetHistoryFileByHospital(null);
@@ -96,22 +76,17 @@ export default function RecordsView() {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const handleRefresh = () => {
     fetchData();
   };
 
   function handleFilePreview(selectedId) {
-    setPdfToView(<FilePDF fileId={selectedId} />)
+    setPdfToView(<FilePDF fileId={selectedId} info={userInfo.info} />)
   }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: 'auto', padding: '20px', overflow: 'hidden' }}>
       <FlexboxGrid justify="start" style={{ marginBottom: 10, gap: 20 }} gutter={10}>
-        {/* Primera Columna de Inputs */}
         <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
           <FormGroup controlId="patientCode">
             <Input
@@ -127,7 +102,6 @@ export default function RecordsView() {
           </FormGroup>
         </FlexboxGrid.Item>
 
-        {/* Segunda Columna de Inputs */}
         <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
           <FormGroup controlId="names">
             <Input
@@ -143,7 +117,6 @@ export default function RecordsView() {
           </FormGroup>
         </FlexboxGrid.Item>
 
-        {/* Tercera Columna de Inputs */}
         <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
           <FormGroup controlId="secondLastName">
             <Input
@@ -153,7 +126,6 @@ export default function RecordsView() {
           </FormGroup>
         </FlexboxGrid.Item>
 
-        {/* Botones de Buscar y Refrescar */}
         <FlexboxGrid.Item colspan={3} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Button appearance="primary" color="blue" size="md" style={{ fontSize: 16 }}>
             <FaSearch style={{ marginRight: 5, width: 25 }} /> Buscar
@@ -173,13 +145,15 @@ export default function RecordsView() {
               <Cell>
                 {(rowData) => (
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Editar</Tooltip>}>
-                      <IconButton
-                        icon={<FaEdit />}
-                        appearance="ghost"
-                        style={{ color: 'black', border: 'Transparent', fontSize: '22px', padding: 5 }}
-                      />
-                    </Whisper>
+                    {activeRole !== 'Doctor' && (
+                      <Whisper placement="top" trigger="hover" speaker={<Tooltip>Editar</Tooltip>}>
+                        <IconButton
+                          icon={<FaEdit />}
+                          appearance="ghost"
+                          style={{ color: 'black', border: 'Transparent', fontSize: '22px', padding: 5 }}
+                        />
+                      </Whisper>
+                    )}
                     <Whisper placement="top" trigger="hover" speaker={<Tooltip>Ver ficha</Tooltip>}>
                       <IconButton
                         icon={<FaRegFilePdf />}
