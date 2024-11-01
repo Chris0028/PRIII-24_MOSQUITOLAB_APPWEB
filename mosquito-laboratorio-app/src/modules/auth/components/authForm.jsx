@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaKey, FaUser } from "react-icons/fa";
+import { FaKey, FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
 import { Button, ButtonToolbar, Form, InputGroup, Notification, useToaster } from "rsuite";
 import FormControl from "rsuite/esm/FormControl";
 import FormGroup from "rsuite/esm/FormGroup";
@@ -14,6 +14,7 @@ export default function AuthForm() {
 
     const dispatch = useDispatch();
     const [authData, setAuthData] = useState({ username: '', password: '' });
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const toaster = useToaster();
 
@@ -22,6 +23,10 @@ export default function AuthForm() {
             ...authData,
             [name]: value
         });
+    }
+
+    function togglePasswordVisibility() {
+        setShowPassword(!showPassword);
     }
 
     function showErrorNotification() {
@@ -36,6 +41,7 @@ export default function AuthForm() {
     function getRole(jwt) {
         return decodeToken(jwt).role;
     }
+
 
 
     async function signIn(e) {
@@ -55,6 +61,8 @@ export default function AuthForm() {
         }
     }
 
+
+
     return (
         <Form fluid>
             <FormGroup controlId="username">
@@ -71,7 +79,10 @@ export default function AuthForm() {
                     <InputGroupAddon>
                         <FaKey />
                     </InputGroupAddon>
-                    <FormControl name="password" type="password" placeholder="Contraseña" value={authData.password} onChange={(value) => handleChange(value, 'password')} />
+                    <FormControl name="password" type={showPassword ? "text" : "password"} placeholder="Contraseña" value={authData.password} onChange={(value) => handleChange(value, 'password')} />
+                    <InputGroup.Button onClick={togglePasswordVisibility}>
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </InputGroup.Button>
                 </InputGroup>
             </FormGroup>
             <FormGroup style={{ textAlign: 'right', marginTop: -20 }}>
