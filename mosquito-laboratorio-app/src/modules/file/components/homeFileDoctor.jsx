@@ -1,5 +1,5 @@
-import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, InputGroup, Loader, Pagination } from 'rsuite';
-import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaChartLine, FaRegFilePdf } from 'react-icons/fa';
+import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, Loader, Pagination } from 'rsuite';
+import { FaEdit, FaSearch, FaSync, FaPlus, FaRegFilePdf } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { GetHistoryFileByHospital } from '../services/historyByHospital';
@@ -14,7 +14,7 @@ const { Column, HeaderCell, Cell } = Table;
 
 const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
   let backgroundColor = '';
-
+  
   switch (rowData.result?.toLowerCase()) {
     case 'positivo':
       backgroundColor = '#8AABD6';
@@ -30,8 +30,12 @@ const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
   }
 
   return (
-    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle', fontSize: 16 }}>
-      {children ? children(rowData) : rowData[dataKey]}
+    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle', fontSize: 16, color:'black'}}>
+      {children ? (children(rowData)) : rowData[dataKey] === 'Positivo' ? (
+        <span style={{ color: 'white' }}>{rowData[dataKey]}</span>
+      ) : (
+        rowData[dataKey]
+      )}
     </Cell>
   );
 };

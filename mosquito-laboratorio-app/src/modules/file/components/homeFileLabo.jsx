@@ -1,5 +1,5 @@
-import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, InputGroup, Loader, Pagination } from 'rsuite';
-import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaRegFilePdf, FaMicroscope, FaFlask } from 'react-icons/fa';
+import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, Loader, Pagination } from 'rsuite';
+import { FaEdit, FaSearch, FaSync, FaPlus,  FaRegFilePdf, FaMicroscope, FaFlask } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { GetHistoryForLab } from '../services/historyForLab';
 import { useEffect, useState } from 'react';
@@ -32,8 +32,12 @@ const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
   }
 
   return (
-    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle', fontSize: 16 }}>
-      {children ? children(rowData) : rowData[dataKey]}
+    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle', fontSize: 16, color:'black'}}>
+      {children ? (children(rowData)) : rowData[dataKey] === 'Positivo' ? (
+        <span style={{ color: 'white' }}>{rowData[dataKey]}</span>
+      ) : (
+        rowData[dataKey]
+      )}
     </Cell>
   );
 };
@@ -63,7 +67,6 @@ export default function RecordsView() {
   function handleCloseModal() {
     setShowModal(false);
   }
-
 
   useEffect(() => {
     let data = [];
@@ -102,9 +105,8 @@ export default function RecordsView() {
     }
   };
 
-  //CODIGO PARA ACTUALIZAR LAS FICHAS
   const fetchData = async () => {
-    setLoading(true); // Muestra un indicador de carga mientras se actualizan los datos
+    setLoading(true); 
     let data = [];
     let userRole = decodeToken(userInfo.jwt);
     try {
@@ -120,7 +122,7 @@ export default function RecordsView() {
     } catch (err) {
       setError('Error al cargar los datos');
     } finally {
-      setLoading(false); // Oculta el indicador de carga cuando se complete la actualización
+      setLoading(false);
     }
   };
 
