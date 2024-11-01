@@ -10,6 +10,8 @@ import TestForm from '../../test/components/testForm';
 import { useSelector } from 'react-redux';
 import { decodeToken } from '../../../pages/layout/utils/decoder';
 import FormGroup from 'rsuite/esm/FormGroup';
+import ResultFilePDF from '../../pdf/sampleResult/components/sampleResultFile';
+import ResultViewer from '../../pdf/sampleResult/components/resultViewer';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -53,6 +55,8 @@ export default function RecordsView() {
   const [fileId, setFileId] = useState(0);
   const [diseaseName, setDiseaseName] = useState('')
 
+  const [pdfToView, setPdfToView] = useState(null);
+
   const userInfo = useSelector((state) => state.user.user);
 
   function handleOpenModal() {
@@ -87,6 +91,12 @@ export default function RecordsView() {
 
     fetchData();
   }, []);
+  
+  function handleFilePreview(selectedId) {
+    console.log(selectedId);
+    setPdfToView(<ResultFilePDF />)
+  }
+
 
   const handleEdit = async (fileId) => {
     // Asegúrate de que fileId sea un valor válido antes de navegar
@@ -215,6 +225,7 @@ export default function RecordsView() {
                         icon={<FaRegFilePdf />}
                         appearance="ghost"
                         color="blue"
+                        onClick={() => handleFilePreview(rowData.id)}
                         style={{ color: 'black', border: 'Transparent', marginTop: 5, fontSize: '24px', padding: 5 }}
                       />
                     </Whisper>
@@ -346,6 +357,8 @@ export default function RecordsView() {
           borderTop: '2px solid #ccc',
         }}
       >
+        <ResultViewer pdfToView={pdfToView} />
+
         {/* Botón para Agregar Ficha */}
         <Button appearance="primary" color="blue" size="lg" onClick={() => navigate('/fileform')}>
           <FaPlus style={{ marginRight: 10 }} /> Agregar Ficha
