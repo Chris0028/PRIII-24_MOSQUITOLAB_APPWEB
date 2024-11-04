@@ -44,7 +44,6 @@ const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
   );
 };
 
-//Funcion para filtrar correctamente las fechas
 function formatDate(date) {
   const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
   return new Date(date).toLocaleDateString('es-ES', options);
@@ -56,7 +55,7 @@ export default function RecordsView() {
   const [historyFiles, setHistoryFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
   const [fileId, setFileId] = useState(0);
   const [diseaseName, setDiseaseName] = useState('')
 
@@ -152,8 +151,6 @@ export default function RecordsView() {
         delete filteredArgs[key];
       }
     });
-
-    console.log(filteredArgs);
 
     const data = await historyFilterLAsync(filteredArgs);
     setHistoryFiles(data);

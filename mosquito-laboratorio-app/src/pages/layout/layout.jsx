@@ -1,4 +1,4 @@
-import { FaChartBar, FaCloudDownloadAlt, FaFileInvoice, FaSignOutAlt, FaUserAlt, FaVial, FaBars } from "react-icons/fa";
+import { FaChartBar, FaCloudDownloadAlt, FaFileInvoice, FaSignOutAlt, FaUserAlt, FaVial, FaBars, FaUsers } from "react-icons/fa";
 import { Container, Content, Divider, Header, Nav, Navbar, Sidebar, Sidenav, IconButton } from "rsuite";
 import SidenavBody from "rsuite/esm/Sidenav/SidenavBody";
 import { useEffect, useState } from "react";
@@ -72,13 +72,15 @@ export default function Layout({ children }) {
                                     { label: 'Gráficos', url: '/pieGraph' }
                                 ]}
                             />
-
-                            <CustomNavItem eventKey="8" icon={<FaUserAlt />} label="Cuenta" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />
+                            {role === 'Admin' && (
+                                <CustomNavItem eventKey="8" icon={<FaUsers />} label="Usuarios" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/users'} expanded={expanded} />
+                            )}
+                            <CustomNavItem eventKey="9" icon={<FaUserAlt />} label="Cuenta" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />
                         </Nav>
                     </SidenavBody>
                     <Nav style={{ marginTop: expanded ? '10vh' : '2vh' }}>
                         <Divider />
-                        <CustomNavItem eventKey="9" icon={<FaSignOutAlt />} label="Cerrar sesión" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} expanded={expanded} />
+                        <CustomNavItem eventKey="10" icon={<FaSignOutAlt />} label="Cerrar sesión" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} expanded={expanded} />
                     </Nav>
                 </Sidenav>
             </Sidebar>

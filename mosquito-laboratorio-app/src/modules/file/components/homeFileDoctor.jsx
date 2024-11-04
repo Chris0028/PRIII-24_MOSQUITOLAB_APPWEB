@@ -98,8 +98,6 @@ export default function RecordsView() {
       }
     });
 
-    console.log(filteredArgs);
-
     const data = await historyFilterHAsync(filteredArgs);
     setHistoryFiles(data);
   }

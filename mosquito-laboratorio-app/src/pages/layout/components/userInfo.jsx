@@ -17,7 +17,7 @@ export default function UserInfo({ expanded }) {
             } else if (getUser.role === 'Employee') {
                 setUserAuth({ username: getUser.sub, role: 'Laboratorio' });
             } else {
-                setUserAuth({ username: getUser.sub, role: 'Doctor' });
+                setUserAuth({ username: getUser.sub, role: 'Médico' });
             }
         }
     }, []);

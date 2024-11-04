@@ -73,7 +73,7 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName }) {
     }
 
     return (
-        <Modal size={'lg'} open={open} onClose={hiddeModal}>
+        <Modal overflow size={'lg'} open={open} onClose={hiddeModal}>
             <ModalHeader>
                 <ModalTitle style={{ fontWeight: 'bold' }}>Nuevo Resultado</ModalTitle>
             </ModalHeader>

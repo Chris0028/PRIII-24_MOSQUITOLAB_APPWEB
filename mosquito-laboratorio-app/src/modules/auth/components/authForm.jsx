@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaKey, FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
-import { Button, ButtonToolbar, Form, InputGroup, Notification, useToaster } from "rsuite";
+import { Button, ButtonToolbar, Form, InputGroup, Message, useToaster } from "rsuite";
 import FormControl from "rsuite/esm/FormControl";
 import FormGroup from "rsuite/esm/FormGroup";
 import InputGroupAddon from "rsuite/esm/InputGroup/InputGroupAddon";
@@ -31,29 +31,38 @@ export default function AuthForm() {
 
     function showErrorNotification() {
         toaster.push(
-            <Notification type='error' header='Error de autenticación' closable>
+            <Message type='error' header='Error de autenticación' closable showIcon>
                 <p>El usuario o la contraseña es incorrecta.</p>
-            </Notification>,
-            { placement: 'topCenter' }
-        )
+            </Message>,
+            { duration: 3000 }
+        );
     }
 
     function getRole(jwt) {
         return decodeToken(jwt).role;
     }
 
-
+    function getUsername(jwt) {
+        return decodeToken(jwt).sub;
+    }
 
     async function signIn(e) {
         e.preventDefault();
         const credentials = await authenticateAsync(authData);
         if (credentials != null) {
-            localStorage.setItem('jwt', credentials.jwt);
-            dispatch(setUser(credentials));
-            if (getRole(credentials.jwt) !== 'Doctor') {
-                navigate('/homefilelabo');
+            if (credentials.firstLogin < 1) {
+                let user = getUsername(credentials.jwt);
+                navigate(`/changepassword/${user}`);
             } else {
-                navigate('/homefiledoctor');
+                if (credentials.status === 1) {
+                    localStorage.setItem('jwt', credentials.jwt);
+                    dispatch(setUser(credentials));
+                    if (getRole(credentials.jwt) !== 'Doctor') {
+                        navigate('/homefilelabo');
+                    } else {
+                        navigate('/homefiledoctor');
+                    }
+                }
             }
         } else {
             showErrorNotification();
