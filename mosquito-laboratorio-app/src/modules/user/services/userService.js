@@ -30,3 +30,20 @@ export async function changeFirstLoginAsync(username) {
     else
         throw new Error('Request Failed');
 }
+
+export function getRoles() {
+    return [
+        {
+            label: 'Administrador',
+            value: 'Admin'
+        },
+        {
+            label: 'Médico',
+            value: 'Doctor'
+        },
+        {
+            label: 'Laboratorio',
+            value: 'Employee'
+        }
+    ]
+}
