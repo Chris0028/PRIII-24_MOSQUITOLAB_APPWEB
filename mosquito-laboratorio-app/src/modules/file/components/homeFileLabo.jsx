@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { setUpdateFile } from '../../../redux/updateFileSlice';
 import TestForm from '../../test/components/testForm';
 import { useSelector } from 'react-redux';
-import { decodeToken } from '../../../pages/layout/utils/decoder';
+import { decodeToken } from '../../../utils/decoder';
 import FormGroup from 'rsuite/esm/FormGroup';
 import ResultFilePDF from '../../pdf/sampleResult/components/sampleResultFile';
 import ResultViewer from '../../pdf/sampleResult/components/resultViewer';

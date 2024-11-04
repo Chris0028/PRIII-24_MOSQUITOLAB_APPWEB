@@ -6,7 +6,7 @@ import UserInfo from "./components/userInfo";
 import CustomNavItem, { CustomNavMenu } from "./components/customNavItem";
 import NavItem from "rsuite/esm/Nav/NavItem";
 import { PiEyedropperSampleFill } from "react-icons/pi";
-import { decodeToken } from "./utils/decoder";
+import { decodeToken } from "../../utils/decoder";
 import { useSelector } from "react-redux";
 
 
@@ -75,7 +75,7 @@ export default function Layout({ children }) {
                             {role === 'Admin' && (
                                 <CustomNavItem eventKey="8" icon={<FaUsers />} label="Usuarios" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/users'} expanded={expanded} />
                             )}
-                            <CustomNavItem eventKey="9" icon={<FaUserAlt />} label="Cuenta" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />
+                            <CustomNavItem eventKey="9" icon={<FaUserAlt />} label="Cuenta" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/profile'} expanded={expanded} />
                         </Nav>
                     </SidenavBody>
                     <Nav style={{ marginTop: expanded ? '10vh' : '2vh' }}>

@@ -8,7 +8,7 @@ import { authenticateAsync } from "../services/authService"
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../../redux/userSlice";
-import { decodeToken } from "../../../pages/layout/utils/decoder"
+import { decodeToken } from "../../../utils/decoder"
 
 export default function AuthForm() {
 
@@ -70,10 +70,14 @@ export default function AuthForm() {
         }
     }
 
-
+    function handleKeyDown(e) {
+        if (e.key === 'Enter') {
+            signIn(e);
+        }
+    }
 
     return (
-        <Form fluid>
+        <Form fluid onKeyDown={(e) => handleKeyDown(e)}>
             <FormGroup controlId="username">
                 <InputGroup>
                     <InputGroupAddon>

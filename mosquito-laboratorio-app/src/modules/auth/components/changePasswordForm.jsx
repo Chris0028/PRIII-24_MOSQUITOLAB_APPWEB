@@ -8,6 +8,7 @@ import InputGroupButton from "rsuite/esm/InputGroup/InputGroupButton";
 import { changePasswordAsync } from "../services/authService";
 import { useNavigate, useParams } from "react-router-dom";
 import { changeFirstLoginAsync } from "../../user/services/userService";
+import { validatePassword } from "../../../utils/passwordValidator";
 
 export default function ChangePasswordForm() {
     const { username } = useParams();
@@ -24,16 +25,20 @@ export default function ChangePasswordForm() {
 
     async function changePassword(e) {
         e.preventDefault();
-        const success = await changePasswordAsync(passwords, username);
-        if (success) {
-            const firstLoginChanged = await changeFirstLoginAsync(username);
-            if (firstLoginChanged) {
-                showNotification('success', 'La contraseña se cambio correctamente.');
-                navigate('/');
+        if (validatePassword(passwords.newPassword)) {
+            const success = await changePasswordAsync(passwords, username);
+            if (success) {
+                const firstLoginChanged = await changeFirstLoginAsync(username);
+                if (firstLoginChanged) {
+                    showNotification('success', 'La contraseña se cambio correctamente.');
+                    navigate('/');
+                }
+            } else {
+                showNotification('error', 'Las contraseñas no coinciden.');
+                useState({ oldPassword: '', newPassword: '', confirmPassword: '' });
             }
         } else {
-            showNotification('error', 'No se pudo actualizar la contraseña.');
-            useState({ oldPassword: '', newPassword: '', confirmPassword: '' });
+            showNotification('error', 'La contraseña debe contener mínimo 8 caracteres, al menos una letra, un número, y un simbolo como: @.-_*()&$!');
         }
     }
 
