@@ -10,7 +10,7 @@ import { createResultAsync, diagnosticMethodsByDisease, getCaseMethods, getCaseT
 import FormControl from "rsuite/esm/FormControl";
 import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
 import { useSelector } from "react-redux";
-import { decodeToken } from "../../../pages/layout/utils/decoder";
+import { decodeToken } from "../../../utils/decoder";
 import { useNavigate } from "react-router-dom";
 
 export default function TestForm({ open, hiddeModal, fileId, diseaseName }) {

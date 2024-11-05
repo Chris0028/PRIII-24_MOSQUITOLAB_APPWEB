@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { GetHistoryFileByHospital } from '../services/historyByHospital';
 import { useSelector } from 'react-redux';
-import { decodeToken } from '../../../pages/layout/utils/decoder';
+import { decodeToken } from '../../../utils/decoder';
 import FormGroup from 'rsuite/esm/FormGroup';
 import FileViewer from '../../pdf/components/fileViewer';
 import FilePDF from '../../pdf/components/filePDF';

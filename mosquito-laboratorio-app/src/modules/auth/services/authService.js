@@ -29,6 +29,6 @@ export async function changePasswordAsync(passwordsList, username) {
         const res = await httpClient.post('/Auth/ChangePassword', data);
         if (res.status === 200)
             return true;
-        return false;
+        throw new Error('Request failed');
     }
 }

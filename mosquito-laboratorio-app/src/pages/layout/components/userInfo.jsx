@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Avatar } from "rsuite";
 import NavItem from "rsuite/esm/Nav/NavItem";
-import { decodeToken } from "../utils/decoder";
+import { decodeToken } from "../../../utils/decoder";
 import { useSelector } from "react-redux";
 
 export default function UserInfo({ expanded }) {
