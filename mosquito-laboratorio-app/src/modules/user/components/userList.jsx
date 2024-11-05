@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
-import { FaEye } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 import { IconButton, Message, Pagination, Table, Tooltip, Whisper } from "rsuite";
 import { Cell, HeaderCell } from "rsuite-table";
 import Column from "rsuite/esm/Table/TableColumn";
-import DeleteUserModal from "./deleteUserModal";
 import { getAllUsersAsync } from "../services/userService";
-import { FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
+import { FaCircleCheck, FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
 import CreateUserModal from "./createUserModal";
+import ChangeStatusUserModal from "./changeStatusUserModal";
 
 export default function UserList() {
 
     const [showModalDelete, setShowModalDelete] = useState(false);
     const [showModalCreate, setShowModalCreate] = useState(false);
     const [userId, setUserId] = useState(0);
+    const [changeStatus, setChangeStatus] = useState('');
     const [username, setUsername] = useState('');
     const [users, setUsers] = useState([]);
     //pagination
@@ -30,11 +31,11 @@ export default function UserList() {
         setTotal(response.total);
     }
 
-    function handleOpenModalDelete() {
+    function handleOpenModalChangeStatus() {
         setShowModalDelete(true);
     }
 
-    function handleCloseModalDelete() {
+    function handleCloseModalChangeStatus() {
         setShowModalDelete(false);
     }
 
@@ -67,25 +68,48 @@ export default function UserList() {
                         <Cell style={{ display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle', fontSize: 16, color: 'black' }}>
                             {(rowData) => (
                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Ver detalles</Tooltip>}>
+                                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Eliminar</Tooltip>}>
                                         <IconButton
-                                            icon={<FaEye />}
+                                            icon={<FaTrash />}
                                             appearance="ghost"
                                             style={{ color: 'black', border: 'Transparent', fontSize: '22px', padding: 5 }}
-                                        />
-                                    </Whisper>
-                                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Deshabilitar</Tooltip>}>
-                                        <IconButton
-                                            icon={<FaCircleMinus />}
-                                            appearance="ghost"
                                             onClick={() => {
                                                 setUserId(rowData.userId)
                                                 setUsername(rowData.userName);
-                                                handleOpenModalDelete();
+                                                setChangeStatus('DE');
+                                                handleOpenModalChangeStatus();
                                             }}
-                                            style={{ color: 'black', border: 'Transparent', fontSize: '20px', padding: 5 }}
                                         />
                                     </Whisper>
+                                    {rowData.status === 1 ? (
+                                        <Whisper placement="top" trigger="hover" speaker={<Tooltip>Deshabilitar</Tooltip>}>
+                                            <IconButton
+                                                icon={<FaCircleMinus />}
+                                                appearance="ghost"
+                                                onClick={() => {
+                                                    setUserId(rowData.userId)
+                                                    setUsername(rowData.userName);
+                                                    setChangeStatus('DI');
+                                                    handleOpenModalChangeStatus();
+                                                }}
+                                                style={{ color: 'black', border: 'Transparent', fontSize: '23px', padding: 5 }}
+                                            />
+                                        </Whisper>
+                                    ) : (
+                                        <Whisper placement="top" trigger="hover" speaker={<Tooltip>Habilitar</Tooltip>}>
+                                            <IconButton
+                                                icon={<FaCircleCheck />}
+                                                appearance="ghost"
+                                                onClick={() => {
+                                                    setUserId(rowData.userId)
+                                                    setUsername(rowData.userName);
+                                                    setChangeStatus('EN');
+                                                    handleOpenModalChangeStatus();
+                                                }}
+                                                style={{ color: 'black', border: 'Transparent', fontSize: '23px', padding: 5 }}
+                                            />
+                                        </Whisper>
+                                    )}
                                 </div>
                             )}
                         </Cell>
@@ -152,7 +176,7 @@ export default function UserList() {
                     onChangeLimit={handleChangeLimit} />
             </div>
 
-            <DeleteUserModal refreshUsers={loadUsers} open={showModalDelete} hiddeModal={handleCloseModalDelete} userId={userId} username={username} />
+            <ChangeStatusUserModal toChangeStatus={changeStatus} refreshUsers={loadUsers} open={showModalDelete} hiddeModal={handleCloseModalChangeStatus} userId={userId} username={username} />
             <CreateUserModal refreshUsers={loadUsers} open={showModalCreate} hiddeModal={handleCloseModalCreate} />
         </>
     );

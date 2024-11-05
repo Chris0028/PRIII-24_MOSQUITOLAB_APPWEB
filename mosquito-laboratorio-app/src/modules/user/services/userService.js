@@ -8,8 +8,8 @@ export async function getAllUsersAsync(page, limit) {
         throw new Error('Request Failed');
 }
 
-export async function deleteUserAsync(id) {
-    const res = await httpClient.post('/User/Delete', id);
+export async function changeStatusUserAsync(id, newStatus) {
+    const res = await httpClient.patch(`/User/ChangeStatus/${id}`, newStatus);
     if (res.status === 204)
         return true;
     return false;
