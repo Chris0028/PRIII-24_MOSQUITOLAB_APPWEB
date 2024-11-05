@@ -6,20 +6,42 @@ import FormStepThreeU from './formStepThreeU';
 import FormStepFourU from './formStepFourU';
 import FormStepFiveU from './formStepFiveU';
 import FormStepSixU from './formStepSixU';
-import { useDispatch } from 'react-redux';
-import { updateStepOne } from '../../../redux/fileSlice';  // Importar las acciones necesarias
+import { useDispatch, useSelector } from 'react-redux';
+import { updateStepOne, updateStepTwo, updateStepThree, updateStepFour, updateStepFive, updateStepSix } from '../../../redux/formStepsSlice';
 
-export default function fileFormU() {
+export default function FileFormU() {
   const [step, setStep] = useState(0);
   const dispatch = useDispatch();
+  const formData = useSelector((state) => state.formSteps); // Obtener el estado de todos los pasos
 
-  // Función para cambiar de paso y guardar los datos actuales
-  const onNext = () => {
-    // Guarda los datos del paso actual en Redux antes de avanzar
-    if (step === 0) {
-      dispatch(updateStepOne(formData));
+  const saveCurrentStepData = () => {
+    switch (step) {
+      case 0:
+        dispatch(updateStepOne(formData.stepOne)); // Guarda los datos de Step 1
+        break;
+      case 1:
+        dispatch(updateStepTwo(formData.stepTwo)); // Guarda los datos de Step 2
+        break;
+      case 2:
+        dispatch(updateStepThree(formData.stepThree)); // Guarda los datos de Step 3
+        break;
+      case 3:
+        dispatch(updateStepFour(formData.stepFour)); // Guarda los datos de Step 4
+        break;
+      case 4:
+        dispatch(updateStepFive(formData.stepFive)); // Guarda los datos de Step 5
+        break;
+      case 5:
+        dispatch(updateStepSix(formData.stepSix)); // Guarda los datos de Step 6
+        break;
+      default:
+        break;
     }
-    setStep(step + 1);  // Avanza al siguiente paso
+  };
+
+  const onNext = () => {
+    saveCurrentStepData(); // Guarda los datos antes de avanzar
+    setStep(step + 1); // Avanza al siguiente paso
   };
 
   const onPrevious = () => setStep(step - 1);

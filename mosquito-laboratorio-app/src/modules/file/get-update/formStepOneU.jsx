@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { GetFileDetails } from '../services/GetUpdateFile';
 import { updateStepOne } from '../../../redux/formStepsSlice';
+import { mapPayloadToSteps } from '../utils/mapPayLoadToSteps';
 
 export default function formStepOneU() {
   //GET-UPDATE
@@ -27,24 +28,21 @@ export default function formStepOneU() {
  
   //Cargado de datos
   useEffect(() => {
-    const getFile = async () => {
-      if (!formData.discoveryMethod) {
-        const data = await GetFileDetails(fileID);
-        console.log('Full data from API:', data);  // Inspecciona la estructura completa
-        if (data && data.stepOne) {
-          dispatch(updateStepOne(data.stepOne));
-          console.log('Attempting to update Redux with:', data.stepOne);
-        } else {
-          console.log('Warning: stepOne is undefined in data');
-        }
+    const loadData = async () => {
+      const data = await GetFileDetails(fileID);
+      console.log("Full data from API:", data);
+      if (data) {
+        mapPayloadToSteps(dispatch, data);
       }
     };
-    getFile();
-  }, [fileID, dispatch, formData.discoveryMethod]);
+
+    loadData();
+  }, [fileID, dispatch]);
 
   const handleInputChange = (name, value) => {
-    dispatch(updateStepOne({ [name]: value }));  // Actualiza Redux con los cambios
-  };
+  console.log("Actualizando discoveryMethod a:", value);
+  dispatch(updateStepOne({ ...formData, [name]: value }));
+};
 
   return (
     <Form fluid>

@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {  GetFileDetails } from '../services/GetUpdateFile'; //
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import { setUpdateFile } from '../../../redux/updateFileSlice';
+
 
 export default function FormStepThreeU() {
     //GET-UPDATE

@@ -89,29 +89,30 @@ const initialState = {
 
 const formStepsSlice = createSlice({
   name: 'formSteps',
-  initialState: initialState,
+  initialState,
   reducers: {
     updateStepOne(state, action) {
+      console.log("Valor recibido en updateStepOne:", action.payload);
       state.stepOne = { ...state.stepOne, ...action.payload };
     },
     updateStepTwo(state, action) {
-        state.stepTwo = { ...state.stepTwo, ...action.payload };
+      state.stepTwo = { ...state.stepTwo, ...action.payload };
     },
     updateStepThree(state, action) {
         state.stepThree = { ...state.stepThree, ...action.payload };
-        console.log(state.stepThree);
+        //console.log(state.stepThree);
     },
     updateStepFour(state, action) {
         state.stepFour = { ...state.stepFour, ...action.payload };
-        console.log(state.stepFour);
+        //console.log(state.stepFour);
     },
     updateStepFive(state, action) {
         state.stepFive = { ...state.stepFive, ...action.payload };
-        console.log(state.stepFive)
+        //console.log(state.stepFive)
     },
     updateStepSix(state, action) {
         state.stepSix = { ...state.stepSix, ...action.payload };
-        console.log(state.stepSix)
+        //console.log(state.stepSix)
     },
     
     // Puedes agregar otros reducers para actualizar los otros pasos

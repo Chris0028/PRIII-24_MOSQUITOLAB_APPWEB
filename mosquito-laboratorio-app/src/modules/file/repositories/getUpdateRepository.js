@@ -1,17 +1,17 @@
 import { UpdateFile } from "../services/GetUpdateFile";
 
 // Función para decodificar el JWT y obtener el `userId`
-// function decodeJwt(token) {
-//   try {
-//     const payload = JSON.parse(atob(token.split('.')[1])); // Decodifica el payload
-//     return payload.userId || null; // Retorna `userId` o `null` si no existe
-//   } catch (error) {
-//     console.error('Error decoding JWT:', error);
-//     return null;
-//   }
-// }
+function decodeJwt(token) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1])); // Decodifica el payload
+    return payload.userId || null; // Retorna `userId` o `null` si no existe
+  } catch (error) {
+    console.error('Error decoding JWT:', error);
+    return null;
+  }
+}
 
-export function createFilePayload(state) {
+export function createFilePayload(data) {
   const { stepOne, stepTwo, stepThree, stepFour, stepFive, stepSix } = state;
 
   // Obtener el JWT de localStorage
@@ -57,7 +57,7 @@ export function createFilePayload(state) {
   const symptomData = createSymptomData(stepFour.selectedDisease, stepFour.symptoms);
 
   // Definir el payload final
-  const payload = {
+  const payload = { 
     patientName: stepTwo.patientName,
     patientLastName: stepTwo.patientLastName,
     patientSecondLastName: stepTwo.patientSecondLastName,
