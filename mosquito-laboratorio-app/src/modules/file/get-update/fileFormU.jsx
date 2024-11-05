@@ -15,12 +15,11 @@ export default function fileFormU() {
 
   // Función para cambiar de paso y guardar los datos actuales
   const onNext = () => {
-    // Aquí puedes guardar los datos del paso actual antes de avanzar al siguiente paso
+    // Guarda los datos del paso actual en Redux antes de avanzar
     if (step === 0) {
-      // Guarda los datos del paso 1 en Redux, por ejemplo
-      dispatch(updateStepOne({ /* pasar los valores que quieras guardar en Redux */ }));
+      dispatch(updateStepOne(formData));
     }
-    setStep(step + 1);
+    setStep(step + 1);  // Avanza al siguiente paso
   };
 
   const onPrevious = () => setStep(step - 1);

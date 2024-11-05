@@ -47,6 +47,10 @@ function formatDate(date) {
 
 export default function RecordsView() {
   const navigate = useNavigate()
+  //pagination
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [total, setTotal] = useState(0);
 
   const [historyFiles, setHistoryFiles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -60,7 +64,7 @@ export default function RecordsView() {
   useEffect(() => {
     setActiveRole(decodeToken(userInfo.jwt).role);
     fetchData();
-  }, []);
+  }, [page, limit]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -98,8 +102,9 @@ export default function RecordsView() {
       }
     });
 
-    const data = await historyFilterHAsync(filteredArgs);
+    const data = await historyFilterHAsync(filteredArgs, page, limit);
     setHistoryFiles(data);
+    setTotal(data.total);
   }
 
   function handleChange(value, name) {
@@ -114,6 +119,11 @@ export default function RecordsView() {
       setArgs(newArgs);
     }
   }
+
+  function handleChangeLimit(dataKey) {
+    setPage(1);
+    setLimit(dataKey);
+}
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: 'auto', padding: '20px', overflow: 'hidden' }}>
@@ -289,7 +299,15 @@ export default function RecordsView() {
         )}
       </div>
       <div >
-        <Pagination prev next first last ellipsis boundaryLinks size="sm" maxButtons={5} layout={['-', 'pager']} />
+        <Pagination prev next first last ellipsis boundaryLinks
+                      size="sm"
+                      maxButtons={5}
+                      layout={['-', 'pager']}
+                      total={total}
+                      limit={limit}
+                      activePage={page}
+                      onChangePage={setPage}
+                      onChangeLimit={handleChangeLimit} />
       </div>
       {/* Footer Fijo con los botones de Agregar y Descargar */}
       <div
