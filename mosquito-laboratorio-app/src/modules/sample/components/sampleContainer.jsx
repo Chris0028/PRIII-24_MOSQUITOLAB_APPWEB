@@ -10,21 +10,30 @@ export default function SampleContainer() {
     const [diseases, setDiseases] = useState([]);
     const [args, setArgs] = useState({});
     const [samples, setSamples] = useState([]);
+    //pagination
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+    const [total, setTotal] = useState(0);
 
     useEffect(() => {
-        async function fetchDiseases() {
-            const data = await getDiseasesAsync();
-            setDiseases(data);
-        }
-
-        async function fetchData() {
-            const data = await getSamplesAsync(null);
-            setSamples(data);
-        }
-
         fetchDiseases();
-        fetchData();
-    }, []);
+        fetchData(null, page, limit);
+    }, [page, limit]);
+
+    useEffect(() => {
+        filter();
+    }, [page, limit]);
+
+    async function fetchDiseases() {
+        const data = await getDiseasesAsync();
+        setDiseases(data);
+    }
+
+    async function fetchData(body, page, limit) {
+        const data = await getSamplesAsync(body, page, limit);
+        setSamples(data.data);
+        setTotal(data.total);
+    }
 
     async function filter() {
         let filteredArgs = { ...args };
@@ -38,11 +47,7 @@ export default function SampleContainer() {
             let date = filteredArgs.registerDate.toISOString();
             filteredArgs.registerDate = date;
         }
-
-        console.log(filteredArgs);
-
-        const data = await getSamplesAsync(filteredArgs);
-        setSamples(data);
+        await fetchData(filteredArgs, page, limit);
     }
 
     function handleChange(value, name) {
@@ -111,7 +116,7 @@ export default function SampleContainer() {
                 </FlexboxGridItem>
             </FlexboxGrid>
 
-            <SamplesTable args={samples} />
+            <SamplesTable args={samples} handlePage={setPage} handleLimit={setLimit} page={page} limit={limit} total={total} />
         </>
     );
 }
