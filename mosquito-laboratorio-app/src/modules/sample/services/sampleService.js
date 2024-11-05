@@ -1,7 +1,7 @@
 import { httpClient } from "../../../api/httpClient/httpClient";
 
-export async function getSamplesAsync(body) {
-    const res = await httpClient.post('/Sample/All', body);
+export async function getSamplesAsync(body, page, limit) {
+    const res = await httpClient.post('/Sample/All', body, { params: { page, limit } });
     if (res.status === 200) {
         return res.data;
     } else {

@@ -17,7 +17,8 @@ export default function Profile() {
         secondLastName: '',
         phone: '',
         email: '',
-        sedes: ''
+        sedes: '',
+        userId: 0
     });
     const [currentRole, setCurrentRole] = useState('');
     const user = useSelector((state) => state.user.user);
@@ -53,15 +54,6 @@ export default function Profile() {
     function handleEdit() {
         setDisabledControls(false);
         setIsEditing(true);
-        setProfile({
-            userName: '',
-            name: '',
-            lastName: '',
-            secondLastName: '',
-            phone: '',
-            email: '',
-            sedes: ''
-        });
     }
 
     async function handleSave() {
@@ -87,6 +79,8 @@ export default function Profile() {
     function handleCancel() {
         setDisabledControls(true);
         setIsEditing(false);
+        const credentials = decodeToken(user.jwt);
+        getProfile(credentials.userId, credentials.role);
     }
 
     function handleChange(value, name) {
