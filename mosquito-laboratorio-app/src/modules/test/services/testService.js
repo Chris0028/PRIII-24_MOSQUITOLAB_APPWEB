@@ -11,7 +11,7 @@ export function diagnosticMethodsByDisease(diseaseName) {
     } else {
         diagnosticMethods.push('RT-PCR en tiempo real', 'Elisa IgM');
     }
-    return diagnosticMethods;
+    return diagnosticMethods.map(diagnosticMethod => ({ label: diagnosticMethod, value: diagnosticMethod }));
 }
 
 export function sampleTypes() {
@@ -38,4 +38,11 @@ export async function createResultAsync(test) {
     } else {
         throw new Error('An exception ocurring');
     }
+}
+
+export async function getResultAsync(fileId) {
+    const res = await httpClient.get(`/Test/GetTestSample/${fileId}`);
+    if (res.status === 200)
+        return res.data;
+    throw new Error('An exception ocurring');
 }

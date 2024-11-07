@@ -1,5 +1,5 @@
 import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, Loader, Pagination } from 'rsuite';
-import { FaEdit, FaSearch, FaSync, FaPlus, FaRegFilePdf, FaMicroscope, FaFlask } from 'react-icons/fa';
+import { FaEdit, FaSearch, FaSync, FaPlus, FaRegFilePdf, FaMicroscope, FaFlask, FaRegEdit } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { GetHistoryForLab } from '../services/historyForLab';
 import { useEffect, useState } from 'react';
@@ -57,7 +57,8 @@ export default function RecordsView() {
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [fileId, setFileId] = useState(0);
-  const [diseaseName, setDiseaseName] = useState('')
+  const [diseaseName, setDiseaseName] = useState('');
+  const [action, setAction] = useState('');
 
   const [pdfToView, setPdfToView] = useState(null);
 
@@ -72,35 +73,33 @@ export default function RecordsView() {
     setShowModal(false);
   }
 
-  useEffect(() => {
-    let data = [];
-    let userRole = decodeToken(userInfo.jwt);
-    const fetchData = async () => {
-      try {
-        if (userRole.role === 'Employee') {
-          data = await GetHistoryForLab(parseInt(userInfo.info.laboratoryId));
-        } else {
-          data = await GetHistoryForLab(null);
-        }
-
-        if (data != null) {
-          setHistoryFiles(data);
-        }
-      } catch (err) {
-        setError('Error al cargar los datos');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   function handleFilePreview(selectedId) {
     console.log(selectedId);
     setPdfToView(<ResultFilePDF />)
   }
 
+  useEffect(() => {
+    let userRole = decodeToken(userInfo.jwt);
+    if (userRole.role === 'Employee')
+      fetchData(parseInt(userInfo.info.laboratoryId));
+    else
+      fetchData(null);
+
+  }, []);
+
+  async function fetchData(laboratoryId) {
+    setLoading(true);
+    let data = await GetHistoryForLab(laboratoryId);
+    try {
+      if (data != null) {
+        setHistoryFiles(data);
+      }
+    } catch (err) {
+      setError('Error al cargar los datos');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleEdit = async (fileId) => {
     // Asegúrate de que fileId sea un valor válido antes de navegar
@@ -115,33 +114,11 @@ export default function RecordsView() {
     }
   };
 
-  const fetchData = async () => {
-    setLoading(true);
-    let data = [];
-    let userRole = decodeToken(userInfo.jwt);
-    try {
-      if (userRole.role === 'Employee') {
-        data = await GetHistoryForLab(parseInt(userInfo.info.laboratoryId));
-      } else {
-        data = await GetHistoryForLab(null);
-      }
-
-      if (data != null) {
-        setHistoryFiles(data);
-      }
-    } catch (err) {
-      setError('Error al cargar los datos');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const handleRefresh = () => {
-    fetchData();
+  function handleRefresh() {
+    if (decodeToken(userInfo.jwt).role === 'Admin') {
+      fetchData(null);
+    } else
+      fetchData(userInfo.info.laboratoryId);
   };
 
   async function filter() {
@@ -259,7 +236,7 @@ export default function RecordsView() {
                         onClick={() => handleEdit(rowData.id)}
                       />
                     </Whisper>
-                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Vista previa</Tooltip>}>
+                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Vista previa resultado</Tooltip>}>
                       <IconButton
                         icon={<FaRegFilePdf />}
                         appearance="ghost"
@@ -284,7 +261,8 @@ export default function RecordsView() {
                           appearance="ghost"
                           onClick={() => {
                             setFileId(rowData.id);
-                            setDiseaseName(rowData.diseaseName)
+                            setDiseaseName(rowData.diseaseName);
+                            setAction('Create');
                             handleOpenModal();
                           }}
                           style={{ color: 'black', border: 'Transparent', marginTop: 18, fontSize: '24px', padding: 5 }}
@@ -293,12 +271,14 @@ export default function RecordsView() {
                     ) : (
                       <Whisper placement="top" trigger="hover" speaker={<Tooltip>Editar resultado</Tooltip>}>
                         <IconButton
-                          icon={<FaFlask />}
+                          icon={<FaRegEdit />}
                           appearance="ghost"
-                          // onClick={() => {
-                          //   setFileId(rowData.id);
-                          //   handleOpenModal();
-                          // }}
+                          onClick={() => {
+                            setDiseaseName(rowData.diseaseName);
+                            setAction('Edit');
+                            setFileId(rowData.id);
+                            handleOpenModal();
+                          }}
                           style={{ color: 'black', border: 'Transparent', marginTop: 18, fontSize: '24px', padding: 5 }}
                         />
                       </Whisper>
@@ -410,12 +390,16 @@ export default function RecordsView() {
         </Button>
 
         {/* Botón para Actualizar */}
-        <Button appearance="primary" color="blue" size="lg" onClick={handleRefresh} >
+        <Button
+          appearance="primary"
+          color="blue"
+          size="lg"
+          onClick={() => handleRefresh()} >
           <FaSync style={{ marginRight: 10 }} /> Actualizar
         </Button>
       </div>
 
-      <TestForm open={showModal} hiddeModal={handleCloseModal} fileId={fileId} diseaseName={diseaseName} />
+      <TestForm refreshHistoryLab={handleRefresh} open={showModal} hiddeModal={handleCloseModal} fileId={fileId} diseaseName={diseaseName} action={action} />
     </div >
   );
 }
