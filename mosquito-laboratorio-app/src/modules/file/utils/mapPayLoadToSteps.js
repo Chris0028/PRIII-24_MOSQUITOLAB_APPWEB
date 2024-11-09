@@ -1,93 +1,93 @@
 import { updateStepOne, updateStepTwo, updateStepThree, updateStepFour, updateStepFive, updateStepSix } from '../../../redux/formStepsSlice';
 
-export function mapPayloadToSteps(dispatch, data) {
-  console.log("Payload completo recibido:", data); // Agrega este log para ver el contenido completo del data
+export function mapPayloadToSteps(dispatch, payload) {
+  console.log("Payload completo recibido:", payload); // Agrega este log para ver el contenido completo del payload
 
   // Paso 1
-  const stepOneData = {
-    discoveryMethod: data.discoveryMethod || '', // Asegúrate de que sea el nombre correcto en el data
+  const stepOnepayload = {
+    discoveryMethod: payload.discoveryMethod || '', // Asegúrate de que sea el nombre correcto en el payload
   };
 
-  dispatch(updateStepOne(stepOneData));
-  console.log("Updated Redux state for stepOne:", stepOneData);
+  dispatch(updateStepOne(stepOnepayload));
+  console.log("Updated Redux state for stepOne:", stepOnepayload);
 
   // Mapeo para otros pasos sigue igual...
-  const stepTwoData = {
-    patientCi: data.ci || '',
-    patientBirthDate: data.birthDate || '',
-    age: data.age || 0,
-    patientGender: data.gender || '',
-    isPregnant: data.isPregnant || false,
-    pregnantLastMenstruationDate: data.lastMenstruationDate || '',
-    pregnantChildBirthDate: data.childBirthDate || '',
-    comorbidity: data.comorbidity || '',
-    pregnantDisease: data.pregnantDisease || '',
-    childParent: data.childParent || '',
-    patientName: data.patientName || '',
-    patientLastName: data.patientLastName || '',
-    patientSecondLastName: data.patientSecondLastName || '',
-    countryOrigin: data.countryOrigin || '',
-    patientPhone: data.phone || '',
-    directionCity: data.directionCity || '',
-    directionNeighborhood: data.directionNeighborhood || '',
-    municipalityOrState: data.directionMunicipalityId || 0,
-    isSecured: data.isSecured || false,
-    insuranceId: data.insuranceId || null,
-    ipTypeInsured: data.ipTypeInsured || '',
-    ipInsuredRecord: data.ipInsuredRecord || '',
-    ipInsuredName: data.ipInsuredName || '',
-    directionLatitude: data.directionLatitude || 0,
-    directionLongitude: data.directionLongitude || 0,
+  const stepTwopayload = {
+    patientCi: payload.ci || '',
+    patientBirthDate: payload.birthDate || '',
+    age: payload.age || 0,
+    patientGender: payload.gender || '',
+    isPregnant: payload.isPregnant || false,
+    pregnantLastMenstruationDate: payload.lastMenstruationDate || '',
+    pregnantChildBirthDate: payload.childBirthDate || '',
+    comorbidity: payload.comorbidity || '',
+    pregnantDisease: payload.pregnantDisease || '',
+    childParent: payload.childParent || '',
+    patientName: payload.patientName || '',
+    patientLastName: payload.patientLastName || '',
+    patientSecondLastName: payload.patientSecondLastName || '',
+    countryOrigin: payload.countryOrigin || '',
+    patientPhone: payload.phone || '',
+    directionCity: payload.directionCity || '',
+    directionNeighborhood: payload.directionNeighborhood || '',
+    municipalityOrState: payload.directionMunicipalityId || 0,
+    isSecured: payload.isSecured || false,
+    insuranceId: payload.insuranceId || null,
+    ipTypeInsured: payload.ipTypeInsured || '',
+    ipInsuredRecord: payload.ipInsuredRecord || '',
+    ipInsuredName: payload.ipInsuredName || '',
+    directionLatitude: payload.directionLatitude || 0,
+    directionLongitude: payload.directionLongitude || 0,
   };
-  dispatch(updateStepTwo(stepTwoData));
-  console.log("Updated Redux state for stepTwo:", stepTwoData);
+  dispatch(updateStepTwo(stepTwopayload));
+  console.log("Updated Redux state for stepTwo:", stepTwopayload);
 
   // Continuar con otros pasos de la misma manera...
-  const stepThreeData = {
-    contagionCountry: data.contagionCountry || '',
-    contagionState: data.contagionState || '',
-    contagionMunicipality: data.contagionMunicipality || '',
-    contagionCity: data.contagionCity || '',
-    contagionNeighborhood: data.contagionNeighborhood || '',
+  const stepThreepayload = {
+    contagionCountry: payload.contagionCountry || '',
+    contagionState: payload.contagionState || '',
+    contagionMunicipality: payload.contagionMunicipality || '',
+    contagionCity: payload.contagionCity || '',
+    contagionNeighborhood: payload.contagionNeighborhood || '',
   };
-  dispatch(updateStepThree(stepThreeData));
-  console.log("Updated Redux state for stepThree:", stepThreeData);
+  dispatch(updateStepThree(stepThreepayload));
+  console.log("Updated Redux state for stepThree:", stepThreepayload);
 
-  const stepFourData = {
-    fileSymptomsDate: data.fileSymptomsDate || '',
-    fileEpidemiologicalWeek: data.fileEpidemiologicalWeek || '',
-    selectedDisease: data.caseType || 'Dengue',
-    dengueCase: data.dengueCase || '',
-    symptoms: data.symptoms || {},
+  const stepFourpayload = {
+    fileSymptomsDate: payload.fileSymptomsDate || '',
+    fileEpidemiologicalWeek: payload.fileEpidemiologicalWeek || '',
+    selectedDisease: payload.caseType || 'Dengue',
+    dengueCase: payload.dengueCase || '',
+    symptoms: payload.symptoms || {},
     otherSymptom: {
-      zika: data.otherSymptom?.zika || '',
-      chikungunya: data.otherSymptom?.chikungunya || '',
-      dengue: data.otherSymptom?.dengue || '',
+      zika: payload.otherSymptom?.zika || '',
+      chikungunya: payload.otherSymptom?.chikungunya || '',
+      dengue: payload.otherSymptom?.dengue || '',
     },
     otherSymptomChecked: {
-      zika: data.otherSymptomChecked?.zika || false,
-      chikungunya: data.otherSymptomChecked?.chikungunya || false,
-      dengue: data.otherSymptomChecked?.dengue || false,
+      zika: payload.otherSymptomChecked?.zika || false,
+      chikungunya: payload.otherSymptomChecked?.chikungunya || false,
+      dengue: payload.otherSymptomChecked?.dengue || false,
     },
   };
-  dispatch(updateStepFour(stepFourData));
-  console.log("Updated Redux state for stepFour:", stepFourData);
+  dispatch(updateStepFour(stepFourpayload));
+  console.log("Updated Redux state for stepFour:", stepFourpayload);
 
-  const stepFiveData = {
-    wasHospitalized: data.hospitalizedType === 1,
-    hospitalizedEntryDate: data.hospitalizedEntryDate || '',
-    utiHospitalized: data.utiType === 1,
-    utiHospitalizationDate: data.utiEntryDate || '',
-    hospitalizedName: data.hospitalizedName || '',
-    dischargeType: data.dischargeType || '',
-    dischargeDate: data.dischargeDate || '',
+  const stepFivepayload = {
+    wasHospitalized: payload.hospitalizedType === 1,
+    hospitalizedEntryDate: payload.hospitalizedEntryDate || '',
+    utiHospitalized: payload.utiType === 1,
+    utiHospitalizationDate: payload.utiEntryDate || '',
+    hospitalizedName: payload.hospitalizedName || '',
+    dischargeType: payload.dischargeType || '',
+    dischargeDate: payload.dischargeDate || '',
   };
-  dispatch(updateStepFive(stepFiveData));
-  console.log("Updated Redux state for stepFive:", stepFiveData);
+  dispatch(updateStepFive(stepFivepayload));
+  console.log("Updated Redux state for stepFive:", stepFivepayload);
 
-  const stepSixData = {
-    testLaboratoryId: data.testLaboratoryId || 0,
+  const stepSixpayload = {
+    testLaboratoryId: payload.testLaboratoryId || 0,
   };
-  dispatch(updateStepSix(stepSixData));
-  console.log("Updated Redux state for stepSix:", stepSixData);
+  dispatch(updateStepSix(stepSixpayload));
+  console.log("Updated Redux state for stepSix:", stepSixpayload);
 }

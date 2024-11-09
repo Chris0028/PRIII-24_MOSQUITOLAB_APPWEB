@@ -1,7 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./userSlice";
 import fileReducer from "./fileSlice";
-
 import formStepsReducer from "./formStepsSlice";
 
 const store = configureStore({

@@ -9,42 +9,15 @@ import FormStepSixU from './formStepSixU';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateStepOne, updateStepTwo, updateStepThree, updateStepFour, updateStepFive, updateStepSix } from '../../../redux/formStepsSlice';
 
-export default function FileFormU() {
+export default function FileForm() {
   const [step, setStep] = useState(0);
-  const dispatch = useDispatch();
-  const formData = useSelector((state) => state.formSteps); // Obtener el estado de todos los pasos
 
-  const saveCurrentStepData = () => {
-    switch (step) {
-      case 0:
-        dispatch(updateStepOne(formData.stepOne)); // Guarda los datos de Step 1
-        break;
-      case 1:
-        dispatch(updateStepTwo(formData.stepTwo)); // Guarda los datos de Step 2
-        break;
-      case 2:
-        dispatch(updateStepThree(formData.stepThree)); // Guarda los datos de Step 3
-        break;
-      case 3:
-        dispatch(updateStepFour(formData.stepFour)); // Guarda los datos de Step 4
-        break;
-      case 4:
-        dispatch(updateStepFive(formData.stepFive)); // Guarda los datos de Step 5
-        break;
-      case 5:
-        dispatch(updateStepSix(formData.stepSix)); // Guarda los datos de Step 6
-        break;
-      default:
-        break;
-    }
+  const onChange = (nextStep) => {
+      setStep(nextStep < 0 ? 0 : nextStep > 5 ? 1 : nextStep);
   };
 
-  const onNext = () => {
-    saveCurrentStepData(); // Guarda los datos antes de avanzar
-    setStep(step + 1); // Avanza al siguiente paso
-  };
-
-  const onPrevious = () => setStep(step - 1);
+  const onNext = () => onChange(step + 1);
+  const onPrevious = () => onChange(step - 1);
 
   return (
     <div>

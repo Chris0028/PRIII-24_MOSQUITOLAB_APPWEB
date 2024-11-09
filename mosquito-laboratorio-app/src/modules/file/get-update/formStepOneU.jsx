@@ -15,7 +15,7 @@ export default function formStepOneU() {
   const dispatch = useDispatch();
   
   // Obtener los datos del estado de Redux
-  const formData = useSelector((state) => state.formSteps.stepOne)
+  const formData = useSelector((state) => state.formSteps.StepOne)
   console.log('Redux state formData:', formData);
 
   // Crear las funciones para manejar los cambios utilizando la utilidad
