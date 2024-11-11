@@ -1,4 +1,4 @@
-import { FaChartBar, FaCloudDownloadAlt, FaFileInvoice, FaSignOutAlt, FaUserAlt, FaVial, FaBars } from "react-icons/fa";
+import { FaChartBar, FaCloudDownloadAlt, FaFileInvoice, FaSignOutAlt, FaUserAlt, FaVial, FaBars, FaUsers } from "react-icons/fa";
 import { Container, Content, Divider, Header, Nav, Navbar, Sidebar, Sidenav, IconButton } from "rsuite";
 import SidenavBody from "rsuite/esm/Sidenav/SidenavBody";
 import { useEffect, useState } from "react";
@@ -6,7 +6,7 @@ import UserInfo from "./components/userInfo";
 import CustomNavItem, { CustomNavMenu } from "./components/customNavItem";
 import NavItem from "rsuite/esm/Nav/NavItem";
 import { PiEyedropperSampleFill } from "react-icons/pi";
-import { decodeToken } from "./utils/decoder";
+import { decodeToken } from "../../utils/decoder";
 import { useSelector } from "react-redux";
 import connectToSignalR from "./services/signalRService";
 import NotificationContainer from "./components/notificationContainer";
@@ -86,13 +86,15 @@ export default function Layout({ children }) {
                                     { label: 'Gráficos', url: '/pieGraph' }
                                 ]}
                             />
-
-                            <CustomNavItem eventKey="8" icon={<FaUserAlt />} label="Cuenta" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />
+                            {role === 'Admin' && (
+                                <CustomNavItem eventKey="8" icon={<FaUsers />} label="Usuarios" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/users'} expanded={expanded} />
+                            )}
+                            <CustomNavItem eventKey="9" icon={<FaUserAlt />} label="Cuenta" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/profile'} expanded={expanded} />
                         </Nav>
                     </SidenavBody>
                     <Nav style={{ marginTop: expanded ? '10vh' : '2vh' }}>
                         <Divider />
-                        <CustomNavItem eventKey="9" icon={<FaSignOutAlt />} label="Cerrar sesión" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} expanded={expanded} />
+                        <CustomNavItem eventKey="10" icon={<FaSignOutAlt />} label="Cerrar sesión" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} expanded={expanded} />
                     </Nav>
                 </Sidenav>
             </Sidebar>

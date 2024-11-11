@@ -6,20 +6,21 @@ import ModalBody from "rsuite/esm/Modal/ModalBody";
 import ModalFooter from "rsuite/esm/Modal/ModalFooter";
 import ModalHeader from "rsuite/esm/Modal/ModalHeader";
 import ModalTitle from "rsuite/esm/Modal/ModalTitle";
-import { createResultAsync, diagnosticMethodsByDisease, getCaseMethods, getCaseTypes, laboratoryResults, sampleTypes } from "../services/testService";
+import { createResultAsync, diagnosticMethodsByDisease, getCaseMethods, getCaseTypes, getResultAsync, laboratoryResults, sampleTypes } from "../services/testService";
 import FormControl from "rsuite/esm/FormControl";
 import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
 import { useSelector } from "react-redux";
-import { decodeToken } from "../../../pages/layout/utils/decoder";
+import { decodeToken } from "../../../utils/decoder";
 import { useNavigate } from "react-router-dom";
 
-export default function TestForm({ open, hiddeModal, fileId, diseaseName }) {
+export default function TestForm({ open, hiddeModal, fileId, diseaseName, action, refreshHistoryLab }) {
 
     const [diagnostics, setDiagnostics] = useState([]);
     const [samples, setSamples] = useState([]);
     const [results, setResults] = useState([]);
     const [caseTypes, setCaseTypes] = useState([]);
     const [caseMethods, setCaseMethods] = useState([]);
+    const [title, setTitle] = useState('');
 
     const userInfo = useSelector((state) => state.user.user);
     const navigate = useNavigate();
@@ -37,6 +38,8 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName }) {
     });
 
     useEffect(() => {
+        handleAction();
+
         setDiagnostics(diagnosticMethodsByDisease(diseaseName));
         setSamples(sampleTypes());
         setResults(laboratoryResults());
@@ -44,12 +47,6 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName }) {
         setCaseMethods(getCaseMethods());
 
         const userCredentials = decodeToken(userInfo.jwt);
-
-        setTest(prevTest => ({
-            ...prevTest,
-            lastUpdateUserId: parseInt(userCredentials.userId),
-            fileId: fileId
-        }))
 
     }, [fileId]);
 
@@ -68,14 +65,42 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName }) {
         }
         const success = await createResultAsync(test);
         if (success) {
-            navigate('/samples');
+            hiddeModal();
+            refreshHistoryLab();
+        }
+    }
+
+    async function handleAction() {
+        const userCredentials = decodeToken(userInfo.jwt);
+        let userId = parseInt(userCredentials.userId);
+        if (action === 'Edit') {
+            setTitle('Editar resultado');
+            const res = await getResultAsync(fileId);
+            setTest({
+                caseType: res.caseType,
+                testDiagnosticMethod: res.diagnosticMethod,
+                caseMethod: res.method,
+                testResult: res.result,
+                sampleObservation: res.sampleObservation !== null ? res.sampleObservation : '',
+                sampleType: res.sampleType,
+                testObservation: res.testObservation !== null ? res.testObservation : '',
+                fileId: fileId,
+                lastUpdateUserId: userId
+            });
+        } else {
+            setTitle('Nuevo resultado');
+            setTest(prevTest => ({
+                ...prevTest,
+                lastUpdateUserId: userId,
+                fileId: fileId
+            }));
         }
     }
 
     return (
-        <Modal size={'lg'} open={open} onClose={hiddeModal}>
+        <Modal overflow size={'lg'} open={open} onClose={hiddeModal}>
             <ModalHeader>
-                <ModalTitle style={{ fontWeight: 'bold' }}>Nuevo Resultado</ModalTitle>
+                <ModalTitle style={{ fontWeight: 'bold' }}>{title}</ModalTitle>
             </ModalHeader>
             <ModalBody>
                 <Form fluid>
@@ -90,6 +115,7 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName }) {
                                     placeholder="Seleccione tipo de caso"
                                     onChange={(value) => handleChange(value, 'caseType')}
                                     name="caseType"
+                                    value={test.caseType}
                                     data={caseTypes.map(caseType => ({ label: caseType, value: caseType }))} />
                             </FormGroup>
                         </FlexboxGridItem>
@@ -100,6 +126,7 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName }) {
                                     placeholder="Seleccione método de detección"
                                     onChange={(value) => handleChange(value, 'caseMethod')}
                                     name="caseMethod"
+                                    value={test.caseMethod}
                                     data={caseMethods.map(caseMethod => ({ label: caseMethod, value: caseMethod }))} />
                             </FormGroup>
                         </FlexboxGridItem>
@@ -113,6 +140,7 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName }) {
                                     placeholder="Seleccione el tipo de muestra"
                                     onChange={(value) => handleChange(value, 'sampleType')}
                                     name="sampleType"
+                                    value={test.sampleType}
                                     data={samples.map(sample => ({ label: sample, value: sample }))} />
                             </FormGroup>
                         </FlexboxGridItem>
@@ -149,7 +177,8 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName }) {
                                     placeholder="Seleccione el método de diagnóstico"
                                     onChange={(value) => handleChange(value, 'testDiagnosticMethod')}
                                     name="testDiagnosticMethod"
-                                    data={diagnostics.map(diagnostic => ({ label: diagnostic, value: diagnostic }))} />
+                                    value={test.testDiagnosticMethod}
+                                    data={diagnostics} />
                             </FormGroup>
                         </FlexboxGridItem>
                         <FlexboxGridItem colspan={12} style={{ marginBottom: '20px' }}>
@@ -160,6 +189,7 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName }) {
                                     placeholder="Seleccione el resultado de laboratorio"
                                     onChange={(value) => handleChange(value, 'testResult')}
                                     name="testResult"
+                                    value={test.testResult}
                                     data={results.map(result => ({ label: result, value: result }))} />
                             </FormGroup>
                         </FlexboxGridItem>
@@ -171,7 +201,7 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName }) {
                                     placeholder="Opcional(*)"
                                     style={{ width: '100%' }}
                                     name="testObservation"
-                                    value={test.resultObservation}
+                                    value={test.testObservation}
                                     onChange={(value) => handleChange(value, 'testObservation')} />
                             </FormGroup>
                         </FlexboxGridItem>
@@ -182,7 +212,19 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName }) {
                 <Button
                     appearance="primary"
                     onClick={async () => await sendResult()}>Guardar</Button>
-                <Button onClick={hiddeModal}>Cancelar</Button>
+                <Button onClick={() => {
+                    setTest({
+                        caseType: '',
+                        caseMethod: '',
+                        sampleType: '',
+                        sampleObservation: '',
+                        testDiagnosticMethod: '',
+                        testResult: '',
+                        testObservation: '',
+                        lastUpdateUserId: 0
+                    });
+                    hiddeModal();
+                }}>Cancelar</Button>
             </ModalFooter>
         </Modal>
     )

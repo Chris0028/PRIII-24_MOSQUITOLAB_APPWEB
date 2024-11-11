@@ -1,10 +1,8 @@
 import { Container, Content, FlexboxGrid, Header, Panel } from "rsuite";
-import AuthForm from "./authForm";
 import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
-import { CgEnter } from "react-icons/cg";
 import escudo from '../../../../public/static/escudo-patrio.png'
 
-export default function AuthContainer() {
+export default function AuthContainer({ children }) {
     return (
         <Container style={{ minHeight: '100hv', padding: '100px' }}>
             <Header>
@@ -21,8 +19,8 @@ export default function AuthContainer() {
             <Content style={{ marginTop: '60px' }}>
                 <FlexboxGrid justify="center" align="middle">
                     <FlexboxGridItem style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        <Panel header="Por seguridad jamás revele sus datos" bordered style={{ textAlign: 'center', width: 400, height: 300, borderColor: '#1D3B72' }}>
-                            <AuthForm />
+                        <Panel header="Por seguridad jamás revele sus datos" bordered style={{ textAlign: 'center', width: 400, height: 350, borderColor: '#1D3B72' }}>
+                            {children}
                         </Panel>
                     </FlexboxGridItem>
                 </FlexboxGrid>

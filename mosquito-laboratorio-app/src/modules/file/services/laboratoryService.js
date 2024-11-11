@@ -8,4 +8,12 @@ export async function GetLaboratories() {
     } else {
         console.log('Error de Comunicacion');
     }
-};
+}
+
+export async function getNamesNIdsOfLabos() {
+    const res = await httpClient.get('/Laboratory/GetNamesNIds');
+    if (res.status === 200)
+        return res.data;
+    else
+        throw new Error('Request failed');
+}

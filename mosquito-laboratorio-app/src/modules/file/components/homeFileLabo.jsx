@@ -1,5 +1,5 @@
-import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, InputGroup, Loader, Pagination } from 'rsuite';
-import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaRegFilePdf, FaMicroscope, FaFlask } from 'react-icons/fa';
+import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, Loader, Pagination } from 'rsuite';
+import { FaEdit, FaSearch, FaSync, FaPlus, FaRegFilePdf, FaMicroscope, FaFlask, FaRegEdit } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { GetHistoryForLab } from '../services/historyForLab';
 import { useEffect, useState } from 'react';
@@ -8,10 +8,11 @@ import { useDispatch } from 'react-redux';
 import { setUpdateFile } from '../../../redux/updateFileSlice';
 import TestForm from '../../test/components/testForm';
 import { useSelector } from 'react-redux';
-import { decodeToken } from '../../../pages/layout/utils/decoder';
+import { decodeToken } from '../../../utils/decoder';
 import FormGroup from 'rsuite/esm/FormGroup';
 import ResultFilePDF from '../../pdf/sampleResult/components/sampleResultFile';
 import ResultViewer from '../../pdf/sampleResult/components/resultViewer';
+import { historyFilterLAsync } from '../services/historyFileFilterL';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -33,13 +34,16 @@ const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
   }
 
   return (
-    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle', fontSize: 16 }}>
-      {children ? children(rowData) : rowData[dataKey]}
+    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle', fontSize: 16, color: 'black' }}>
+      {children ? (children(rowData)) : rowData[dataKey] === 'Positivo' ? (
+        <span style={{ color: 'white' }}>{rowData[dataKey]}</span>
+      ) : (
+        rowData[dataKey]
+      )}
     </Cell>
   );
 };
 
-//Funcion para filtrar correctamente las fechas
 function formatDate(date) {
   const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
   return new Date(date).toLocaleDateString('es-ES', options);
@@ -51,12 +55,14 @@ export default function RecordsView() {
   const [historyFiles, setHistoryFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
   const [fileId, setFileId] = useState(0);
-  const [diseaseName, setDiseaseName] = useState('')
+  const [diseaseName, setDiseaseName] = useState('');
+  const [action, setAction] = useState('');
 
   const [pdfToView, setPdfToView] = useState(null);
 
+  const [args, setArgs] = useState({});
   const userInfo = useSelector((state) => state.user.user);
 
   function handleOpenModal() {
@@ -67,36 +73,33 @@ export default function RecordsView() {
     setShowModal(false);
   }
 
-
-  useEffect(() => {
-    let data = [];
-    let userRole = decodeToken(userInfo.jwt);
-    const fetchData = async () => {
-      try {
-        if (userRole.role === 'Employee') {
-          data = await GetHistoryForLab(parseInt(userInfo.info.laboratoryId));
-        } else {
-          data = await GetHistoryForLab(null);
-        }
-
-        if (data != null) {
-          setHistoryFiles(data);
-        }
-      } catch (err) {
-        setError('Error al cargar los datos');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-  
   function handleFilePreview(selectedId) {
     console.log(selectedId);
     setPdfToView(<ResultFilePDF />)
   }
 
+  useEffect(() => {
+    let userRole = decodeToken(userInfo.jwt);
+    if (userRole.role === 'Employee')
+      fetchData(parseInt(userInfo.info.laboratoryId));
+    else
+      fetchData(null);
+
+  }, []);
+
+  async function fetchData(laboratoryId) {
+    setLoading(true);
+    let data = await GetHistoryForLab(laboratoryId);
+    try {
+      if (data != null) {
+        setHistoryFiles(data);
+      }
+    } catch (err) {
+      setError('Error al cargar los datos');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleEdit = async (fileId) => {
     // Asegúrate de que fileId sea un valor válido antes de navegar
@@ -111,67 +114,74 @@ export default function RecordsView() {
     }
   };
 
-  //CODIGO PARA ACTUALIZAR LAS FICHAS
-  const fetchData = async () => {
-    setLoading(true); // Muestra un indicador de carga mientras se actualizan los datos
-    let data = [];
-    let userRole = decodeToken(userInfo.jwt);
-    try {
-      if (userRole.role === 'Employee') {
-        data = await GetHistoryForLab(parseInt(userInfo.info.laboratoryId));
-      } else {
-        data = await GetHistoryForLab(null);
-      }
+  function handleRefresh() {
+    if (decodeToken(userInfo.jwt).role === 'Admin') {
+      fetchData(null);
+    } else
+      fetchData(userInfo.info.laboratoryId);
+  };
 
-      if (data != null) {
-        setHistoryFiles(data);
+  async function filter() {
+    let filteredArgs = { ...args };
+    Object.keys(filteredArgs).forEach(key => {
+      if (filteredArgs[key] === '' || filteredArgs[key] == null) {
+        delete filteredArgs[key];
       }
-    } catch (err) {
-      setError('Error al cargar los datos');
-    } finally {
-      setLoading(false); // Oculta el indicador de carga cuando se complete la actualización
+    });
+
+    const data = await historyFilterLAsync(filteredArgs);
+    setHistoryFiles(data);
+  }
+
+  function handleChange(value, name) {
+    if (value) {
+      setArgs({
+        ...args,
+        [name]: value
+      });
+    } else {
+      const newArgs = { ...args };
+      delete newArgs[name];
+      setArgs(newArgs);
     }
-  };
+  }
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const handleRefresh = () => {
-    fetchData();
-  };
-  //
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: 'auto', padding: '20px', overflow: 'hidden' }}>
       {/* Filtros */}
       <FlexboxGrid justify="start" style={{ marginBottom: 10, gap: 20 }} gutter={10}>
         {/* Primera Columna de Inputs */}
         <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
-          <FormGroup controlId="patientCode">
+          <FormGroup controlId="code">
             <Input
-              placeholder="Código del paciente"
+              onChange={(value) => handleChange(value, 'code')}
+              placeholder="Código de la ficha"
               style={{ width: '100%' }}
             />
           </FormGroup>
-          <FormGroup controlId="ci">
+          <FormGroup controlId="codePatient">
             <Input
-              placeholder="Cédula de identidad"
+              onChange={(value) => handleChange(value, 'codePatient')}
+              placeholder="Código del paciente"
               style={{ width: '100%', marginTop: 10 }}
             />
           </FormGroup>
+
         </FlexboxGrid.Item>
 
         {/* Segunda Columna de Inputs */}
         <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
-          <FormGroup controlId="names">
+          <FormGroup controlId="ci">
             <Input
-              placeholder="Nombres"
+              onChange={(value) => handleChange(value, 'ci')}
+              placeholder="Cédula de identidad"
               style={{ width: '100%' }}
             />
           </FormGroup>
-          <FormGroup controlId="firstLastName">
+          <FormGroup controlId="names">
             <Input
-              placeholder="Primer Apellido"
+              onChange={(value) => handleChange(value, 'names')}
+              placeholder="Nombres"
               style={{ width: '100%', marginTop: 10 }}
             />
           </FormGroup>
@@ -179,22 +189,28 @@ export default function RecordsView() {
 
         {/* Tercera Columna de Inputs */}
         <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
+          <FormGroup controlId="lastName">
+            <Input
+              onChange={(value) => handleChange(value, 'lastName')}
+              placeholder="Primer Apellido"
+              style={{ width: '100%' }}
+            />
+          </FormGroup>
           <FormGroup controlId="secondLastName">
             <Input
+              onChange={(value) => handleChange(value, 'secondLastName')}
               placeholder="Segundo Apellido"
-              style={{ width: '100%' }}
+              style={{ width: '100%', marginTop: 10 }}
             />
           </FormGroup>
         </FlexboxGrid.Item>
 
         {/* Botones de Buscar y Refrescar */}
         <FlexboxGrid.Item colspan={3} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Button appearance="primary" color="blue" size="md" style={{ fontSize: 16 }}>
+          <Button appearance="primary" color="blue" size="md" style={{ fontSize: 16 }} onClick={() => { filter(); }}>
             <FaSearch style={{ marginRight: 5, width: 25 }} /> Buscar
           </Button>
-
         </FlexboxGrid.Item>
-
       </FlexboxGrid>
 
       {/* Contenedor para la tabla con scroll */}
@@ -220,7 +236,7 @@ export default function RecordsView() {
                         onClick={() => handleEdit(rowData.id)}
                       />
                     </Whisper>
-                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Vista previa</Tooltip>}>
+                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Vista previa resultado</Tooltip>}>
                       <IconButton
                         icon={<FaRegFilePdf />}
                         appearance="ghost"
@@ -245,7 +261,8 @@ export default function RecordsView() {
                           appearance="ghost"
                           onClick={() => {
                             setFileId(rowData.id);
-                            setDiseaseName(rowData.diseaseName)
+                            setDiseaseName(rowData.diseaseName);
+                            setAction('Create');
                             handleOpenModal();
                           }}
                           style={{ color: 'black', border: 'Transparent', marginTop: 18, fontSize: '24px', padding: 5 }}
@@ -254,12 +271,14 @@ export default function RecordsView() {
                     ) : (
                       <Whisper placement="top" trigger="hover" speaker={<Tooltip>Editar resultado</Tooltip>}>
                         <IconButton
-                          icon={<FaFlask />}
+                          icon={<FaRegEdit />}
                           appearance="ghost"
-                          // onClick={() => {
-                          //   setFileId(rowData.id);
-                          //   handleOpenModal();
-                          // }}
+                          onClick={() => {
+                            setDiseaseName(rowData.diseaseName);
+                            setAction('Edit');
+                            setFileId(rowData.id);
+                            handleOpenModal();
+                          }}
                           style={{ color: 'black', border: 'Transparent', marginTop: 18, fontSize: '24px', padding: 5 }}
                         />
                       </Whisper>
@@ -274,6 +293,14 @@ export default function RecordsView() {
                 <ColoredCell dataKey="id" />
               </Column>
             )}
+
+            <Column width={150} resizable>
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Código De Ficha</HeaderCell>
+              <ColoredCell dataKey="code" >
+                {(rowData) => <span>{rowData.code || 'N/A'}</span>}
+              </ColoredCell>
+            </Column>
+
             <Column width={110} resizable >
               <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Estado</HeaderCell>
               <ColoredCell dataKey="result" />
@@ -295,11 +322,9 @@ export default function RecordsView() {
               <ColoredCell dataKey="diseaseName" />
             </Column>
 
-            <Column width={120} resizable>
-              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Código</HeaderCell>
-              <ColoredCell dataKey="code">
-                {(rowData) => <span>{rowData.code || 'N/A'}</span>}
-              </ColoredCell>
+            <Column width={160} resizable>
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Código De Paciente</HeaderCell>
+              <ColoredCell dataKey="codePatient" />
             </Column>
 
             <Column width={120} resizable>
@@ -365,12 +390,16 @@ export default function RecordsView() {
         </Button>
 
         {/* Botón para Actualizar */}
-        <Button appearance="primary" color="blue" size="lg" onClick={handleRefresh} >
+        <Button
+          appearance="primary"
+          color="blue"
+          size="lg"
+          onClick={() => handleRefresh()} >
           <FaSync style={{ marginRight: 10 }} /> Actualizar
         </Button>
       </div>
 
-      <TestForm open={showModal} hiddeModal={handleCloseModal} fileId={fileId} diseaseName={diseaseName} />
+      <TestForm refreshHistoryLab={handleRefresh} open={showModal} hiddeModal={handleCloseModal} fileId={fileId} diseaseName={diseaseName} action={action} />
     </div >
   );
 }

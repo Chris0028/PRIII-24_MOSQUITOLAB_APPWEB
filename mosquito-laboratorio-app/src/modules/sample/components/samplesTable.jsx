@@ -2,7 +2,13 @@ import { Pagination, Table } from "rsuite";
 import { Cell, HeaderCell } from "rsuite-table";
 import Column from "rsuite/esm/Table/TableColumn";
 
-export default function SamplesTable({ args }) {
+export default function SamplesTable({ args, page, limit, total, handlePage, handleLimit }) {
+
+    function handleChangeLimit(dataKey) {
+        console.log(dataKey);
+        handlePage(1);
+        handleLimit(dataKey);
+    }
 
     return (
         <>
@@ -43,7 +49,15 @@ export default function SamplesTable({ args }) {
                 </Column>
             </Table>
             <div>
-                <Pagination prev next first last ellipsis boundaryLinks size="sm" maxButtons={5} layout={['-', 'pager']} />
+                <Pagination prev next first last ellipsis boundaryLinks
+                    size="sm"
+                    maxButtons={5}
+                    layout={['-', 'pager']}
+                    total={total}
+                    limit={limit}
+                    activePage={page}
+                    onChangePage={handlePage}
+                    onChangeLimit={(handleChangeLimit)} />
             </div>
         </>
     );

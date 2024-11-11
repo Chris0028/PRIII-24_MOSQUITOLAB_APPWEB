@@ -14,6 +14,7 @@ export default function CustomNavItem({ eventKey, icon, label, hoveredItem, hand
 
     function signOut() {
         dispatch(clearUser());
+        localStorage.clear();
     }
 
     function handleClick() {

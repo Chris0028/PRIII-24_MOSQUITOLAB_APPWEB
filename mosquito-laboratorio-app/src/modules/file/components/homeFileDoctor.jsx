@@ -1,14 +1,15 @@
-import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, InputGroup, Loader, Pagination } from 'rsuite';
-import { FaEdit, FaDownload, FaSearch, FaSync, FaPlus, FaExclamation, FaFilter, FaChartLine, FaRegFilePdf } from 'react-icons/fa';
+import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, Loader, Pagination } from 'rsuite';
+import { FaEdit, FaSearch, FaSync, FaPlus, FaRegFilePdf } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { GetHistoryFileByHospital } from '../services/historyByHospital';
 import { useSelector } from 'react-redux';
-import { decodeToken } from '../../../pages/layout/utils/decoder';
+import { decodeToken } from '../../../utils/decoder';
 import FormGroup from 'rsuite/esm/FormGroup';
 import FileViewer from '../../pdf/components/fileViewer';
 import FilePDF from '../../pdf/components/filePDF';
-//El doctor no puede editar, verificar eso
+import { historyFilterHAsync } from '../services/historyFileFilterH';
+
 const { Column, HeaderCell, Cell } = Table;
 
 const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
@@ -29,13 +30,16 @@ const ColoredCell = ({ rowData, dataKey, children, ...props }) => {
   }
 
   return (
-    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle', fontSize: 16 }}>
-      {children ? children(rowData) : rowData[dataKey]}
+    <Cell {...props} style={{ backgroundColor, display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', textAlign: 'center', verticalAlign: 'middle', fontSize: 16, color: 'black' }}>
+      {children ? (children(rowData)) : rowData[dataKey] === 'Positivo' ? (
+        <span style={{ color: 'white' }}>{rowData[dataKey]}</span>
+      ) : (
+        rowData[dataKey]
+      )}
     </Cell>
   );
 };
 
-//Funcion para filtrar correctamente las fechas
 function formatDate(date) {
   const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
   return new Date(date).toLocaleDateString('es-ES', options);
@@ -48,40 +52,22 @@ export default function RecordsView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [pdfToView, setPdfToView] = useState(null);
+  const [activeRole, setActiveRole] = useState('');
 
   const userInfo = useSelector((state) => state.user.user);
+  const [args, setArgs] = useState({});
 
   useEffect(() => {
-    let data = [];
-    let userRole = decodeToken(userInfo.jwt);
-
-    const fetchData = async () => {
-      try {
-        if (userRole.role === 'Doctor') {
-          data = await GetHistoryFileByHospital(userInfo.info.hospitalId);
-        } else {
-          data = await GetHistoryFileByHospital(null);
-        }
-        if (data != null) {
-          setHistoryFiles(data);
-        }
-      } catch (err) {
-        setError('Error al cargar los datos');
-      } finally {
-        setLoading(false);
-      }
-    };
-
+    setActiveRole(decodeToken(userInfo.jwt).role);
     fetchData();
   }, []);
 
   const fetchData = async () => {
     setLoading(true);
     let data = [];
-    let userRole = decodeToken(userInfo.jwt);
 
     try {
-      if (userRole.role === 'Doctor') {
+      if (activeRole === 'Doctor') {
         data = await GetHistoryFileByHospital(userInfo.info.hospitalId);
       } else {
         data = await GetHistoryFileByHospital(null);
@@ -96,66 +82,96 @@ export default function RecordsView() {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const handleRefresh = () => {
     fetchData();
   };
 
   function handleFilePreview(selectedId) {
-    setPdfToView(<FilePDF fileId={selectedId} />)
+    setPdfToView(<FilePDF fileId={selectedId} info={userInfo.info} />)
+  }
+
+  async function filter() {
+    let filteredArgs = { ...args };
+    Object.keys(filteredArgs).forEach(key => {
+      if (filteredArgs[key] === '' || filteredArgs[key] == null) {
+        delete filteredArgs[key];
+      }
+    });
+
+    const data = await historyFilterHAsync(filteredArgs);
+    setHistoryFiles(data);
+  }
+
+  function handleChange(value, name) {
+    if (value) {
+      setArgs({
+        ...args,
+        [name]: value
+      });
+    } else {
+      const newArgs = { ...args };
+      delete newArgs[name];
+      setArgs(newArgs);
+    }
   }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: 'auto', padding: '20px', overflow: 'hidden' }}>
       <FlexboxGrid justify="start" style={{ marginBottom: 10, gap: 20 }} gutter={10}>
-        {/* Primera Columna de Inputs */}
         <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
-          <FormGroup controlId="patientCode">
+          <FormGroup controlId="code">
             <Input
-              placeholder="Código del paciente"
+              onChange={(value) => handleChange(value, 'code')}
+              placeholder="Código de la ficha"
               style={{ width: '100%' }}
             />
           </FormGroup>
+          <FormGroup controlId="codePatient">
+            <Input
+              onChange={(value) => handleChange(value, 'codePatient')}
+              placeholder="Código del paciente"
+              style={{ width: '100%', marginTop: 10 }}
+            />
+          </FormGroup>
+
+        </FlexboxGrid.Item>
+
+        <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
           <FormGroup controlId="ci">
             <Input
+              onChange={(value) => handleChange(value, 'ci')}
               placeholder="Cédula de identidad"
-              style={{ width: '100%', marginTop: 10 }}
+              style={{ width: '100%' }}
             />
           </FormGroup>
-        </FlexboxGrid.Item>
-
-        {/* Segunda Columna de Inputs */}
-        <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
           <FormGroup controlId="names">
             <Input
+              onChange={(value) => handleChange(value, 'names')}
               placeholder="Nombres"
-              style={{ width: '100%' }}
-            />
-          </FormGroup>
-          <FormGroup controlId="firstLastName">
-            <Input
-              placeholder="Primer Apellido"
               style={{ width: '100%', marginTop: 10 }}
             />
           </FormGroup>
         </FlexboxGrid.Item>
 
-        {/* Tercera Columna de Inputs */}
         <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
+          <FormGroup controlId="lastName">
+            <Input
+              onChange={(value) => handleChange(value, 'lastName')}
+              placeholder="Primer Apellido"
+              style={{ width: '100%' }}
+            />
+          </FormGroup>
           <FormGroup controlId="secondLastName">
             <Input
+              onChange={(value) => handleChange(value, 'secondLastName')}
               placeholder="Segundo Apellido"
-              style={{ width: '100%' }}
+              style={{ width: '100%', marginTop: 10 }}
             />
           </FormGroup>
         </FlexboxGrid.Item>
 
-        {/* Botones de Buscar y Refrescar */}
         <FlexboxGrid.Item colspan={3} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Button appearance="primary" color="blue" size="md" style={{ fontSize: 16 }}>
+          <Button appearance="primary" color="blue" size="md" style={{ fontSize: 16 }} onClick={() => { filter(); }}>
             <FaSearch style={{ marginRight: 5, width: 25 }} /> Buscar
           </Button>
         </FlexboxGrid.Item>
@@ -173,13 +189,15 @@ export default function RecordsView() {
               <Cell>
                 {(rowData) => (
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Editar</Tooltip>}>
-                      <IconButton
-                        icon={<FaEdit />}
-                        appearance="ghost"
-                        style={{ color: 'black', border: 'Transparent', fontSize: '22px', padding: 5 }}
-                      />
-                    </Whisper>
+                    {activeRole !== 'Doctor' && (
+                      <Whisper placement="top" trigger="hover" speaker={<Tooltip>Editar</Tooltip>}>
+                        <IconButton
+                          icon={<FaEdit />}
+                          appearance="ghost"
+                          style={{ color: 'black', border: 'Transparent', fontSize: '22px', padding: 5 }}
+                        />
+                      </Whisper>
+                    )}
                     <Whisper placement="top" trigger="hover" speaker={<Tooltip>Ver ficha</Tooltip>}>
                       <IconButton
                         icon={<FaRegFilePdf />}
@@ -199,6 +217,14 @@ export default function RecordsView() {
                 <ColoredCell dataKey="id" />
               </Column>
             )}
+
+            <Column width={150} resizable>
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Código De Ficha</HeaderCell>
+              <ColoredCell dataKey="code" >
+                {(rowData) => <span>{rowData.code || 'N/A'}</span>}
+              </ColoredCell>
+            </Column>
+
             <Column width={120} resizable >
               <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Estado</HeaderCell>
               <ColoredCell dataKey="result" />
@@ -220,11 +246,9 @@ export default function RecordsView() {
               <ColoredCell dataKey="diseaseName" />
             </Column>
 
-            <Column width={120} resizable>
-              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Código</HeaderCell>
-              <ColoredCell dataKey="code" >
-                {(rowData) => <span>{rowData.code || 'N/A'}</span>}
-              </ColoredCell>
+            <Column width={160} resizable>
+              <HeaderCell style={{ fontWeight: 'bold', fontSize: '16px' }}>Código De Paciente</HeaderCell>
+              <ColoredCell dataKey="codePatient" />
             </Column>
 
             <Column width={120} resizable>
