@@ -20,7 +20,68 @@ const styles = StyleSheet.create({
 
 export default function FilePDF({ fileId, info }) {
 
-    const [data, setData] = useState({});
+    const [data, setData] = useState({
+        case: {
+            method: '',
+            caseType: ''
+        },
+        child: {
+            parent: ''
+        },
+        tests: [
+            {
+                result: '',
+                observation: '',
+                diagnosticMethod: ''
+            }
+        ],
+        patient: {
+            ci: '',
+            name: '',
+            phone: '',
+            gender: '',
+            lastName: '',
+            birthDate: '',
+            secondLastName: ''
+        },
+        samples: [
+            {
+                sampleType: '',
+                sampleCollectionDate: ''
+            }
+        ],
+        location: {
+            city: '',
+            state: '',
+            latitude: '',
+            longitude: '',
+            municipality: '',
+            neighborhood: ''
+        },
+        pregnant: {
+            disease: '',
+            childBirthDate: '',
+            lastMenstruationDate: ''
+        },
+        symptoms: [{
+            disease: 0,
+            present: '',
+            symptom: ''
+        }],
+        contagion: {
+            city: '',
+            state: '',
+            country: '',
+            municipality: '',
+            neighborhood: ''
+        },
+        discharge: '',
+        registerDate: '',
+        symptomsDate: '',
+        discoveryMethod: '',
+        hospitalization: [],
+        epidemiologicalWeek: ''
+    });
 
     useEffect(() => {
         async function getFile(id) {
@@ -33,16 +94,40 @@ export default function FilePDF({ fileId, info }) {
 
     return (
         <Document>
-            <Page size="legal" style={styles.page}>
+            <Page size={'LEGAL'} style={styles.page}>
                 <Header />
-                <StepOne discoveryMethod={data.discoveryMethod} info={info} />
-                <StepTwo patient={data.patient} />
-                <StepThree />
-                <StepFour />
+                <StepOne discoveryMethod={data.discoveryMethod} info={info} registerDate={data.registerDate} />
+                <StepTwo
+                    name={data.patient.name}
+                    lastName={data.patient.lastName}
+                    secondLastName={data.patient.secondLastName}
+                    gender={data.patient.gender}
+                    ci={data.patient.ci}
+                    birthDate={data.patient.birthDate}
+                    phone={data.patient.phone}
+                    parent={data.child.parent}
+                    state={data.location.state}
+                    municipality={data.location.municipality}
+                    city={data.location.city}
+                    neighborhood={data.location.neighborhood}
+                    diseasePregnant={data.pregnant.disease}
+                    childBirthDate={data.pregnant.childBirthDate}
+                    lastMenstruationDate={data.pregnant.lastMenstruationDate} />
+                <StepThree
+                    country={data.contagion.country}
+                    state={data.contagion.state}
+                    city={data.contagion.city}
+                    municipality={data.contagion.municipality}
+                    neighborhood={data.contagion.neighborhood} />
+                <StepFour
+                    symptomsDate={data.symptomsDate}
+                    epidemiologicalWeek={data.epidemiologicalWeek}
+                    symptoms={data.symptoms}
+                    disease={data.symptoms[0].disease} />
                 <StepFive />
-                <StepSix />
-                <StepSeven />
-                <StepFinal />
+                <StepSix disease={data.symptoms[0].disease} method={data.case.method} type={data.case.caseType} />
+                <StepSeven disease={data.symptoms[0].disease} />
+                <StepFinal info={info} />
             </Page>
         </Document>
     );

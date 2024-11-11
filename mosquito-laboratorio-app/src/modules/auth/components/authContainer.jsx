@@ -1,6 +1,7 @@
 import { Container, Content, FlexboxGrid, Header, Panel } from "rsuite";
 import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
 import escudo from '../../../../public/static/escudo-patrio.png'
+import uma from '../../../../public/static/logo-UMA-2023_BN-positivo.png'
 
 export default function AuthContainer({ children }) {
     return (
@@ -8,8 +9,8 @@ export default function AuthContainer({ children }) {
             <Header>
                 <FlexboxGrid>
                     <FlexboxGridItem colspan={24} style={{ textAlign: 'center' }}>
-                        <img src={escudo} alt="Escudo patrio" style={{ width: '240px' }} />
-                        <h6 style={{ fontFamily: 'serif' }}>MINISTERIO DE SALUD Y DEPORTES</h6>
+                        <img src={uma} alt="Escudo patrio" style={{ width: '240px' }} />
+                        <h6 style={{ fontFamily: 'serif' }}>DESARROLLADO POR UNIVALLE</h6>
                     </FlexboxGridItem>
                     <FlexboxGridItem colspan={24} style={{ textAlign: 'center', marginTop: '40px' }}>
                         <label style={{ color: '#1D3B72', fontSize: '35px', fontWeight: 500 }}>Sistema Integrado de Vigilancia Epidemiológica</label>

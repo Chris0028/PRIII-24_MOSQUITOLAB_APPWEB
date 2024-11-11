@@ -47,66 +47,485 @@ const styles = StyleSheet.create({
 });
 
 
-export default function StepSix() {
+export default function StepSix({ method, type, disease }) {
     return (
         <>
             <View style={styles.sectionTitle}>
                 <Text>6. DEFINICIÓN DE CASO</Text>
             </View>
 
-            <View style={styles.row}>
-                <View style={styles.caseLabelCell}>
-                    <Text>Caso sospechoso de Dengue</Text>
-                </View>
-                <View style={styles.emptyCell}></View>
-                <View style={styles.caseCell}>
-                    <Text>Caso confirmado de Dengue</Text>
-                </View>
-                <View style={styles.optionCell}>
-                    <Text>Por Laboratorio</Text>
-                </View>
-                <View style={styles.extraEmptyCell}></View>
-                <View style={styles.optionCell}>
-                    <Text>Por Nexo Epidemiológico</Text>
-                </View>
-                <View style={styles.rightEmptyCell}></View>
-            </View>
+            {disease === 1 ? (
+                <>
+                    <View style={styles.row}>
+                        {type === 'Sospechoso' ? (
+                            <>
+                                <View style={styles.caseLabelCell}>
+                                    <Text>Caso sospechoso de Dengue</Text>
+                                </View>
+                                <View style={styles.emptyCell}>
+                                    <Text>X</Text>
+                                </View>
+                                <View style={styles.caseCell}>
+                                    <Text>Caso confirmado de Dengue</Text>
+                                </View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Laboratorio</Text>
+                                </View>
+                                <View style={styles.extraEmptyCell}></View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Nexo Epidemiológico</Text>
+                                </View>
+                                <View style={styles.rightEmptyCell}>
+                                </View>
+                            </>
+                        ) : (
+                            <>
+                                {method === 'Por Nexo Epidemiológico' ? (
+                                    <>
+                                        <View style={styles.caseLabelCell}>
+                                            <Text>Caso sospechoso de Dengue</Text>
+                                        </View>
+                                        <View style={styles.emptyCell}></View>
+                                        <View style={styles.caseCell}>
+                                            <Text>Caso confirmado de Dengue</Text>
+                                        </View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Laboratorio</Text>
+                                        </View>
+                                        <View style={styles.extraEmptyCell}></View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Nexo Epidemiológico</Text>
+                                        </View>
+                                        <View style={styles.rightEmptyCell}>
+                                            <Text>X</Text>
+                                        </View>
+                                    </>
+                                ) : (
+                                    <>
+                                        <View style={styles.caseLabelCell}>
+                                            <Text>Caso sospechoso de Dengue</Text>
+                                        </View>
+                                        <View style={styles.emptyCell}></View>
+                                        <View style={styles.caseCell}>
+                                            <Text>Caso confirmado de Dengue</Text>
+                                        </View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Laboratorio</Text>
+                                        </View>
+                                        <View style={styles.extraEmptyCell}>
+                                            <Text>X</Text>
+                                        </View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Nexo Epidemiológico</Text>
+                                        </View>
+                                        <View style={styles.rightEmptyCell}></View>
+                                    </>
+                                )}
+                            </>
+                        )}
+                    </View>
 
-            <View style={styles.row}>
-                <View style={styles.caseLabelCell}>
-                    <Text>Caso sospechoso de Chikungunya</Text>
-                </View>
-                <View style={styles.emptyCell}></View>
-                <View style={styles.caseCell}>
-                    <Text>Caso confirmado de Chikungunya</Text>
-                </View>
-                <View style={styles.optionCell}>
-                    <Text>Por Laboratorio</Text>
-                </View>
-                <View style={styles.extraEmptyCell}></View>
-                <View style={styles.optionCell}>
-                    <Text>Por Nexo Epidemiológico</Text>
-                </View>
-                <View style={styles.rightEmptyCell}></View>
-            </View>
+                    <View style={styles.row}>
+                        <View style={styles.caseLabelCell}>
+                            <Text>Caso sospechoso de Chikungunya</Text>
+                        </View>
+                        <View style={styles.emptyCell}></View>
+                        <View style={styles.caseCell}>
+                            <Text>Caso confirmado de Chikungunya</Text>
+                        </View>
+                        <View style={styles.optionCell}>
+                            <Text>Por Laboratorio</Text>
+                        </View>
+                        <View style={styles.extraEmptyCell}></View>
+                        <View style={styles.optionCell}>
+                            <Text>Por Nexo Epidemiológico</Text>
+                        </View>
+                        <View style={styles.rightEmptyCell}></View>
+                    </View>
 
-            <View style={styles.row}>
-                <View style={styles.caseLabelCell}>
-                    <Text>Caso sospechoso de Zika</Text>
-                </View>
-                <View style={styles.emptyCell}></View>
-                <View style={styles.caseCell}>
-                    <Text>Caso confirmado de Zika</Text>
-                </View>
-                <View style={styles.optionCell}>
-                    <Text>Por Laboratorio</Text>
-                </View>
-                <View style={styles.extraEmptyCell}></View>
-                <View style={styles.optionCell}>
-                    <Text>Por Nexo Epidemiológico</Text>
-                </View>
-                <View style={styles.rightEmptyCell}></View>
-            </View>
+                    <View style={styles.row}>
+                        <View style={styles.caseLabelCell}>
+                            <Text>Caso sospechoso de Zika</Text>
+                        </View>
+                        <View style={styles.emptyCell}></View>
+                        <View style={styles.caseCell}>
+                            <Text>Caso confirmado de Zika</Text>
+                        </View>
+                        <View style={styles.optionCell}>
+                            <Text>Por Laboratorio</Text>
+                        </View>
+                        <View style={styles.extraEmptyCell}></View>
+                        <View style={styles.optionCell}>
+                            <Text>Por Nexo Epidemiológico</Text>
+                        </View>
+                        <View style={styles.rightEmptyCell}></View>
+                    </View>
+                </>
+            ) : disease === 2 ? (
+                <>
+                    {type === 'Sospechoso' ? (
+                        <>
+                            <View style={styles.row}>
+                                <View style={styles.caseLabelCell}>
+                                    <Text>Caso sospechoso de Dengue</Text>
+                                </View>
+                                <View style={styles.emptyCell}></View>
+                                <View style={styles.caseCell}>
+                                    <Text>Caso confirmado de Dengue</Text>
+                                </View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Laboratorio</Text>
+                                </View>
+                                <View style={styles.extraEmptyCell}></View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Nexo Epidemiológico</Text>
+                                </View>
+                                <View style={styles.rightEmptyCell}></View>
+                            </View>
+
+                            <View style={styles.row}>
+                                <View style={styles.caseLabelCell}>
+                                    <Text>Caso sospechoso de Chikungunya</Text>
+                                </View>
+                                <View style={styles.emptyCell}>
+                                    <Text>X</Text>
+                                </View>
+                                <View style={styles.caseCell}>
+                                    <Text>Caso confirmado de Chikungunya</Text>
+                                </View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Laboratorio</Text>
+                                </View>
+                                <View style={styles.extraEmptyCell}></View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Nexo Epidemiológico</Text>
+                                </View>
+                                <View style={styles.rightEmptyCell}></View>
+                            </View>
+
+                            <View style={styles.row}>
+                                <View style={styles.caseLabelCell}>
+                                    <Text>Caso sospechoso de Zika</Text>
+                                </View>
+                                <View style={styles.emptyCell}></View>
+                                <View style={styles.caseCell}>
+                                    <Text>Caso confirmado de Zika</Text>
+                                </View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Laboratorio</Text>
+                                </View>
+                                <View style={styles.extraEmptyCell}></View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Nexo Epidemiológico</Text>
+                                </View>
+                                <View style={styles.rightEmptyCell}></View>
+                            </View>
+                        </>
+                    ) : (
+                        <>
+                            {method === 'Por Nexo Epidemiológico' ? (
+                                <>
+                                    <View style={styles.row}>
+                                        <View style={styles.caseLabelCell}>
+                                            <Text>Caso sospechoso de Dengue</Text>
+                                        </View>
+                                        <View style={styles.emptyCell}></View>
+                                        <View style={styles.caseCell}>
+                                            <Text>Caso confirmado de Dengue</Text>
+                                        </View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Laboratorio</Text>
+                                        </View>
+                                        <View style={styles.extraEmptyCell}></View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Nexo Epidemiológico</Text>
+                                        </View>
+                                        <View style={styles.rightEmptyCell}></View>
+                                    </View>
+
+                                    <View style={styles.row}>
+                                        <View style={styles.caseLabelCell}>
+                                            <Text>Caso sospechoso de Chikungunya</Text>
+                                        </View>
+                                        <View style={styles.emptyCell}></View>
+                                        <View style={styles.caseCell}>
+                                            <Text>Caso confirmado de Chikungunya</Text>
+                                        </View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Laboratorio</Text>
+                                        </View>
+                                        <View style={styles.extraEmptyCell}></View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Nexo Epidemiológico</Text>
+                                        </View>
+                                        <View style={styles.rightEmptyCell}>
+                                            <Text>X</Text>
+                                        </View>
+                                    </View>
+
+                                    <View style={styles.row}>
+                                        <View style={styles.caseLabelCell}>
+                                            <Text>Caso sospechoso de Zika</Text>
+                                        </View>
+                                        <View style={styles.emptyCell}></View>
+                                        <View style={styles.caseCell}>
+                                            <Text>Caso confirmado de Zika</Text>
+                                        </View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Laboratorio</Text>
+                                        </View>
+                                        <View style={styles.extraEmptyCell}></View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Nexo Epidemiológico</Text>
+                                        </View>
+                                        <View style={styles.rightEmptyCell}></View>
+                                    </View>
+                                </>
+                            ) : (
+                                <>
+                                    <View style={styles.row}>
+                                        <View style={styles.caseLabelCell}>
+                                            <Text>Caso sospechoso de Dengue</Text>
+                                        </View>
+                                        <View style={styles.emptyCell}></View>
+                                        <View style={styles.caseCell}>
+                                            <Text>Caso confirmado de Dengue</Text>
+                                        </View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Laboratorio</Text>
+                                        </View>
+                                        <View style={styles.extraEmptyCell}></View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Nexo Epidemiológico</Text>
+                                        </View>
+                                        <View style={styles.rightEmptyCell}></View>
+                                    </View>
+
+                                    <View style={styles.row}>
+                                        <View style={styles.caseLabelCell}>
+                                            <Text>Caso sospechoso de Chikungunya</Text>
+                                        </View>
+                                        <View style={styles.emptyCell}></View>
+                                        <View style={styles.caseCell}>
+                                            <Text>Caso confirmado de Chikungunya</Text>
+                                        </View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Laboratorio</Text>
+                                        </View>
+                                        <View style={styles.extraEmptyCell}>
+                                            <Text>X</Text>
+                                        </View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Nexo Epidemiológico</Text>
+                                        </View>
+                                        <View style={styles.rightEmptyCell}></View>
+                                    </View>
+
+                                    <View style={styles.row}>
+                                        <View style={styles.caseLabelCell}>
+                                            <Text>Caso sospechoso de Zika</Text>
+                                        </View>
+                                        <View style={styles.emptyCell}></View>
+                                        <View style={styles.caseCell}>
+                                            <Text>Caso confirmado de Zika</Text>
+                                        </View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Laboratorio</Text>
+                                        </View>
+                                        <View style={styles.extraEmptyCell}></View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Nexo Epidemiológico</Text>
+                                        </View>
+                                        <View style={styles.rightEmptyCell}></View>
+                                    </View>
+                                </>
+                            )}
+                        </>
+                    )}
+                </>
+            ) : (
+                <>
+                    {type === 'Sospechoso' ? (
+                        <>
+                            <View style={styles.row}>
+                                <View style={styles.caseLabelCell}>
+                                    <Text>Caso sospechoso de Dengue</Text>
+                                </View>
+                                <View style={styles.emptyCell}></View>
+                                <View style={styles.caseCell}>
+                                    <Text>Caso confirmado de Dengue</Text>
+                                </View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Laboratorio</Text>
+                                </View>
+                                <View style={styles.extraEmptyCell}></View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Nexo Epidemiológico</Text>
+                                </View>
+                                <View style={styles.rightEmptyCell}></View>
+                            </View>
+
+                            <View style={styles.row}>
+                                <View style={styles.caseLabelCell}>
+                                    <Text>Caso sospechoso de Chikungunya</Text>
+                                </View>
+                                <View style={styles.emptyCell}></View>
+                                <View style={styles.caseCell}>
+                                    <Text>Caso confirmado de Chikungunya</Text>
+                                </View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Laboratorio</Text>
+                                </View>
+                                <View style={styles.extraEmptyCell}></View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Nexo Epidemiológico</Text>
+                                </View>
+                                <View style={styles.rightEmptyCell}></View>
+                            </View>
+
+                            <View style={styles.row}>
+                                <View style={styles.caseLabelCell}>
+                                    <Text>Caso sospechoso de Zika</Text>
+                                </View>
+                                <View style={styles.emptyCell}>
+                                    <Text>X</Text>
+                                </View>
+                                <View style={styles.caseCell}>
+                                    <Text>Caso confirmado de Zika</Text>
+                                </View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Laboratorio</Text>
+                                </View>
+                                <View style={styles.extraEmptyCell}></View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Nexo Epidemiológico</Text>
+                                </View>
+                                <View style={styles.rightEmptyCell}></View>
+                            </View>
+                        </>
+                    ) : (
+                        <>
+                            {method === 'Por Nexo Epidemiológico' ? (
+                                <>
+                                    <View style={styles.row}>
+                                        <View style={styles.caseLabelCell}>
+                                            <Text>Caso sospechoso de Dengue</Text>
+                                        </View>
+                                        <View style={styles.emptyCell}></View>
+                                        <View style={styles.caseCell}>
+                                            <Text>Caso confirmado de Dengue</Text>
+                                        </View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Laboratorio</Text>
+                                        </View>
+                                        <View style={styles.extraEmptyCell}></View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Nexo Epidemiológico</Text>
+                                        </View>
+                                        <View style={styles.rightEmptyCell}></View>
+                                    </View>
+
+                                    <View style={styles.row}>
+                                        <View style={styles.caseLabelCell}>
+                                            <Text>Caso sospechoso de Chikungunya</Text>
+                                        </View>
+                                        <View style={styles.emptyCell}></View>
+                                        <View style={styles.caseCell}>
+                                            <Text>Caso confirmado de Chikungunya</Text>
+                                        </View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Laboratorio</Text>
+                                        </View>
+                                        <View style={styles.extraEmptyCell}></View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Nexo Epidemiológico</Text>
+                                        </View>
+                                        <View style={styles.rightEmptyCell}></View>
+                                    </View>
+
+                                    <View style={styles.row}>
+                                        <View style={styles.caseLabelCell}>
+                                            <Text>Caso sospechoso de Zika</Text>
+                                        </View>
+                                        <View style={styles.emptyCell}></View>
+                                        <View style={styles.caseCell}>
+                                            <Text>Caso confirmado de Zika</Text>
+                                        </View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Laboratorio</Text>
+                                        </View>
+                                        <View style={styles.extraEmptyCell}></View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Nexo Epidemiológico</Text>
+                                        </View>
+                                        <View style={styles.rightEmptyCell}>
+                                            <Text>X</Text>
+                                        </View>
+                                    </View>
+                                </>
+                            ) : (
+                                <>
+                                    <View style={styles.row}>
+                                        <View style={styles.caseLabelCell}>
+                                            <Text>Caso sospechoso de Dengue</Text>
+                                        </View>
+                                        <View style={styles.emptyCell}></View>
+                                        <View style={styles.caseCell}>
+                                            <Text>Caso confirmado de Dengue</Text>
+                                        </View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Laboratorio</Text>
+                                        </View>
+                                        <View style={styles.extraEmptyCell}></View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Nexo Epidemiológico</Text>
+                                        </View>
+                                        <View style={styles.rightEmptyCell}></View>
+                                    </View>
+
+                                    <View style={styles.row}>
+                                        <View style={styles.caseLabelCell}>
+                                            <Text>Caso sospechoso de Chikungunya</Text>
+                                        </View>
+                                        <View style={styles.emptyCell}></View>
+                                        <View style={styles.caseCell}>
+                                            <Text>Caso confirmado de Chikungunya</Text>
+                                        </View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Laboratorio</Text>
+                                        </View>
+                                        <View style={styles.extraEmptyCell}></View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Nexo Epidemiológico</Text>
+                                        </View>
+                                        <View style={styles.rightEmptyCell}></View>
+                                    </View>
+
+                                    <View style={styles.row}>
+                                        <View style={styles.caseLabelCell}>
+                                            <Text>Caso sospechoso de Zika</Text>
+                                        </View>
+                                        <View style={styles.emptyCell}></View>
+                                        <View style={styles.caseCell}>
+                                            <Text>Caso confirmado de Zika</Text>
+                                        </View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Laboratorio</Text>
+                                        </View>
+                                        <View style={styles.extraEmptyCell}>
+                                            <Text>X</Text>
+                                        </View>
+                                        <View style={styles.optionCell}>
+                                            <Text>Por Nexo Epidemiológico</Text>
+                                        </View>
+                                        <View style={styles.rightEmptyCell}></View>
+                                    </View>
+                                </>
+                            )}
+                        </>
+                    )}
+                </>
+            )}
         </>
     );
 }

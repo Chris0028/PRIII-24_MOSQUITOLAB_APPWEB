@@ -1,5 +1,5 @@
 import { FaChartBar, FaCloudDownloadAlt, FaFileInvoice, FaSignOutAlt, FaUserAlt, FaVial, FaBars, FaUsers } from "react-icons/fa";
-import { Container, Content, Divider, Header, Nav, Navbar, Sidebar, Sidenav, IconButton } from "rsuite";
+import { Container, Content, Divider, Header, Nav, Navbar, Sidebar, Sidenav, IconButton, Footer } from "rsuite";
 import SidenavBody from "rsuite/esm/Sidenav/SidenavBody";
 import { useEffect, useState } from "react";
 import UserInfo from "./components/userInfo";
@@ -106,6 +106,7 @@ export default function Layout({ children }) {
                 <Content style={styles.content}>
                     {children}
                 </Content>
+                <Footer style={styles.footer}>Desarrollado por Univalle</Footer>
             </Container>
         </Container>
     );
@@ -137,5 +138,9 @@ const styles = {
     content: {
         padding: '20px',
         overflow: 'auto',
+    },
+    footer: {
+        padding: '10px',
+        textAlign: 'center'
     }
 };

@@ -49,6 +49,7 @@ export default function RecordsView() {
   const navigate = useNavigate()
 
   const [historyFiles, setHistoryFiles] = useState([]);
+  const [showModalPDF, setShowModalPDF] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [pdfToView, setPdfToView] = useState(null);
@@ -113,6 +114,14 @@ export default function RecordsView() {
       delete newArgs[name];
       setArgs(newArgs);
     }
+  }
+
+  function handleOpenModalPDF() {
+    setShowModalPDF(true);
+  }
+
+  function handleCloseModalPDF() {
+    setShowModalPDF(false);
   }
 
   return (
@@ -203,7 +212,10 @@ export default function RecordsView() {
                         icon={<FaRegFilePdf />}
                         appearance="ghost"
                         color="blue"
-                        onClick={() => handleFilePreview(rowData.id)}
+                        onClick={() => {
+                          handleFilePreview(rowData.id);
+                          handleOpenModalPDF();
+                        }}
                         style={{ color: 'black', border: 'Transparent', marginTop: 5, fontSize: '24px', padding: 5 }}
                       />
                     </Whisper>
@@ -304,7 +316,7 @@ export default function RecordsView() {
           borderTop: '2px solid #ccc',
         }}
       >
-        <FileViewer pdfToView={pdfToView} />
+        <FileViewer pdfToView={pdfToView} open={showModalPDF} hiddeModal={handleCloseModalPDF} />
         {/* Botón para Agregar Ficha */}
         <Button appearance="primary" color="blue" size="lg" onClick={() => navigate('/fileform')}>
           <FaPlus style={{ marginRight: 10 }} /> Agregar Ficha

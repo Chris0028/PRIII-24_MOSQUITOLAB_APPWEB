@@ -1,24 +1,24 @@
-import { pdf } from '@react-pdf/renderer';
-import { useEffect } from 'react';
+import { pdf, PDFViewer } from '@react-pdf/renderer';
+import { Button, Modal } from 'rsuite';
+import ModalBody from 'rsuite/esm/Modal/ModalBody';
+import ModalFooter from 'rsuite/esm/Modal/ModalFooter';
+import ModalHeader from 'rsuite/esm/Modal/ModalHeader';
+import ModalTitle from 'rsuite/esm/Modal/ModalTitle';
 
-export default function FileViewer({ pdfToView }) {
-    useEffect(() => {
-        let url;
-
-        if (pdfToView) {
-            async function handlePreview() {
-                const blob = await pdf(pdfToView).toBlob();
-                url = URL.createObjectURL(blob);
-                window.open(url, '_blank');
-            }
-
-            handlePreview();
-        }
-
-        return () => {
-            if (url) URL.revokeObjectURL(url);
-        };
-    }, [pdfToView]);
-
-    return null;
+export default function FileViewer({ pdfToView, open, hiddeModal }) {
+    return (
+        <Modal open={open} onClose={hiddeModal} size={'lg'}>
+            <ModalHeader>
+                <ModalTitle>
+                    <strong>Vista previa</strong>
+                </ModalTitle>
+            </ModalHeader>
+            <ModalBody>
+                <PDFViewer showToolbar children={pdfToView} height={600} width={'100%'} />
+            </ModalBody>
+            <ModalFooter>
+                <Button onClick={() => hiddeModal()}>Cerrar</Button>
+            </ModalFooter>
+        </Modal>
+    );
 }

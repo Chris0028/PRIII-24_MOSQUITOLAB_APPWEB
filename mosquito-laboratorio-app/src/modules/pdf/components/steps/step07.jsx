@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export default function StepSeven() {
+export default function StepSeven({ disease }) {
     return (
         <>
             <View style={styles.sectionTitle}>

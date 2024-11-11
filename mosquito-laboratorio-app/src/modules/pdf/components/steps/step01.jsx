@@ -1,4 +1,5 @@
 import { Text, View, StyleSheet } from "@react-pdf/renderer";
+import { useEffect, useState } from "react";
 
 const styles = StyleSheet.create({
     sectionTitle: {
@@ -56,7 +57,8 @@ const styles = StyleSheet.create({
     }
 });
 
-export default function StepOne({ notificationDate, discoveryMethod, info }) {
+export default function StepOne({ notificationDate, discoveryMethod, info, registerDate }) {
+
     return (
         <>
             <View style={styles.sectionTitle}>
@@ -69,12 +71,15 @@ export default function StepOne({ notificationDate, discoveryMethod, info }) {
                     <View style={styles.notificationDateRow}>
                         <View style={styles.smallBox}>
                             <Text style={styles.smallText}>Día</Text>
+                            <Text></Text>
                         </View>
                         <View style={styles.smallBox}>
                             <Text style={styles.smallText}>Mes</Text>
+                            {/* <Text>{registerDate.getMonth()}</Text> */}
                         </View>
                         <View style={{ ...styles.smallBox, borderRight: 0 }}>
                             <Text style={styles.smallText}>Año</Text>
+                            {/* <Text>{registerDate.getFullYear()}</Text> */}
                         </View>
                     </View>
                 </View>
@@ -111,19 +116,19 @@ export default function StepOne({ notificationDate, discoveryMethod, info }) {
                 </View>
                 <View style={{ ...styles.column, flex: 1.2 }}>
                     <Text>Teléfono o correo electrónico del Establecimiento:</Text>
-                    <Text>{'\n\t' + info.hospitalContact}</Text>
+                    <Text>{'\n\t' + info.hospitalContact ? null : ''}</Text>
                 </View>
                 <View style={{ ...styles.column, flex: 1 }}>
                     <View style={styles.verticalOptions}>
                         {discoveryMethod === 'Atención en Servicio de Salud' ? (
                             <View>
                                 <Text style={styles.smallText}>Caso captado en búsqueda activa ( )</Text>
-                                <Text style={styles.smallText}>Atención en servicio de salud (X)</Text>
+                                <Text style={styles.smallText}>Atención en servicio de salud (*)</Text>
                                 <Text style={styles.smallText}>Otro, especificar ( ) ______________________</Text>
                             </View>
                         ) : (
                             <View>
-                                <Text style={styles.smallText}>Caso captado en búsqueda activa (X)</Text>
+                                <Text style={styles.smallText}>Caso captado en búsqueda activa (*)</Text>
                                 <Text style={styles.smallText}>Atención en servicio de salud ()</Text>
                                 <Text style={styles.smallText}>Otro, especificar ( ) ______________________</Text>
                             </View>

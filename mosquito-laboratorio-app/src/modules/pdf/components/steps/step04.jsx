@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
 });
 
 
-export default function StepFour() {
+export default function StepFour({ epidemiologicalWeek, symptomsDate, symptoms, disease }) {
     return (
         <>
             <View style={styles.clinicalTitle}>
@@ -88,126 +88,50 @@ export default function StepFour() {
                     <Text style={styles.smallText}>Año</Text>
                 </View>
                 <View style={styles.dateColumn}>
-                    <Text style={styles.smallText}>Semana epidemiológica</Text>
+                    <Text style={styles.smallText}>Semana epidemiológica {epidemiologicalWeek}</Text>
                 </View>
             </View>
 
-            <View style={styles.symptomsSection}>
-                <Text>SOSPECHA DE DENGUE SIN SIGNOS DE ALARMA</Text>
-            </View>
-            <View style={styles.symptomsRow}>
-                <View style={styles.symptomBox}>
-                    <Text>Fiebre Aguda</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Nauseas/Vómitos</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Cefalea</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Dolor Retro-Orbitario</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Mialgias</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Petequias Prueba Torniquete +</Text>
-                </View>
-                <View style={styles.lastSymptomBox}>
-                    <Text>Otro (especificar):</Text>
-                </View>
-            </View>
-
-            <View style={styles.symptomsSection}>
-                <Text>SOSPECHA DE DENGUE CON SIGNOS DE ALARMA</Text>
-            </View>
-            <View style={styles.symptomsRow}>
-                <View style={styles.symptomBox}>
-                    <Text>Dolor Abdominal</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Vómitos Persistentes</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Letargia o Irritabilidad</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Sangrado de Mucosas</Text>
-                </View>
-                <View style={styles.lastSymptomBox}>
-                    <Text>Otro (especificar):</Text>
-                </View>
-            </View>
-
-            <View style={styles.symptomsSection}>
-                <Text>SOSPECHA DE DENGUE GRAVE</Text>
-            </View>
-            <View style={styles.symptomsRow}>
-                <View style={styles.symptomBox}>
-                    <Text>Distres Respiratorio</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Choque</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Sangrado Grave</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Compromiso Grave de Órganos</Text>
-                </View>
-                <View style={styles.lastSymptomBox}>
-                    <Text>Otro (especificar):</Text>
-                </View>
-            </View>
-
-            <View style={styles.symptomsSection}>
-                <Text>SOSPECHA DE CHIKUNGUNYA</Text>
-            </View>
-            <View style={styles.symptomsRow}>
-                <View style={styles.symptomBox}>
-                    <Text>Fiebre</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Poliartralgias</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Poliartritis</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Mialgias</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Exantema</Text>
-                </View>
-                <View style={styles.lastSymptomBox}>
-                    <Text>Otro (especificar):</Text>
-                </View>
-            </View>
-
-            <View style={styles.symptomsSection}>
-                <Text>SOSPECHA DE ZIKA</Text>
-            </View>
-            <View style={styles.symptomsRow}>
-                <View style={styles.symptomBox}>
-                    <Text>Exantema Maculopapular</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Conjuntivitis no Purulenta</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Fiebre</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Mialgia/Artralgia</Text>
-                </View>
-                <View style={styles.symptomBox}>
-                    <Text>Edema Periarticular</Text>
-                </View>
-                <View style={styles.lastSymptomBox}>
-                    <Text>Otro (especificar):</Text>
-                </View>
-            </View>
+            {disease === 1 ? ( //dengue
+                <>
+                    <View style={styles.symptomsSection}>
+                        <Text>SOSPECHA DE DENGUE</Text>
+                    </View>
+                    <View style={styles.symptomsRow}>
+                        {symptoms.map(symptom => {
+                            return (<View style={styles.symptomBox}>
+                                <Text>{symptom.symptom} (X)</Text>
+                            </View>)
+                        })}
+                    </View>
+                </>
+            ) : disease === 2 ? ( //chikungunya
+                <>
+                    <View style={styles.symptomsSection}>
+                        <Text>SOSPECHA DE CHIKUNGUNYA</Text>
+                    </View>
+                    <View style={styles.symptomsRow}>
+                        {symptoms.map(symptom => {
+                            return (<View style={styles.symptomBox}>
+                                <Text>{symptom.symptom} (X)</Text>
+                            </View>)
+                        })}
+                    </View>
+                </>
+            ) : (
+                <>
+                    <View style={styles.symptomsSection}>
+                        <Text>SOSPECHA DE ZIKA</Text>
+                    </View>
+                    <View style={styles.symptomsRow}>
+                        {symptoms.map(symptom => {
+                            return (<View style={styles.symptomBox}>
+                                <Text>{symptom.symptom} (X)</Text>
+                            </View>)
+                        })}
+                    </View>
+                </>
+            )}
         </>
     );
 }

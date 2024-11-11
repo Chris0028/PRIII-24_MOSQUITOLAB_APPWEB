@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export default function StepThree() {
+export default function StepThree({ country, state, city, municipality, neighborhood }) {
     return (
         <>
             <View style={styles.epidemTitle}>
@@ -55,18 +55,23 @@ export default function StepThree() {
             <View style={styles.epidemRow}>
                 <View style={styles.countryColumn}>
                     <Text style={styles.smallText}>País/Lugar:</Text>
+                    <Text>{`\n${country}`}</Text>
                 </View>
                 <View style={styles.epidemColumn}>
                     <Text style={styles.smallText}>Departamento:</Text>
+                    <Text>{`\n${state}`}</Text>
                 </View>
                 <View style={styles.epidemColumn}>
                     <Text style={styles.smallText}>Provincia/Municipio:</Text>
+                    <Text>{`\n${municipality}`}</Text>
                 </View>
                 <View style={styles.epidemColumn}>
                     <Text style={styles.smallText}>Ciudad/Localidad/Comunidad:</Text>
+                    <Text>{`\n${city}`}</Text>
                 </View>
                 <View style={styles.epidemColumn}>
                     <Text style={styles.smallText}>Barrio/Zona/U.V.:</Text>
+                    <Text>{`\n${neighborhood}`}</Text>
                 </View>
             </View>
         </>

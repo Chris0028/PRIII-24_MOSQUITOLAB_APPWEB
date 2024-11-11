@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export default function StepFinal() {
+export default function StepFinal({ info }) {
     return (
         <>
             <View style={styles.sectionTitle}>
@@ -59,9 +59,11 @@ export default function StepFinal() {
                         </View>
                         <View style={styles.dottedCell}></View>
                         <View style={styles.labelCell}>
-                            <Text>Establecimiento de Salud</Text>
+                            <Text>Establecimiento de Salud:</Text>
                         </View>
-                        <View style={styles.dottedCell}></View>
+                        <View style={styles.dottedCell}>
+                            <Text>{info.hospital}</Text>
+                        </View>
                     </View>
 
                     <View style={styles.row}>
