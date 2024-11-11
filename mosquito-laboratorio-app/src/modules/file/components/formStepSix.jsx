@@ -4,13 +4,15 @@ import FormGroup from 'rsuite/esm/FormGroup';
 import { Button } from 'rsuite';
 import { FaSave } from 'react-icons/fa';
 import { useFetchLaboratories } from '../repositories/laboratoryRepository';
-import { updateStepSix } from '../../../redux/fileSlice';
+import { ClearForm, updateStepSix } from '../../../redux/fileSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { sendFile } from '../repositories/FileSendRepository';
+import { useNavigate } from 'react-router-dom';
 
 export default function FormStepSix() {
   // Uso de REDUX
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   // Obtener los datos del estado de Redux
   const formData = useSelector((state) => state.file);
   const stepSixData = useSelector((state) => state.file.stepSix);
@@ -19,6 +21,7 @@ export default function FormStepSix() {
   const userSelector = useSelector((state) => state.user);
   const doctorFullName = userSelector.user.info.names + ' ' + userSelector.user.info.lastName + ' ' + userSelector.user.info.secondLastName;
   const hospitalDoctor = userSelector.user.info.hospital;
+  
 
   // Manejar cambios en los campos del formulario
   const handleChange = (value, name) => {
@@ -30,8 +33,7 @@ export default function FormStepSix() {
     // Llamar a la función sendFile() y enviar los datos actuales del estado de Redux
     sendFile(formData)
       .then((response) => {
-        console.log("Ficha epidemiológica enviada con éxito:", response);
-        alert("Ficha epidemiológica enviada exitosamente.");
+        navigate('/homefiledoctor');
       })
       .catch((error) => {
         console.error("Error al enviar la ficha epidemiológica:", error);

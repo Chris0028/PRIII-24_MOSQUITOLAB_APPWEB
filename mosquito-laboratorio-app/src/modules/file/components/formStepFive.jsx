@@ -3,11 +3,8 @@ import { Form, DatePicker, FlexboxGrid, RadioGroup, Radio, Panel, InputPicker } 
 import { FormControl, FormGroup } from '../hooks/useForms';
 import { medicalDischargeOptions } from '../utils/pickerOptions';
 import {
-  createHandleRadioChange,
-  createHandleDateChange,
-  createHandleInputChange,
-  createHandlePickerChange
-} from '../utils/stepFiveUtil'; // Asegúrate de usar la ruta correcta
+  createHandleRadioChange, createHandleDateChange,
+  createHandleInputChange, createHandlePickerChange } from '../utils/stepFiveUtil'; 
 
 const parseDate = (dateString) => {
     return dateString ? new Date(dateString) : null;
@@ -17,7 +14,6 @@ const parseDate = (dateString) => {
     const dispatch = useDispatch();
     const formData = useSelector((state) => state.file?.stepFive || {});
   
-    // Crear las funciones de manejo desde stepFiveUtil.js
     const handleRadioChange = createHandleRadioChange(dispatch);
     const handleDateChange = createHandleDateChange(dispatch);
     const handleInputChange = createHandleInputChange(dispatch);
@@ -26,10 +22,14 @@ const parseDate = (dateString) => {
     const wasHospitalized = formData.wasHospitalized === "si";
     const utiHospitalized = formData.utiHospitalized === "si";
   
-    // Lógica para determinar si se debe mostrar la fecha de alta o de defunción
     const showDischargeDate = wasHospitalized || utiHospitalized;
     const isDeathDischarge = formData.dischargeType === "Defuncion";
   
+    const userSelector = useSelector((state) => state.user);
+
+    const userInfo = userSelector.user;
+    console.log(userInfo)
+
     return (
       <Form fluid>
         {/* Panel de Información */}

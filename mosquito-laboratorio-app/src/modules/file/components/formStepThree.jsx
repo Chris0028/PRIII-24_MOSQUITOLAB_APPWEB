@@ -1,17 +1,14 @@
-import { Form, FlexboxGrid, Panel, InputPicker } from 'rsuite';
+import { Form, FlexboxGrid, Panel } from 'rsuite';
 import { FormControl, FormGroup } from '../hooks/useForms';
 import { useSelector, useDispatch } from 'react-redux';
-import { useState } from '../hooks/useReacts'
 import { createHandleInputChange } from '../utils/stepThreeutil';
 
 export default function FormStepThree() {
-    // Uso de Redux
     const dispatch = useDispatch();
-    // Obtener los datos del paso 3 del store de Redux
+
     const formData = useSelector((state) => state.file?.stepThree || {});
 
     const handleChange = createHandleInputChange(dispatch);
-
 
     return (
         <Form fluid>

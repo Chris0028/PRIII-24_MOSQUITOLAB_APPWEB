@@ -1,6 +1,5 @@
 import { httpClient } from "../../../api/httpClient/httpClient"
 
-
 export async function PostFile(body) {
 
     const res = await httpClient.post('/File/CreateFile', body);

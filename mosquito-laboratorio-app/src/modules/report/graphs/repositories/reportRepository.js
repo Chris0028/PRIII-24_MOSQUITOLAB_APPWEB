@@ -21,7 +21,7 @@ export async function getGenderReportData() {
         console.error("Error al obtener el reporte de género:", error);
         return null;
     }
-}
+};
 
 
 export async function getAgeDistributionData() {
@@ -41,6 +41,19 @@ export async function getAgeDistributionData() {
         };
     } catch (error) {
         console.error("Error obteniendo datos de distribución de edad:", error);
+        return null;
+    }
+};
+
+
+export async function getTotalPatients() {
+    try {
+        const data = await ReportByAge();
+
+        return data.Menor + data.Mayor;
+    }
+    catch (error){
+        console.error("Error obteniendo pacientes totales:", error);
         return null;
     }
 }
