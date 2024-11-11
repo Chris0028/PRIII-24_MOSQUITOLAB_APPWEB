@@ -48,7 +48,7 @@ export function useDiseaseTabs() {
     dispatch(updateStepFour({ dengueCase: value }));
   };
 
-  // Sincronizar el estado local con Redux cuando se monte el hook
+  // Sincronizar el estado local con Redux
   useEffect(() => {
     if (formData.selectedDisease) {
       setSelectedTab(formData.selectedDisease);

@@ -4,7 +4,6 @@ export const createHandleSymptomChange = (dispatch, selectedDisease, dengueCase,
   return (symptom, isChecked) => {
     let updatedSymptoms;
 
-    // Lógica para manejar síntomas según la enfermedad seleccionada
     if (selectedDisease === 'Dengue' && dengueCase) {
       updatedSymptoms = {
         ...symptoms,
@@ -31,7 +30,6 @@ export const createHandleSymptomChange = (dispatch, selectedDisease, dengueCase,
       };
     }
 
-    // Actualizar el store de Redux con los síntomas actualizados
     dispatch(updateStepFour({ symptoms: updatedSymptoms }));
   };
 };
@@ -48,7 +46,6 @@ export const createHandleOtherSymptomCheckboxChange = (dispatch) => {
       ...formData.otherSymptom,
     };
 
-    // Limpiar el campo de entrada si el checkbox se desmarca
     if (!isChecked) {
       updatedOtherSymptom[selectedTab] = '';
     }

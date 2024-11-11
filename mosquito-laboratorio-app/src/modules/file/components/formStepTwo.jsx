@@ -10,20 +10,19 @@ import { handleBirthDateChange as createHandleBirthDateChange } from '../utils/s
 import { useFetchInsurances } from '../repositories/insuranceRepository';
 
 export default function FormStepTwo() {
-  // Inicializar el dispatch de Redux y obtener datos del estado
+
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.file?.stepTwo || {});
 
-  // Funciones de manejo desde stepTwoUtil.js
   const handleInputChanges = createHandleInputChange(dispatch);
   const handleToggleChanges = createHandleToggleChange(dispatch);
   const handleMarkerDragEnds = createHandleMarkerDragEnd(dispatch);
   const handleBirthDateChange = createHandleBirthDateChange(dispatch);
 
-  // Obtener los datos de municipios
   const municipalities = useFetchMunicipalities();
   const insurances = useFetchInsurances();
   const typeInsurance = typesInsurances;
+
   // Estado local para el marcador de Google Maps
   const [markerPosition, setMarkerPosition] = useState({
     lat: formData.directionLatitude || -17.388283899568613,
@@ -35,7 +34,6 @@ export default function FormStepTwo() {
     setShowInfoWindow(true);
   }, []);
 
-  // Maneja el cierre de la ventana de información
   const onInfoWindowClose = useCallback(() => {
     setShowInfoWindow(false);
   }, []);

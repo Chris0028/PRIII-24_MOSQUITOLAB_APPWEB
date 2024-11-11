@@ -1,22 +1,22 @@
 import { updateStepTwo } from "../../../redux/fileSlice";
 // stepTwoUtil.js
 
-// 1. Crear manejador para actualizar campos individuales del formulario.
+// Crea manejador para actualizar campos individuales del formulario.
 export const createHandleInputChange = (dispatch) => (value, name) => {
   dispatch(updateStepTwo({ [name]: value }));
 };
 
-// 2. Crear manejador para el evento del cambio de toggles.
+// 2. Crea manejador para el evento del cambio de toggles.
 export const createHandleToggleChange = (dispatch) => (value, name) => {
   dispatch(updateStepTwo({ [name]: value }));
 };
 
-// 3. Crear manejador para el evento de arrastre del marcador del mapa.
+// Crea manejador para el evento de arrastre del marcador del mapa.
 export const createHandleMarkerDragEnd = (dispatch) => (lat, lng) => {
-  dispatch(updateStepTwo({ latitude: lat, longitude: lng }));
+  dispatch(updateStepTwo({ directionLatitude: lat, directionLongitude: lng }));
 };
 
-// 4. Calcular la edad a partir de la fecha de nacimiento.
+// Calcula la edad a partir de la fecha de nacimiento.
 export const calculateAge = (birthDate) => {
   if (!birthDate) return null;
   const today = new Date();
@@ -29,7 +29,7 @@ export const calculateAge = (birthDate) => {
   return age;
 };
 
-// 5. Manejar cambios en la fecha de nacimiento y actualizar la edad y el campo de guardian.
+// Maneja cambios en la fecha de nacimiento y actualizar la edad y el campo de guardian.
 export const handleBirthDateChange = (dispatch) => (value) => {
   if (value instanceof Date && !isNaN(value)) {
     // Solo si `value` es una instancia válida de Date
@@ -45,7 +45,7 @@ export const handleBirthDateChange = (dispatch) => (value) => {
 };
 
 
-// 6. Manejo de cambio de Seguros
+// Manejo de cambio de Seguros
 export const handleInsuranceChange = (dispatch, insurances) => (value) => {
   const selectedInsurance = insurances.find(insurance => insurance.value === value);
   

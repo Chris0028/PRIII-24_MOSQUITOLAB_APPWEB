@@ -2,43 +2,39 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  //Solo se usa el dato de discoveryMethod, el resto debe ser estatico
   stepOne: {
     discoveryMethod: '',
   },
   stepTwo: {
-    // Parte 1 - Datos personales hasta "Embarazada"
-    patientCi: '',           // Se inicializa como string vacío
-    patientBirthDate: '',                // Se inicializa como string vacío en formato 'yyyy-mm-dd' para evitar problemas con componentes de fecha
-    age: 0,                       // Se inicializa con 0
-    patientGender: '',                   // Puede ser 'male', 'female', o '' (cadena vacía para valor no seleccionado)
+   
+    patientCi: '',           
+    patientBirthDate: '',                
+    age: 0,                      
+    patientGender: '',                   
     isPregnant: false,            // Booleano, con false por defecto
-    pregnantLastMenstruationDate: '',                      // Fecha de última menstruación en string vacío ('yyyy-mm-dd')
-    pregnantChildBirthDate: '',        // Fecha de posible parto, también en string vacío
-    comorbidity: '',              // String vacío para comorbilidades
-    pregnantDisease: '',       // String vacío para especificar enfermedades adicionales
+    pregnantLastMenstruationDate: '',                      
+    pregnantChildBirthDate: '',        
+    comorbidity: '',              
+    pregnantDisease: '',       
     childParent: '',
     
-    // Parte 2 - Datos adicionales hasta seguro
-    patientName: '',                    // Nombres del paciente, string vacío
-    patientLastName: '',                 // Apellido paterno, string vacío
-    patientSecondLastName: '',           // Apellido materno, string vacío
-    countryOrigin: '',            // País de origen, string vacío
-    patientPhone: '',              // Número de teléfono, string vacío
-    directionCity: '',         // Dirección de residencia, string vacío
+    patientName: '',                    
+    patientLastName: '',                 
+    patientSecondLastName: '',          
+    countryOrigin: '',            
+    patientPhone: '',             
+    directionCity: '',        
     directionNeighborhood: '',
-    municipalityOrState: 0,      // Municipio o departamento, string vacío
+    municipalityOrState: 0,      
     
-    // Parte 3 - Información sobre seguro
     isSecured: false,               // Booleano para indicar si está asegurado
-    insuranceId: null,                 // Nombre de la empresa aseguradora, string vacío
-    ipTypeInsured: '',              // Caja o seguro, string vacío
+    insuranceId: null,               
+    ipTypeInsured: '',              
     ipInsuredRecord: '',  
-    ipInsuredName: '',          // Número de matriculación del seguro, string vacío
+    ipInsuredName: '',         
 
-    // Parte 4 - Coordenadas del mapa
-    directionLatitude: 0,                  // Coordenada de latitud inicial, valor predeterminado de 0
-    directionLongitude: 0,                 // Coordenada de longitud inicial, valor predeterminado de 0
+    directionLatitude: 0,                  
+    directionLongitude: 0,                
   },
   stepThree: {
     contagionCountry: '',
@@ -74,12 +70,12 @@ const initialState = {
   },  
   stepFive: {
     wasHospitalized: null,
-    hospitalizedEntryDate: '', // Cambiado para inicializar con una cadena vacía
+    hospitalizedEntryDate: '',
     utiHospitalized: null,
-    utiHospitalizationDate: '', // Cadena vacía para evitar `undefined`
+    utiHospitalizationDate: '', 
     hospitalizedName: '',
     dischargeType: '',
-    dischargeDate: '', // Inicializar como cadena vacía también
+    dischargeDate: '', 
   },
   stepSix: {
     testLaboratoryId: 0,
@@ -113,11 +109,18 @@ const fileSlice = createSlice({
         state.stepSix = { ...state.stepSix, ...action.payload };
         console.log(state.stepSix)
     },
-    
-    // Puedes agregar otros reducers para actualizar los otros pasos
+    ClearForm: (state) => {
+        state.stepOne = null;
+        state.stepTwo = null;
+        state.stepThree = null;
+        state.stepFour = null;
+        state.stepFive = null;
+        state.stepSix = null;
+    },
+    // Agregar otros reducers si se requiere
   },
 });
 
-export const { updateStepOne, updateStepTwo, updateStepThree, updateStepFour, updateStepFive, updateStepSix } = fileSlice.actions;
+export const { updateStepOne, updateStepTwo, updateStepThree, updateStepFour, updateStepFive, updateStepSix, ClearForm } = fileSlice.actions;
 
 export default fileSlice.reducer;

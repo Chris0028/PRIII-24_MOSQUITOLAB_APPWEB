@@ -13,10 +13,10 @@ function decodeJwt(token) {
 
 export function createFilePayload(state) {
   const { stepOne, stepTwo, stepThree, stepFour, stepFive, stepSix } = state;
-
+  
   // Obtener el JWT de localStorage
   const userJwt = localStorage.getItem('jwt');
-  const userId = userJwt ? decodeJwt(userJwt) : null; // Decodificar el JWT para obtener el `userId`
+  const userId = userJwt ? decodeJwt(userJwt) : null; 
 
   const caseDiseaseIdMap = {
     Dengue: 1,
@@ -56,18 +56,17 @@ export function createFilePayload(state) {
 
   const symptomData = createSymptomData(stepFour.selectedDisease, stepFour.symptoms);
 
-  // Definir el payload final
-  const payload = {
+  const payload = { 
     patientName: stepTwo.patientName,
     patientLastName: stepTwo.patientLastName,
     patientSecondLastName: stepTwo.patientSecondLastName,
     patientGender: stepTwo.patientGender,
     patientCi: stepTwo.patientCi,
-    patientBirthDate: formatDate(stepTwo.patientBirthDate), // Formateado a 'yyyy-MM-dd'
+    patientBirthDate: formatDate(stepTwo.patientBirthDate), 
     patientPhone: stepTwo.patientPhone,
     patientCode: stepTwo.patientCode || '',
-    pregnantLastMenstruationDate: formatDate(stepTwo.pregnantLastMenstruationDate), // Formateado a 'yyyy-MM-dd'
-    pregnantChildBirthDate: formatDate(stepTwo.pregnantChildBirthDate), // Formateado a 'yyyy-MM-dd'
+    pregnantLastMenstruationDate: formatDate(stepTwo.pregnantLastMenstruationDate), 
+    pregnantChildBirthDate: formatDate(stepTwo.pregnantChildBirthDate), 
     pregnantDisease: stepTwo.pregnantDisease,
     childParent: stepTwo.childParent,
     ipTypeInsured: stepTwo.ipTypeInsured,
@@ -75,24 +74,24 @@ export function createFilePayload(state) {
     insuranceId: stepTwo.insuranceId || null,
     directionCity: stepTwo.directionCity,
     directionNeighborhood: stepTwo.directionNeighborhood,
-    directionLatitude: stepTwo.directionLatitude || '-17.388283899568613',
-    directionLongitude: stepTwo.directionLongitude || '-66.14925111256666',
+    directionLatitude: String(stepTwo.directionLatitude || '-17.388283899568613'),
+    directionLongitude: String(stepTwo.directionLongitude || '-66.14925111256666'),
     directionMunicipalityId: stepTwo.municipalityOrState,
     contagionNeighborhood: stepThree.contagionNeighborhood,
     contagionCity: stepThree.contagionCity,
     contagionMunicipality: stepThree.contagionMunicipality,
     contagionState: stepThree.contagionState,
     contagionCountry: stepThree.contagionCountry,
-    hospitalizedEntryDate: formatDate(stepFive.hospitalizedEntryDate), // Formateado a 'yyyy-MM-dd'
+    hospitalizedEntryDate: formatDate(stepFive.hospitalizedEntryDate), 
     hospitalizedType: stepFive.wasHospitalized ? 1 : 0,
     hospitalizedName: stepFive.hospitalizedName,
-    utiEntryDate: formatDate(stepFive.utiHospitalizationDate), // Formateado a 'yyyy-MM-dd'
+    utiEntryDate: formatDate(stepFive.utiHospitalizationDate), 
     utiType: stepFive.utiHospitalized ? 1 : 0,
     utiName: stepFive.hospitalizedName,
     dischargeType: stepFive.dischargeType,
-    dischargeDate: formatDate(stepFive.dischargeDate), // Formateado a 'yyyy-MM-dd'
+    dischargeDate: formatDate(stepFive.dischargeDate), 
     fileCode: stepFour.fileCode || '',
-    fileSymptomsDate: formatDate(stepFour.fileSymptomsDate), // Formateado a 'yyyy-MM-dd'
+    fileSymptomsDate: formatDate(stepFour.fileSymptomsDate), 
     fileDiscoveryMethod: stepOne.discoveryMethod,
     fileEpidemiologicalWeek: stepFour.fileEpidemiologicalWeek,
     caseType: stepFour.selectedDisease,
@@ -105,18 +104,17 @@ export function createFilePayload(state) {
     testResult: '',
     testObservation: '',
     testLaboratoryId: stepSix.testLaboratoryId,
-    userId: userId, // Asigna el userId decodificado
+    userId: userId, 
     symptoms: symptomData.symptomIds,
     isSymptomsPresent: symptomData.isSymptomsPresent
   };
   console.log(payload);
   return payload;
-}
+};
 
 
-// Función que envía el payload a la API usando el servicio PostFile
 export function sendFile(state) {
   const payload = createFilePayload(state);
-  console.log(payload)
+  console.log(payload);
   return PostFile(payload);
-}
+};

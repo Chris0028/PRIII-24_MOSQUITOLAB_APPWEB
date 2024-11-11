@@ -10,19 +10,16 @@ export default function FormStepFour() {
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.file?.stepFour || {});
 
-  // Manejo de enfermedades con el hook personalizado
   const { selectedTab, setSelectedTab, dengueCase, setDengueCase } = useDiseaseTabs();
 
-  // Crear manejadores de síntomas desde `stepFourUtil.js`
   const handleSymptomChange = createHandleSymptomChange(dispatch, selectedTab, dengueCase, formData.symptoms);
   const handleOtherSymptomCheckboxChange = createHandleOtherSymptomCheckboxChange(dispatch);
   const handleOtherSymptomInputChange = createHandleOtherSymptomInputChange(dispatch);
 
-  // Estado local para `fileSymptomsDate` y `fileEpidemiologicalWeek`
   const [selectedDate, setSelectedDate] = useState(formData.fileSymptomsDate ? new Date(formData.fileSymptomsDate) : null);
   const [fileEpidemiologicalWeek, setEpidemiologicalWeek] = useState(formData.fileEpidemiologicalWeek || '');
 
-  // Sincronizar la semana epidemiológica cuando cambia `selectedDate`
+  // Sincronizar la semana epidemiológica cuando cambia 'selectedDate'
   useEffect(() => {
     if (selectedDate) {
       const week = getEpidemiologicalWeek(selectedDate); // Llama a la lógica para calcular la semana
@@ -31,21 +28,19 @@ export default function FormStepFour() {
     }
   }, [selectedDate, dispatch]);
 
-  // Sincronizar `selectedDate` con `formData.fileSymptomsDate` cada vez que cambia `formData`
   useEffect(() => {
     if (formData.fileSymptomsDate) {
       setSelectedDate(new Date(formData.fileSymptomsDate));
     }
   }, [formData.fileSymptomsDate]);
 
-  // Manejar cambios en el `DatePicker`
   const handleDateChange = (value) => {
     setSelectedDate(value);
     const dateValue = value instanceof Date ? value.toISOString() : null;
     dispatch(updateStepFour({ fileSymptomsDate: dateValue })); // Actualiza `fileSymptomsDate` en Redux
   };
 
-  // Sincronizar `otherSymptomChecked` en el Redux para la enfermedad seleccionada
+  // Sincronizar 'otherSymptomChecked' en el Redux para la enfermedad seleccionada
   useEffect(() => {
     if (!formData.otherSymptomChecked?.hasOwnProperty(selectedTab)) {
       dispatch(updateStepFour({

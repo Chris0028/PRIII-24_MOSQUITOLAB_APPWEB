@@ -1,5 +1,5 @@
-import { FaChartBar, FaCloudDownloadAlt, FaFileInvoice, FaSignOutAlt, FaUserAlt, FaVial, FaBars, FaUsers } from "react-icons/fa";
 import { Container, Content, Divider, Header, Nav, Navbar, Sidebar, Sidenav, IconButton, Footer } from "rsuite";
+import { FaChartBar, FaCloudDownloadAlt, FaFileInvoice, FaSignOutAlt, FaUserAlt, FaVial, FaBars, FaUsers, FaFileAlt, FaChartPie } from "react-icons/fa";
 import SidenavBody from "rsuite/esm/Sidenav/SidenavBody";
 import { useEffect, useState } from "react";
 import UserInfo from "./components/userInfo";
@@ -8,7 +8,8 @@ import NavItem from "rsuite/esm/Nav/NavItem";
 import { PiEyedropperSampleFill } from "react-icons/pi";
 import { decodeToken } from "../../utils/decoder";
 import { useSelector } from "react-redux";
-
+import connectToSignalR from "./services/signalRService";
+import NotificationContainer from "./components/notificationContainer";
 
 export default function Layout({ children }) {
     const [hoveredItem, setHoveredItem] = useState(null);
@@ -18,12 +19,25 @@ export default function Layout({ children }) {
 
     const user = useSelector((state) => state.user.user)
 
+    const [message, setMessage] = useState(null); // Estado para almacenar el mensaje
+
     useEffect(() => {
         if (user.jwt) {
             const getUser = decodeToken(user.jwt);
             setRole(getUser.role);
         }
     }, []);
+
+    useEffect(() => {
+        if (user.info.laboratoryId) {
+            // Conexión a SignalR y manejo de mensajes
+            const connection = connectToSignalR(user.info.laboratoryId, (msg) => {
+                setMessage(msg); // Actualiza el mensaje al recibir una notificación
+            });
+
+            return () => connection.stop();
+        }
+    }, [user.info.laboratoryId]);
 
     function handleMouseEnter(eventKey) {
         setHoveredItem(eventKey);
@@ -68,8 +82,24 @@ export default function Layout({ children }) {
                                 handleMouseLeave={handleMouseLeave}
                                 expanded={expanded}
                                 menuItems={[
-                                    { label: 'Reporte Consolidado', url: '/consolidatereport' },
-                                    { label: 'Gráficos', url: '/pieGraph' }
+                                    {
+                                        label: (
+                                            <>
+                                                <FaFileAlt style={{ marginRight: '8px' }} />
+                                                Reporte Consolidado
+                                            </>
+                                        ),
+                                        url: '/consolidatereport',
+                                    },
+                                    {
+                                        label: (
+                                            <>
+                                                <FaChartPie style={{ marginRight: '8px' }} />
+                                                Gráficos
+                                            </>
+                                        ),
+                                        url: '/pieGraph',
+                                    }
                                 ]}
                             />
                             {role === 'Admin' && (
@@ -104,6 +134,7 @@ export default function Layout({ children }) {
                     </Navbar>
                 </Header>
                 <Content style={styles.content}>
+                    <NotificationContainer message={message} />
                     {children}
                 </Content>
                 <Footer style={styles.footer}>Desarrollado por Univalle</Footer>

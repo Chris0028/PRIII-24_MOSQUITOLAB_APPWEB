@@ -1,5 +1,5 @@
 
-// 5. Manejar cambios en la fecha de nacimiento y actualizar la edad y el campo de guardian.
+// Manejar cambios en la fecha de nacimiento y actualizar la edad y el campo de guardian.
 export const handleSampleDateChange = (dispatch) => (value) => {
     if (value instanceof Date && !isNaN(value)) {
       // Solo si `value` es una instancia válida de Date
