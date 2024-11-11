@@ -1,4 +1,4 @@
-import { FaChartBar, FaCloudDownloadAlt, FaFileInvoice, FaSignOutAlt, FaUserAlt, FaVial, FaBars, FaUsers } from "react-icons/fa";
+import { FaChartBar, FaCloudDownloadAlt, FaFileInvoice, FaSignOutAlt, FaUserAlt, FaVial, FaBars, FaUsers, FaFileAlt, FaChartPie } from "react-icons/fa";
 import { Container, Content, Divider, Header, Nav, Navbar, Sidebar, Sidenav, IconButton } from "rsuite";
 import SidenavBody from "rsuite/esm/Sidenav/SidenavBody";
 import { useEffect, useState } from "react";
@@ -82,8 +82,24 @@ export default function Layout({ children }) {
                                 handleMouseLeave={handleMouseLeave}
                                 expanded={expanded}
                                 menuItems={[
-                                    { label: 'Reporte Consolidado', url: '/consolidatereport' },
-                                    { label: 'Gráficos', url: '/pieGraph' }
+                                    {
+                                        label: (
+                                            <>
+                                                <FaFileAlt style={{ marginRight: '8px' }} /> 
+                                                Reporte Consolidado
+                                            </>
+                                        ),
+                                        url: '/consolidatereport',
+                                    },
+                                    {
+                                        label: (
+                                            <>
+                                                <FaChartPie style={{ marginRight: '8px' }} />
+                                                Gráficos
+                                            </>
+                                        ),
+                                        url: '/pieGraph',
+                                    }
                                 ]}
                             />
                             {role === 'Admin' && (
