@@ -1,8 +1,8 @@
 import { Container, Content, FlexboxGrid, Footer, Header, Panel } from "rsuite";
 import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
-import escudo from '../../../../public/static/escudo-patrio.png'
-import UMA from '../../../../public/static/logo-UMA-2023_BN-positivo.png'
-import UNIVALLE from '../../../../public/static/LOGO-UNIVALLE-04.png'
+import escudo from '../../../../public/static/escudo-patrio.png';
+import UMA from '../../../../public/static/logo-UMA-2023_BN-positivo.png';
+import UNIVALLE from '../../../../public/static/LOGO-UNIVALLE-04.png';
 
 export default function AuthContainer({ children }) {
     return (
@@ -21,7 +21,7 @@ export default function AuthContainer({ children }) {
             <Content style={{ marginTop: '60px' }}>
                 <FlexboxGrid justify="center" align="middle">
                     <FlexboxGridItem style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        <Panel header="Por seguridad jamás revele sus datos" bordered style={{ textAlign: 'center', width: 400, height: 300, borderColor: '#1D3B72' }}>
+                        <Panel header="Por seguridad jamás revele sus datos" bordered style={{ textAlign: 'center', width: 400, height: 350, borderColor: '#1D3B72' }}>
                             {children}
                         </Panel>
                     </FlexboxGridItem>

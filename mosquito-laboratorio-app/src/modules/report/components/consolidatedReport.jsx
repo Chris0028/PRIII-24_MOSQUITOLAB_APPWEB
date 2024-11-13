@@ -1,20 +1,23 @@
-import { DatePicker, FlexboxGrid, Form, SelectPicker, Button, InputGroup, IconButton, Modal } from 'rsuite';
+import { DatePicker, FlexboxGrid, Form, SelectPicker, Button, InputGroup, IconButton, Modal, Divider } from 'rsuite';
 import FormGroup from 'rsuite/esm/FormGroup';
 import { GetReportsListAsync } from '../services/reportServicie';
 import { FaPlus } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
-import { diagnosticMethodOptions, networkOptions, subSectorOptions, caseStatusOptions} from '../utils/pickerOptions';
+import { diagnosticMethodOptions, networkOptions, subSectorOptions, caseStatusOptions } from '../utils/pickerOptions';
 import { getNamesNIdsOfHospitals } from '../../file/services/hospitalService';
 import FormControl from 'rsuite/esm/FormControl';
 import { useNavigate } from 'react-router-dom';
 import { exportToExcel, exportToCSV } from '../../download/service/exportService';
+import FlexboxGridItem from 'rsuite/esm/FlexboxGrid/FlexboxGridItem';
 
 export default function FilterReportForm() {
   const [hospital, setHospital] = useState([])
   const [reportData, setReportData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
-  
+
+
+
   const [filters, setFilters] = useState({
     notificationStartDate: null,
     notificationEndDate: null,
@@ -33,7 +36,7 @@ export default function FilterReportForm() {
 
   useEffect(() => {
     fetchHospital();
-    
+
   }, []);
 
   const handleFilterChange = (name, value) => {
@@ -59,15 +62,15 @@ export default function FilterReportForm() {
     // try {
     //   const response = await GetReportsListAsync(requestBody);
     //   console.log('Respuesta de la API:', response);
-  
+
     //   // Verifica si response es un array o un objeto
     //   if (!Array.isArray(response)) {
     //     console.error('La respuesta de la API no es un array:', response);
     //   }
-  
+
     //   // Guarda los datos en localStorage
     //   localStorage.setItem('reportData', JSON.stringify(response));
-  
+
     //   // Redirige al usuario a la vista de descarga
     //   navigate('/download');
     // } catch (error) {
@@ -99,7 +102,7 @@ export default function FilterReportForm() {
 
   return (
     <div style={{ padding: '20px', maxWidth: '1300px', margin: '0 auto' }}>
-      <h3 style={{ fontWeight: 'bold', color: '#1B3A61', display:'flex', justifyContent:'center', alignItems:'center' }}>FILTROS PARA UN REPORTE CONSOLIDADO</h3>
+      <h3 style={{ fontWeight: 'bold', color: '#1B3A61', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>FILTROS PARA UN REPORTE CONSOLIDADO</h3>
 
       <Form fluid>
         <FlexboxGrid justify="space-between">
@@ -131,7 +134,7 @@ export default function FilterReportForm() {
                   style={{ width: '100%' }}
                   onChange={(value) => handleFilterChange('notificationEndDate', value)}
                 />
-                
+
               </InputGroup>
             </FormGroup>
           </FlexboxGrid.Item>
@@ -148,7 +151,7 @@ export default function FilterReportForm() {
                   style={{ width: '100%' }}
                   onChange={(value) => handleFilterChange('symptomStartDate', value)}
                 />
-                
+
               </InputGroup>
             </FormGroup>
           </FlexboxGrid.Item>
@@ -165,7 +168,7 @@ export default function FilterReportForm() {
                   style={{ width: '100%' }}
                   onChange={(value) => handleFilterChange('symptomEndDate', value)}
                 />
-                
+
               </InputGroup>
             </FormGroup>
           </FlexboxGrid.Item>
@@ -183,7 +186,7 @@ export default function FilterReportForm() {
                   onChange={(value) => handleFilterChange('labResultStartDate', value)}
 
                 />
-                
+
               </InputGroup>
             </FormGroup>
           </FlexboxGrid.Item>
@@ -201,7 +204,7 @@ export default function FilterReportForm() {
                   onChange={(value) => handleFilterChange('labResultEndDate', value)}
 
                 />
-                
+
               </InputGroup>
             </FormGroup>
           </FlexboxGrid.Item>
@@ -222,7 +225,7 @@ export default function FilterReportForm() {
           </FlexboxGrid.Item>
 
           <FlexboxGrid.Item colspan={11} style={{ marginBottom: 20 }}>
-            
+
           </FlexboxGrid.Item>
 
           <FlexboxGrid.Item colspan={11} style={{ marginBottom: 20 }}>
@@ -248,7 +251,7 @@ export default function FilterReportForm() {
                 block
                 placeholder="Seleccione el departamento"
                 onChange={(value) => handleFilterChange('department', value)}
-                
+
               />
             </FormGroup>
           </FlexboxGrid.Item>
@@ -311,41 +314,28 @@ export default function FilterReportForm() {
           </FlexboxGrid.Item>
         </FlexboxGrid>
       </Form>
+      <FlexboxGrid justify='end'>
+        <FlexboxGridItem>
+          <Button appearance="primary" color="blue" size="lg" onClick={generateReport}>
+            <FaPlus style={{ marginRight: 10 }} /> Generar Reporte
+          </Button>
 
-      <div
-        style={{
-          position: 'sticky',
-          bottom: 0,
-          display: 'flex',
-          justifyContent: 'flex-end', // Alinear a la derecha
-          alignItems: 'center',
-          backgroundColor: '#fff',
-          padding: '10px 20px',
-          borderTop: '3px solid #ccc',
-          marginTop: '20px',
-        }}
-      >
-      <Button appearance="primary" color="blue" size="lg" onClick={ generateReport }>
-        <FaPlus style={{ marginRight: 10 }} /> Generar Reporte
-      </Button>
-      </div>
-
-      {/* Modal para exportar */}
-      <Modal open={showModal} onClose={() => setShowModal(false)} size="xs">
-        <Modal.Header>
-          <Modal.Title>Exportar Reporte</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>Seleccione el formato para exportar el reporte consolidado.</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={handleExportToExcel} color="green">Exportar a Excel</Button>
-          <Button onClick={handleExportToCSV} color="blue">Exportar a CSV</Button>
-          <Button onClick={() => setShowModal(false)} appearance="subtle">Cancelar</Button>
-        </Modal.Footer>
-      </Modal>
+          <Modal open={showModal} onClose={() => setShowModal(false)} size="xs">
+            <Modal.Header>
+              <Modal.Title>Exportar Reporte</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <p>Seleccione el formato para exportar el reporte consolidado.</p>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button onClick={handleExportToExcel} color="green">Exportar a Excel</Button>
+              <Button onClick={handleExportToCSV} color="blue">Exportar a CSV</Button>
+              <Button onClick={() => setShowModal(false)} appearance="subtle">Cancelar</Button>
+            </Modal.Footer>
+          </Modal>
+        </FlexboxGridItem>
+      </FlexboxGrid>
 
     </div>
-    //() => navigate('/download')
   );
 }
