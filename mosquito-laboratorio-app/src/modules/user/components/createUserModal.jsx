@@ -10,6 +10,7 @@ import ModalTitle from "rsuite/esm/Modal/ModalTitle";
 import { createUserAsync, getRoles } from "../services/userService";
 import { getNamesNIdsOfLabos } from "../../../modules/file/services/laboratoryService";
 import { getNamesNIdsOfHospitals } from "../../../modules/file/services/hospitalService";
+import { validateName, validateEmail, validatePhoneNumber } from "../../../utils/validator";
 
 export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
 
@@ -59,6 +60,14 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
             setWorkplaces(await getNamesNIdsOfLabos())
         else
             setWorkplaces(await getNamesNIdsOfHospitals());
+    }
+
+    function validate() {
+        validateName(newUser.name);
+        validateName(newUser.lastName);
+        validateName(newUser.secondLastName);
+        validateEmail(newUser.email);
+        validatePhoneNumber(newUser.phone);
     }
 
     return (
@@ -145,11 +154,11 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
                                 <Divider style={{ fontWeight: 'bold' }}>SEDES</Divider>
                                 <FlexboxGridItem colspan={13} style={{ marginBottom: '20px' }}>
                                     <FormGroup controlId="sedes">
-                                        <FormControlLabel>Nro de item</FormControlLabel>
+                                        <FormControlLabel>SEDES</FormControlLabel>
                                         <Input
-                                            value={newUser.sedes}
-                                            onChange={(value) => handleChange(value, 'sedes')}
-                                            placeholder="Ingrese el nro de item" />
+                                            disabled
+                                            value={'Cochabamba'}
+                                            onChange={(value) => handleChange(value, 'sedes')} />
                                     </FormGroup>
                                 </FlexboxGridItem>
                             </>

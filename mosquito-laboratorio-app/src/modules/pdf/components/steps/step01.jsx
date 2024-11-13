@@ -44,7 +44,6 @@ const styles = StyleSheet.create({
     },
     smallBox: {
         flex: 1,
-        borderRight: '1px solid #000',
         padding: 3,
         alignItems: 'flex-start',
         minHeight: 25
@@ -57,7 +56,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export default function StepOne({ notificationDate, discoveryMethod, info, registerDate }) {
+export default function StepOne({ discoveryMethod, info, registerDate }) {
 
     return (
         <>
@@ -70,17 +69,9 @@ export default function StepOne({ notificationDate, discoveryMethod, info, regis
                     <Text style={styles.notificationDateTitle}>Fecha de notificación</Text>
                     <View style={styles.notificationDateRow}>
                         <View style={styles.smallBox}>
-                            <Text style={styles.smallText}>Día</Text>
-                            <Text></Text>
+                            <Text>{registerDate}</Text>
                         </View>
-                        <View style={styles.smallBox}>
-                            <Text style={styles.smallText}>Mes</Text>
-                            {/* <Text>{registerDate.getMonth()}</Text> */}
-                        </View>
-                        <View style={{ ...styles.smallBox, borderRight: 0 }}>
-                            <Text style={styles.smallText}>Año</Text>
-                            {/* <Text>{registerDate.getFullYear()}</Text> */}
-                        </View>
+
                     </View>
                 </View>
                 <View style={styles.reducedColumn}>

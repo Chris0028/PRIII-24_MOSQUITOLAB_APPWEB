@@ -1,11 +1,12 @@
 import { Container, Content, FlexboxGrid, Footer, Header, Panel } from "rsuite";
 import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
 import escudo from '../../../../public/static/escudo-patrio.png'
-import uma from '../../../../public/static/logo-UMA-2023_BN-positivo.png'
+import UMA from '../../../../public/static/logo-UMA-2023_BN-positivo.png'
+import UNIVALLE from '../../../../public/static/LOGO-UNIVALLE-04.png'
 
 export default function AuthContainer({ children }) {
     return (
-        <Container style={{ minHeight: '100hv', padding: '100px' }}>
+        <Container style={{ minHeight: '100hv', paddingTop: '75px', paddingRight: '50px', paddingLeft: '50px', paddingBottom: '50px' }}>
             <Header>
                 <FlexboxGrid>
                     <FlexboxGridItem colspan={24} style={{ textAlign: 'center' }}>
@@ -26,8 +27,15 @@ export default function AuthContainer({ children }) {
                     </FlexboxGridItem>
                 </FlexboxGrid>
             </Content>
-            <Footer>
-
+            <Footer style={{ marginTop: '10px' }}>
+                <FlexboxGrid justify="space-between" align="middle">
+                    <FlexboxGridItem colspan={12} style={{ textAlign: 'left' }}>
+                        <img src={UNIVALLE} alt="UNIVALLE" style={{ width: '80px' }} />
+                    </FlexboxGridItem>
+                    <FlexboxGridItem colspan={12} style={{ textAlign: 'right' }}>
+                        <img src={UMA} alt="UMA" style={{ width: '130px' }} />
+                    </FlexboxGridItem>
+                </FlexboxGrid>
             </Footer>
         </Container>
     )

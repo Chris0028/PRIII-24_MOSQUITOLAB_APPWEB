@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export default function StepFinal({ info }) {
+export default function StepFinal({ info, username, role }) {
     return (
         <>
             <View style={styles.sectionTitle}>
@@ -55,7 +55,7 @@ export default function StepFinal({ info }) {
                 <View style={styles.leftColumn}>
                     <View style={styles.row}>
                         <View style={styles.labelCell}>
-                            <Text>Nombre y cargo:</Text>
+                            <Text>Nombre y cargo: {role}</Text>
                         </View>
                         <View style={styles.dottedCell}></View>
                         <View style={styles.labelCell}>
@@ -76,14 +76,16 @@ export default function StepFinal({ info }) {
                         </View>
                         <View style={styles.dottedCell}></View>
                         <View style={styles.labelCell}>
-                            <Text>SEDES</Text>
+                            <Text>SEDES:</Text>
                         </View>
-                        <View style={styles.dottedCell}></View>
+                        <View style={styles.dottedCell}>
+                            <Text>Cochabamba</Text>
+                        </View>
                     </View>
                 </View>
 
                 <View style={styles.rightColumn}>
-                    <Text style={styles.signatureText}></Text>
+                    <Text style={styles.signatureText}>{username}</Text>
                     <Text style={styles.signatureText}>FIRMA Y SELLO DEL RESPONSABLE DEL LLENADO DE LA FICHA</Text>
                 </View>
             </View>

@@ -102,7 +102,6 @@ export default function RecordsView() {
   };
 
   const handleEdit = async (fileId) => {
-    // Asegúrate de que fileId sea un valor válido antes de navegar
     if (fileId) {
       const data = await GetFileDetails(fileId);
       localStorage.setItem('updateFile', JSON.stringify(data));
@@ -110,7 +109,6 @@ export default function RecordsView() {
       navigate(`/fileformu/${fileId}`);
     } else {
       console.error('File ID is undefined or null');
-      // Opcionalmente, puedes mostrar un mensaje de error al usuario
     }
   };
 
