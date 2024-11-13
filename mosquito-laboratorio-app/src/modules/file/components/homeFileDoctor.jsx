@@ -2,13 +2,14 @@ import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, Loader
 import { FaEdit, FaSearch, FaSync, FaPlus, FaRegFilePdf } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { GetHistoryFileByHospital } from '../services/historyByHospital';
 import { useSelector } from 'react-redux';
 import { decodeToken } from '../../../utils/decoder';
 import FormGroup from 'rsuite/esm/FormGroup';
 import FileViewer from '../../pdf/components/fileViewer';
 import FilePDF from '../../pdf/components/filePDF';
 import { historyFilterHAsync } from '../services/historyFileFilterH';
+import { GetHistoryFileByHospital } from '../services/historyByHospital';
+import { GetHistoryForLab } from '../services/historyForLab';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -71,13 +72,19 @@ export default function RecordsView() {
     let data = [];
 
     try {
-      if (activeRole === 'Doctor') {
-        data = await GetHistoryFileByHospital(userInfo.info.hospitalId);
-      } else {
-        data = await GetHistoryFileByHospital(null);
+      if (activeRole === 'Doctor' ) {
+        console.log(userInfo.info.hospitalId)
+        data = await loadFileHospital(userInfo.info.hospitalId, page, limit);
+      } 
+      else if (activeRole === 'Employee'){
+        data = await loadFileLabo(userInfo.info.laboratoryId, page, limit);
+      }
+      else {
+      data = await loadFileHospital(null, page, limit);
       }
       if (data != null) {
         setHistoryFiles(data);
+        setTotal(data.total);
       }
     } catch (err) {
       setError('Error al cargar los datos');
@@ -85,6 +92,18 @@ export default function RecordsView() {
       setLoading(false);
     }
   };
+
+  async function loadFileHospital(hospitalID, page, limit) {
+    const response = await GetHistoryFileByHospital(hospitalID, page, limit);
+    setHistoryFiles(response.data);
+    setTotal(response.total);
+  }
+
+  async function loadFileLabo(laboratoryId, page, limit) {
+    const response = await GetHistoryForLab(laboratoryId, page, limit);
+    setHistoryFiles(response.data);
+    setTotal(response.total);
+  }
 
   const handleRefresh = () => {
     fetchData();
@@ -123,7 +142,7 @@ export default function RecordsView() {
   function handleChangeLimit(dataKey) {
     setPage(1);
     setLimit(dataKey);
-}
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: 'auto', padding: '20px', overflow: 'hidden' }}>
@@ -298,10 +317,11 @@ export default function RecordsView() {
           </Table>
         )}
       </div>
+
       <div >
         <Pagination prev next first last ellipsis boundaryLinks
                       size="sm"
-                      maxButtons={5}
+                      maxButtons={10}
                       layout={['-', 'pager']}
                       total={total}
                       limit={limit}

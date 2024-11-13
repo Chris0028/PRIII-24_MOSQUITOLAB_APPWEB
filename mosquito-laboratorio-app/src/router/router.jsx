@@ -14,6 +14,7 @@ import { UserContainer } from "../modules/user/components/userContainer";
 import Profile from "../modules/user/components/profile";
 import AuthForm from "../modules/auth/components/authForm";
 import ChangePasswordForm from "../modules/auth/components/changePasswordForm";
+import Download from "../modules/download/components/download";
 
 
 export default function Routing() {
@@ -30,6 +31,7 @@ export default function Routing() {
                 <Route path='/fileform' element={<Layout children={<FileForm />} />} />
                 <Route path='/homefiledoctor' element={<Layout children={<HomeFileDoctor />} />} />
                 <Route path='/homefilelabo' element={<Layout children={<HomeFileLabo />} />} />
+                <Route path='/download' element={<Layout children={<Download />} />} />
                 <Route path='/consolidatereport' element={<Layout children={<ConsolidateReport />} />} />
                 <Route path='/pieGraph' element={<Layout children={<PieGraph />} />} />
                 <Route path='/fileformu/:fileID' element={<Layout children={< FileFormU />} />} />
