@@ -2,13 +2,14 @@ import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, Loader
 import { FaEdit, FaSearch, FaSync, FaPlus, FaRegFilePdf } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { GetHistoryFileByHospital } from '../services/historyByHospital';
 import { useSelector } from 'react-redux';
 import { decodeToken } from '../../../utils/decoder';
 import FormGroup from 'rsuite/esm/FormGroup';
 import FileViewer from '../../pdf/components/fileViewer';
 import FilePDF from '../../pdf/components/filePDF';
 import { historyFilterHAsync } from '../services/historyFileFilterH';
+import { GetHistoryFileByHospital } from '../services/historyByHospital';
+import { GetHistoryForLab } from '../services/historyForLab';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -47,6 +48,10 @@ function formatDate(date) {
 
 export default function RecordsView() {
   const navigate = useNavigate()
+  //pagination
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [total, setTotal] = useState(0);
 
   const [historyFiles, setHistoryFiles] = useState([]);
   const [showModalPDF, setShowModalPDF] = useState(false);
@@ -61,7 +66,7 @@ export default function RecordsView() {
   useEffect(() => {
     setActiveRole(decodeToken(userInfo.jwt).role);
     fetchData();
-  }, []);
+  }, [page, limit]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -69,12 +74,18 @@ export default function RecordsView() {
 
     try {
       if (activeRole === 'Doctor') {
-        data = await GetHistoryFileByHospital(userInfo.info.hospitalId);
-      } else {
-        data = await GetHistoryFileByHospital(null);
+        console.log(userInfo.info.hospitalId)
+        data = await loadFileHospital(userInfo.info.hospitalId, page, limit);
+      }
+      else if (activeRole === 'Employee') {
+        data = await loadFileLabo(userInfo.info.laboratoryId, page, limit);
+      }
+      else {
+        data = await loadFileHospital(null, page, limit);
       }
       if (data != null) {
         setHistoryFiles(data);
+        setTotal(data.total);
       }
     } catch (err) {
       setError('Error al cargar los datos');
@@ -82,6 +93,18 @@ export default function RecordsView() {
       setLoading(false);
     }
   };
+
+  async function loadFileHospital(hospitalID, page, limit) {
+    const response = await GetHistoryFileByHospital(hospitalID, page, limit);
+    setHistoryFiles(response.data);
+    setTotal(response.total);
+  }
+
+  async function loadFileLabo(laboratoryId, page, limit) {
+    const response = await GetHistoryForLab(laboratoryId, page, limit);
+    setHistoryFiles(response.data);
+    setTotal(response.total);
+  }
 
   const handleRefresh = () => {
     fetchData();
@@ -99,8 +122,9 @@ export default function RecordsView() {
       }
     });
 
-    const data = await historyFilterHAsync(filteredArgs);
+    const data = await historyFilterHAsync(filteredArgs, page, limit);
     setHistoryFiles(data);
+    setTotal(data.total);
   }
 
   function handleChange(value, name) {
@@ -122,6 +146,11 @@ export default function RecordsView() {
 
   function handleCloseModalPDF() {
     setShowModalPDF(false);
+  }
+
+  function handleChangeLimit(dataKey) {
+    setPage(1);
+    setLimit(dataKey);
   }
 
   return (
@@ -300,8 +329,17 @@ export default function RecordsView() {
           </Table>
         )}
       </div>
+
       <div >
-        <Pagination prev next first last ellipsis boundaryLinks size="sm" maxButtons={5} layout={['-', 'pager']} />
+        <Pagination prev next first last ellipsis boundaryLinks
+          size="sm"
+          maxButtons={10}
+          layout={['-', 'pager']}
+          total={total}
+          limit={limit}
+          activePage={page}
+          onChangePage={setPage}
+          onChangeLimit={handleChangeLimit} />
       </div>
       {/* Footer Fijo con los botones de Agregar y Descargar */}
       <div

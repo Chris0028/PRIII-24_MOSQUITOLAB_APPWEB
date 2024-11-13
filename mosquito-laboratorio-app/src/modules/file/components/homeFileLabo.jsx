@@ -1,11 +1,9 @@
 import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, Loader, Pagination } from 'rsuite';
 import { FaEdit, FaSearch, FaSync, FaPlus, FaRegFilePdf, FaMicroscope, FaFlask, FaRegEdit } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { GetHistoryForLab } from '../services/historyForLab';
 import { useEffect, useState } from 'react';
 import { GetFileDetails } from '../services/GetUpdateFile';
 import { useDispatch } from 'react-redux';
-import { setUpdateFile } from '../../../redux/updateFileSlice';
 import TestForm from '../../test/components/testForm';
 import { useSelector } from 'react-redux';
 import { decodeToken } from '../../../utils/decoder';
@@ -13,6 +11,7 @@ import FormGroup from 'rsuite/esm/FormGroup';
 import ResultFilePDF from '../../pdf/sampleResult/components/sampleResultFile';
 import ResultViewer from '../../pdf/sampleResult/components/resultViewer';
 import { historyFilterLAsync } from '../services/historyFileFilterL';
+import { GetHistoryForLab } from '../services/historyForLab';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -50,6 +49,11 @@ function formatDate(date) {
 }
 
 export default function RecordsView() {
+  //pagination
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [total, setTotal] = useState(0);
+
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [historyFiles, setHistoryFiles] = useState([]);
@@ -59,6 +63,7 @@ export default function RecordsView() {
   const [fileId, setFileId] = useState(0);
   const [diseaseName, setDiseaseName] = useState('');
   const [action, setAction] = useState('');
+  const [activeRole, setActiveRole] = useState('');
 
   const [pdfToView, setPdfToView] = useState(null);
 
@@ -79,20 +84,25 @@ export default function RecordsView() {
   }
 
   useEffect(() => {
-    let userRole = decodeToken(userInfo.jwt);
-    if (userRole.role === 'Employee')
-      fetchData(parseInt(userInfo.info.laboratoryId));
-    else
-      fetchData(null);
+    setActiveRole(decodeToken(userInfo.jwt).role);
+    fetchData();
+  }, [page, limit]);
 
-  }, []);
-
-  async function fetchData(laboratoryId) {
+  const fetchData = async () => {
     setLoading(true);
-    let data = await GetHistoryForLab(laboratoryId);
+    let data = [];
+
     try {
+      if (activeRole === 'Employee') {
+        console.log(userInfo.info.laboratoryId)
+        data = await loadFileLabo(userInfo.info.laboratoryId, page, limit);
+      } else {
+        data = await loadFileLabo(null, page, limit);
+
+      }
       if (data != null) {
         setHistoryFiles(data);
+        setTotal(data.total);
       }
     } catch (err) {
       setError('Error al cargar los datos');
@@ -100,6 +110,12 @@ export default function RecordsView() {
       setLoading(false);
     }
   };
+
+  async function loadFileLabo(laboratoryId, page, limit) {
+    const response = await GetHistoryForLab(laboratoryId, page, limit);
+    setHistoryFiles(response.data);
+    setTotal(response.total);
+  }
 
   const handleEdit = async (fileId) => {
     // Asegúrate de que fileId sea un valor válido antes de navegar
@@ -145,6 +161,11 @@ export default function RecordsView() {
       setArgs(newArgs);
     }
   }
+
+  function handleChangeLimit(dataKey) {
+    setPage(1);
+    setLimit(dataKey);
+}
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: 'auto', padding: '20px', overflow: 'hidden' }}>
@@ -366,9 +387,17 @@ export default function RecordsView() {
         )
         }
       </div >
-      <div >
-        <Pagination prev next first last ellipsis boundaryLinks size="sm" maxButtons={5} layout={['-', 'pager']} />
-      </div>
+      <div>
+                <Pagination prev next first last ellipsis boundaryLinks
+                    size="sm"
+                    maxButtons={10}
+                    layout={['-', 'pager']}
+                    total={total}
+                    limit={limit}
+                    activePage={page}
+                    onChangePage={setPage}
+                    onChangeLimit={handleChangeLimit} />
+            </div>
       {/* Footer Fijo con los botones de Agregar y Descargar */}
       <div
         style={{

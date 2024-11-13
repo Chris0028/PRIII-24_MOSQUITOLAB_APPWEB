@@ -6,24 +6,18 @@ import FormStepThreeU from './formStepThreeU';
 import FormStepFourU from './formStepFourU';
 import FormStepFiveU from './formStepFiveU';
 import FormStepSixU from './formStepSixU';
-import { useDispatch } from 'react-redux';
-import { updateStepOne } from '../../../redux/fileSlice';  // Importar las acciones necesarias
+import { useDispatch, useSelector } from 'react-redux';
+import { updateStepOne, updateStepTwo, updateStepThree, updateStepFour, updateStepFive, updateStepSix } from '../../../redux/formStepsSlice';
 
-export default function fileFormU() {
+export default function FileForm() {
   const [step, setStep] = useState(0);
-  const dispatch = useDispatch();
 
-  // Función para cambiar de paso y guardar los datos actuales
-  const onNext = () => {
-    // Aquí puedes guardar los datos del paso actual antes de avanzar al siguiente paso
-    if (step === 0) {
-      // Guarda los datos del paso 1 en Redux, por ejemplo
-      dispatch(updateStepOne({ /* pasar los valores que quieras guardar en Redux */ }));
-    }
-    setStep(step + 1);
+  const onChange = (nextStep) => {
+      setStep(nextStep < 0 ? 0 : nextStep > 5 ? 1 : nextStep);
   };
 
-  const onPrevious = () => setStep(step - 1);
+  const onNext = () => onChange(step + 1);
+  const onPrevious = () => onChange(step - 1);
 
   return (
     <div>

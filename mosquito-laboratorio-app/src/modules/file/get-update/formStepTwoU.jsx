@@ -1,41 +1,40 @@
 import { Form, DatePicker, Toggle, FlexboxGrid, InputPicker, Divider } from 'rsuite';
-import { sexOptions, countriesOptions, secureOptions } from '../utils/pickerOptions';
+import { sexOptions, countriesOptions, typesInsurances } from '../utils/pickerOptions';
 import { APIProvider, Map, Marker, InfoWindow } from '../hooks/useMaps';
 import { useFetchMunicipalities } from '../repositories/locationRepository';
-import { React, useState, useCallback, Toggles } from '../hooks/useReacts';
+import { React, useState, useCallback } from '../hooks/useReacts';
 import { FormControl, FormGroup } from '../hooks/useForms';
 import { useDispatch, useSelector } from 'react-redux';
-import { createHandleInputChange, createHandleToggleChange, createHandleMarkerDragEnd } from '../utils/stepTwoUtil';
+import { createHandleToggleChange, createHandleMarkerDragEnd, handleInsuranceChange } from '../utils/stepTwoUtil';
 import { handleBirthDateChange as createHandleBirthDateChange } from '../utils/stepTwoUtil';
+import { useFetchInsurances } from '../repositories/insuranceRepository';
+import { updateStepTwo } from '../../../redux/formStepsSlice';
+import { GetFileDetails } from '../services/GetUpdateFile';
+import { mapPayloadToSteps } from '../utils/mapPayLoadToSteps';
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import { GetFileDetails } from '../services/GetUpdateFile';
-import { setUpdateFile } from '../../../redux/updateFileSlice';
 
-export default function FormStepTwoU() {
-  //GET-UPDATE
+
+export default function formStepTwoU() {
   const { fileID } = useParams();
   // Inicializar el dispatch de Redux y obtener datos del estado
   const dispatch = useDispatch();
-  const formData = useSelector((state) => state.getFile || {});
-  const fileSelector = useSelector((state) => state.updateFile);
-  //const { loading, error } = useSelector((state) => state.updateFile);
+  const formData = useSelector((state) => state.formSteps.stepTwo);
+  console.log('Redux state formData:', formData);
+
   // Funciones de manejo desde stepTwoUtil.js
-  const handleInputChanges = createHandleInputChange(dispatch);
   const handleToggleChanges = createHandleToggleChange(dispatch);
   const handleMarkerDragEnds = createHandleMarkerDragEnd(dispatch);
   const handleBirthDateChange = createHandleBirthDateChange(dispatch);
 
-  // Hook Toggles - Para manejo local de los toggles
-  const { isPregnant, handleToggleChange, isInsured, handleToggleChange1 } = Toggles();
-
   // Obtener los datos de municipios
   const municipalities = useFetchMunicipalities();
-
+  const insurances = useFetchInsurances();
+  const typeInsurance = typesInsurances;
   // Estado local para el marcador de Google Maps
   const [markerPosition, setMarkerPosition] = useState({
-    lat: formData.latitude || -17.388283899568613,
-    lng: formData.longitude || -66.14925111256666,
+    lat: formData.directionLatitude || -17.388283899568613,
+    lng: formData.directionLongitude || -66.14925111256666,
   });
 
   // Maneja el evento de clic en el marcador para mostrar la información
@@ -58,18 +57,23 @@ export default function FormStepTwoU() {
     handleMarkerDragEnds(newLat, newLng);
   }, [handleMarkerDragEnds]);
 
-  //Cargado de datos
   useEffect(() => {
-    let data = null;
-    const getFile = async () =>{
-      data = await GetFileDetails(fileID)
-      dispatch(setUpdateFile(data));
-    }
-    getFile();
-  }, [fileID]);
+    const loadData = async () => {
+      const data = await GetFileDetails(fileID);
+      console.log("Full data from API:", data); // Revisa el log completo
+      if (data) {
+        mapPayloadToSteps(dispatch, data);
+      }
+    };
 
-  // if (loading) return <p>Cargando...</p>;
-  // if (error) return <p>Error al cargar los datos: {error}</p>;
+    loadData();
+  }, [fileID, dispatch]);
+  
+  const handleInputChange = (name, value) => {
+    dispatch(updateStepTwo({ [name]: value }));  // Actualiza Redux con los cambios
+  };
+
+
 return (
   <Form fluid>
     <FlexboxGrid justify="space-between" align="middle">
@@ -78,12 +82,12 @@ return (
         <FormGroup>
           <Form.ControlLabel>Número de Documento *</Form.ControlLabel>
           <FormControl
-            name="documentNumber"
+            name="patientCi"
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese su carnet de identidad"
-            defaultValue={fileSelector?.file.ci}
-            onChange={(value) => handleInputChanges(value, 'documentNumber')}
+            value={formData.patientCi || ''}
+            onChange={(value) => handleInputChange(value, 'patientCi')}
           />
         </FormGroup>
       </FlexboxGrid.Item>
@@ -92,9 +96,9 @@ return (
           <FormGroup>
             <Form.ControlLabel>Fecha de Nacimiento *</Form.ControlLabel>
             <DatePicker
-              name="birthDate"
+              name="patientBirthDate"
               style={{ width: '100%' }}
-              defaultValue={fileSelector?.file.birthDate ? new Date(fileSelector?.file.birthDate) : null}
+              value={formData.patientBirthDate ? new Date(formData.patientBirthDate) : null}
               onChange={(value) => handleBirthDateChange(value)}
               disabledDate={(date) => date > new Date()} // Deshabilitar fechas futuras
             />
@@ -111,7 +115,7 @@ return (
               type="number"
               style={{ width: '100%' }}
               placeholder="Ingrese su edad"
-              value={fileSelector?.file.age !== null ? fileSelector?.file.age : ''}
+              value={formData.age !== null ? formData.age : ''}
             />
           </FormGroup>
         </FlexboxGrid.Item>
@@ -120,20 +124,20 @@ return (
           <FormGroup>
             <Form.ControlLabel>Sexo *</Form.ControlLabel>
             <InputPicker
-              name="gender"
-              onChange={(value) => handleInputChanges(value, 'gender')}
+              name="patientGender"
+              data={sexOptions}
               block
               size="lg"
               placeholder="Seleccione su sexo"
               style={{ width: '100%' }}
-              defaultValue={fileSelector?.file.gender}
-              data={sexOptions.map(c=>({ label: c.label, value: c.value}))}
+              value={formData.patientGender || ''}
+              onChange={(value) => handleInputChange(value, 'patientGender')}
             />
           </FormGroup>
         </FlexboxGrid.Item>
 
       {/* Tercera Fila: Toggle y Nombre del Apoderado */}
-      {formData.gender === 'F' && (
+      {formData.patientGender === 'F' && (
         <FlexboxGrid.Item colspan={11} style={{ marginBottom: 30 }}>
           <FormGroup>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -150,7 +154,7 @@ return (
               </div>
               <Toggle
                 name="isPregnant"
-                checked={fileSelector?.file.isPregnant} // Sincronizar el estado con Redux
+                checked={formData.isPregnant} // Sincronizar el estado con Redux
                 onChange={(value) => {
                   handleToggleChanges(value, 'isPregnant'); // Actualizar en Redux
                 }}
@@ -165,19 +169,19 @@ return (
         <FormGroup>
           <Form.ControlLabel>Nombre del Apoderado</Form.ControlLabel>
           <FormControl
-            name="guardianName"
+            name="childParent"
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese el nombre del apoderado"
-            defaultValue={fileSelector?.file.guardianName || 'No tiene asignado un apoderado'}
-            onChange={(value) => handleInputChanges(value, 'guardianName')}
-            disabled={fileSelector?.file.age >= 18} // Deshabilitar si la edad es mayor o igual a 18
+            value={formData.childParent || ''}
+            onChange={(value) => handleInputChange(value, 'childParent')}
+            disabled={formData.age >= 18} // Deshabilitar si la edad es mayor o igual a 18
           />
         </FormGroup>
       </FlexboxGrid.Item>
 
       {/* Divider para secciones adicionales */}
-      {formData.isPregnant && formData.gender === 'F' && (
+      {formData.isPregnant && formData.patientGender === 'F' && (
         <>
           <FlexboxGrid.Item colspan={24}>
             <Divider>Datos Adicionales para Pacientes Embarazadas</Divider>
@@ -188,13 +192,13 @@ return (
             <FormGroup>
               <Form.ControlLabel>FUM (Fecha de Última Menstruación)</Form.ControlLabel>
               <DatePicker
-                name="lastMenstruationDate"
+                name="pregnantLastMenstruationDate"
                 style={{ width: '100%' }}
-                value={fileSelector?.file.lastMenstruationDate ? new Date(fileSelector?.file.lastMenstruationDate) : null}
+                value={formData.pregnantLastMenstruationDate ? new Date(formData.pregnantLastMenstruationDate) : null}
                 onChange={(value) => {
                   // Solo convertir a ISO si value es una instancia de Date válida
                   const dateValue = value instanceof Date && !isNaN(value) ? value.toISOString() : null;
-                  handleInputChanges(dateValue, 'lastMenstruationDate');
+                  handleInputChange(dateValue, 'pregnantLastMenstruationDate');
                 }}
                 disabledDate={(date) => date > new Date()} // Deshabilitar fechas futuras
               />
@@ -205,13 +209,13 @@ return (
             <FormGroup>
               <Form.ControlLabel>Fecha Posible de Parto</Form.ControlLabel>
               <DatePicker
-                name="estimatedBirthDate"
+                name="pregnantChildBirthDate"
                 style={{ width: '100%' }}
-                value={fileSelector?.file.estimatedBirthDate ? new Date(fileSelector?.file.estimatedBirthDate) : null}
+                value={formData.pregnantChildBirthDate ? new Date(formData.pregnantChildBirthDate) : null}
                 onChange={(value) => {
                   // Solo convertir a ISO si value es una instancia de Date válida
                   const dateValue = value instanceof Date && !isNaN(value) ? value.toISOString() : null;
-                  handleInputChanges(dateValue, 'estimatedBirthDate');
+                  handleInputChange(dateValue, 'pregnantChildBirthDate');
                 }}
               />
             </FormGroup>
@@ -227,8 +231,8 @@ return (
                 type="text"
                 style={{ width: '100%' }}
                 placeholder="Ingrese su comorbilidad"
-                value={fileSelector?.file.comorbidity || ''}
-                onChange={(value) => handleInputChanges(value, 'comorbidity')}
+                value={formData.comorbidity || ''}
+                onChange={(value) => handleInputChange(value, 'comorbidity')}
               />
             </FormGroup>
           </FlexboxGrid.Item>
@@ -237,12 +241,12 @@ return (
             <FormGroup>
               <Form.ControlLabel>Especificar</Form.ControlLabel>
               <FormControl
-                name="specify"
+                name="pregnantDisease"
                 type="text"
                 style={{ width: '100%' }}
                 placeholder="Especifique las enfermedades de base"
-                value={fileSelector?.file.specify || ''}
-                onChange={(value) => handleInputChanges(value, 'specify')}
+                value={formData.pregnantDisease || ''}
+                onChange={(value) => handleInputChange(value, 'pregnantDisease')}
               />
             </FormGroup>
           </FlexboxGrid.Item>
@@ -258,12 +262,12 @@ return (
         <FormGroup>
           <Form.ControlLabel>Nombres *</Form.ControlLabel>
           <FormControl
-            name="names"
+            name="patientName"
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese sus nombres"
-            defaultValue={fileSelector?.file.patientName || ''}
-            onChange={(value) => handleInputChanges(value, 'names')}
+            value={formData.patientName || ''}
+            onChange={(value) => handleInputChange(value, 'patientName')}
           />
         </FormGroup>
       </FlexboxGrid.Item>
@@ -271,12 +275,12 @@ return (
         <FormGroup>
           <Form.ControlLabel>Apellido Paterno *</Form.ControlLabel>
           <FormControl
-            name="lastName"
+            name="patientLastName"
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese su apellido paterno"
-            defaultValue={fileSelector?.file.patientLastName || ''}
-            onChange={(value) => handleInputChanges(value, 'lastName')}
+            value={formData.patientLastName || ''}
+            onChange={(value) => handleInputChange(value, 'patientLastName')}
           />
         </FormGroup>
       </FlexboxGrid.Item>
@@ -286,12 +290,12 @@ return (
         <FormGroup>
           <Form.ControlLabel>Apellido Materno *</Form.ControlLabel>
           <FormControl
-            name="secondLastName"
+            name="patientSecondLastName"
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese su apellido materno"
-            defaultValue={fileSelector?.file.patientSecondLastName || 'No Tiene Segundo Apellido'}
-            onChange={(value) => handleInputChanges(value, 'secondLastName')}
+            value={formData.patientSecondLastName || ''}
+            onChange={(value) => handleInputChange(value, 'patientSecondLastName')}
           />
         </FormGroup>
       </FlexboxGrid.Item>
@@ -299,14 +303,14 @@ return (
         <FormGroup>
           <Form.ControlLabel>País de Procedencia *</Form.ControlLabel>
           <InputPicker
-            name="originCountry"
-            data={countriesOptions.map(c=>({ label: c.label, value: c.value }))}
+            name="countryOrigin"
+            data={countriesOptions}
             block
             size="lg"
             placeholder="Seleccione su país de nacimiento"
             style={{ width: '100%' }}
-            defaultValue={fileSelector?.file.originCountry}
-            onChange={(value) => handleInputChanges(value, 'originCountry')}
+            value={formData.countryOrigin || ''}
+            onChange={(value) => handleInputChange(value, 'countryOrigin')}
           />
         </FormGroup>
       </FlexboxGrid.Item>
@@ -316,25 +320,25 @@ return (
         <FormGroup>
           <Form.ControlLabel>Número de Teléfono *</Form.ControlLabel>
           <FormControl
-            name="phoneNumber"
-            type="number"
+            name="patientPhone"
+            type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese su número de celular"
-            defaultValue={fileSelector?.file.phone || 'No tiene número de Celular'}
-            onChange={(value) => handleInputChanges(value, 'phoneNumber')}
+            value={formData.patientPhone || ''}
+            onChange={(value) => handleInputChange(value, 'patientPhone')}
           />
         </FormGroup>
       </FlexboxGrid.Item>
       <FlexboxGrid.Item colspan={11} style={{ marginBottom: 30 }}>
         <FormGroup>
-          <Form.ControlLabel>Dirección de Residencia *</Form.ControlLabel>
+          <Form.ControlLabel>Ciudad *</Form.ControlLabel>
           <FormControl
-            name="address"
+            name="directionCity"
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese su dirección"
-            defaultValue={fileSelector?.file.directionCity || ''}
-            onChange={(value) => handleInputChanges(value, 'address')}
+            value={formData.directionCity || ''}
+            onChange={(value) => handleInputChange(value, 'directionCity')}
           />
         </FormGroup>
       </FlexboxGrid.Item>
@@ -344,12 +348,12 @@ return (
         <FormGroup>
           <Form.ControlLabel>Barrio / Localidad *</Form.ControlLabel>
           <FormControl
-            name="neighborhood"
+            name="directionNeighborhood"
             type="text"
             style={{ width: '100%' }}
             placeholder="Ingrese el nombre de su barrio"
-            defaultValue={fileSelector?.file.directionNeighborhood || ''}
-            onChange={(value) => handleInputChanges(value, 'neighborhood')}
+            value={formData.directionNeighborhood || ''}
+            onChange={(value) => handleInputChange(value, 'directionNeighborhood')}
           />
         </FormGroup>
       </FlexboxGrid.Item>
@@ -357,14 +361,14 @@ return (
         <FormGroup>
           <Form.ControlLabel>Municipio / Departamento *</Form.ControlLabel>
           <InputPicker
-            name="municipalityDepartment"
+            name="municipalityOrState"
             block
             size="lg"
             placeholder="Ingrese el nombre de su municipio"
             style={{ width: '100%' }}
-            data={municipalities.map(c=>({ label: c.label, value: c.value }))}
-            defaultValue={fileSelector?.file.municipalityDepartment || ''}
-            onChange={(value) => handleInputChanges(value, 'municipalityDepartment')}
+            data={municipalities}
+            value={formData.municipalityOrState || ''}
+            onChange={(value) => handleInputChange(value, 'municipalityOrState')}
           />
         </FormGroup>
       </FlexboxGrid.Item>
@@ -405,29 +409,30 @@ return (
           <FlexboxGrid.Item colspan={11} style={{ marginBottom: 30 }}>
             <FormGroup>
               <Form.ControlLabel>Nombre de la Empresa *</Form.ControlLabel>
-              <FormControl
-                name="companyName"
-                type="text"
+              <InputPicker
+                name="insuranceId"
+                block
+                size="lg"
+                placeholder="Seleccione"
                 style={{ width: '100%' }}
-                placeholder="Ingrese el nombre de la empresa"
-                defaultValue={fileSelector?.file.companyName || ''}
-                onChange={(value) => handleInputChanges(value, 'companyName')}
+                data={insurances || []}
+                value={formData.insuranceId || ''}
+                onChange={(value) => handleInsuranceChange(dispatch, insurances)(value)}
               />
             </FormGroup>
           </FlexboxGrid.Item>
 
           <FlexboxGrid.Item colspan={11} style={{ marginBottom: 30 }}>
             <FormGroup>
-              <Form.ControlLabel>Caja o Seguro *</Form.ControlLabel>
-              <InputPicker
-                name="boxInsurance"
+              <Form.ControlLabel>Nombre del Seguro *</Form.ControlLabel>
+              <FormControl
+                name="ipInsuredName"
                 block
                 size="lg"
-                placeholder="Seleccione"
+                placeholder="Cargando"
                 style={{ width: '100%' }}
-                data={secureOptions || []}
-                defaultValue={fileSelector?.file.boxInsurance || ''}
-                onChange={(value) => handleInputChanges(value, 'boxInsurance')}
+                value={formData.ipInsuredName || ''}
+                disabled
               />
             </FormGroup>
           </FlexboxGrid.Item>
@@ -436,26 +441,27 @@ return (
             <FormGroup>
               <Form.ControlLabel>Matrícula de Asegurado *</Form.ControlLabel>
               <FormControl
-                name="insuredRegistration"
+                name="ipInsuredRecord"
                 type="text"
                 style={{ width: '100%' }}
                 placeholder="Ingrese su matrícula"
-                defaultValue={fileSelector?.file.insuredRegistration || ''}
-                onChange={(value) => handleInputChanges(value, 'insuredRegistration')}
+                value={formData.ipInsuredRecord || ''}
+                onChange={(value) => handleInputChange(value, 'ipInsuredRecord')}
               />
             </FormGroup>
           </FlexboxGrid.Item>
 
           <FlexboxGrid.Item colspan={11} style={{ marginBottom: 30 }}>
             <FormGroup>
-              <Form.ControlLabel>Especificar</Form.ControlLabel>
-              <FormControl
-                name="specifyInsured"
+              <Form.ControlLabel>Tipo de Seguro *</Form.ControlLabel>
+              <InputPicker
+                name="ipTypeInsured"
                 type="text"
                 style={{ width: '100%' }}
-                placeholder="Especifique"
-                defaultValue={fileSelector?.file.specifyInsured || ''}
-                onChange={(value) => handleInputChanges(value, 'specifyInsured')}
+                placeholder="Ejemplo: Seguro de Cobertura Completa"
+                data={typeInsurance || ''}
+                value={formData.ipTypeInsured || ''}
+                onChange={(value) => handleInputChange(value, 'ipTypeInsured')}
               />
             </FormGroup>
           </FlexboxGrid.Item>

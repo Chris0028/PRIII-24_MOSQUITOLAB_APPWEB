@@ -4,40 +4,45 @@ import { FormControl, FormGroup } from '../hooks/useForms';
 import { caseOptions } from '../utils/pickerOptions';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { createHandleInputChange } from '../utils/stepOneUtil';
 import { GetFileDetails } from '../services/GetUpdateFile';
-import { setUpdateFile } from '../../../redux/updateFileSlice';
-import { updateStepOne } from '../../../redux/fileSlice';
-import { useState } from 'react';
+import { updateStepOne } from '../../../redux/formStepsSlice';
+import { mapPayloadToSteps } from '../utils/mapPayLoadToSteps';
 
 export default function formStepOneU() {
   //GET-UPDATE
   const { fileID } = useParams();
-  //const [ stepOne, setStepOne ] = useState({ discoveryMethod: '' })
-  // Inicializar el dispatch de Redux y obtener datos del estado
+  // Uso de REDUX
   const dispatch = useDispatch();
-  //const { loading, error } = useSelector((state) => state.updateFile);
+  
+  // Obtener los datos del estado de Redux
+  const formData = useSelector((state) => state.formSteps.stepOne)
+  console.log('Redux state formData:', formData);
+
+  // Crear las funciones para manejar los cambios utilizando la utilidad
   //const handleInputChange = createHandleInputChange(dispatch);
 
   const userSelector = useSelector((state) => state.user);
-  const fileSelector = useSelector((state) => state.updateFile); //
+
   const userInfo = userSelector.user;
-  
-  //hacer una peticion a la api para traer todos los discoveryMethod
+
+ 
   //Cargado de datos
   useEffect(() => {
-    const getFile = async () => {
-      if (!fileSelector.file) {  // Solo carga los datos si el estado está vacío
-        const data = await GetFileDetails(fileID);
-        dispatch(setUpdateFile(data));
+    const loadData = async () => {
+      const data = await GetFileDetails(fileID);
+      console.log("Full data from API:", data);
+      if (data) {
+        mapPayloadToSteps(dispatch, data);
       }
     };
-    getFile();
-  }, [fileID]);
+
+    loadData();
+  }, [fileID, dispatch]);
 
   const handleInputChange = (name, value) => {
-    dispatch(updateStepOne({ [name]: value }));  // Actualiza Redux con los cambios
-  };
+  console.log("Actualizando discoveryMethod a:", value);
+  dispatch(updateStepOne({ ...formData, [name]: value }));
+};
 
   return (
     <Form fluid>
@@ -47,7 +52,7 @@ export default function formStepOneU() {
             <Form.ControlLabel>Establecimiento de Salud Notificante *</Form.ControlLabel>
             <InputPicker
               name="healthEstablishment"
-              value={userInfo.info.hospital || [] } // Carga los datos actuales o cadena vacía
+              value={userInfo?.info?.hospital || [] } // Carga los datos actuales o cadena vacía
               placeholder="Seleccione el establecimiento"
               block
               size="lg"
@@ -59,7 +64,7 @@ export default function formStepOneU() {
             <Form.ControlLabel>Municipio *</Form.ControlLabel>
             <InputPicker
               name="municipality"
-              value={userInfo.info.municipality} // Carga los datos actuales o cadena vacía
+              value={userInfo?.info?.municipality} // Carga los datos actuales o cadena vacía
               placeholder="Seleccione el municipio"
               block
               size="lg"
@@ -71,7 +76,7 @@ export default function formStepOneU() {
             <Form.ControlLabel>Red de Salud *</Form.ControlLabel>
             <FormControl
               name="healthNetwork"
-              value={userInfo.info.hospitalNetwork || [] } // Carga los datos actuales o cadena vacía
+              value={userInfo?.info?.hospitalNetwork || [] } // Carga los datos actuales o cadena vacía
               placeholder="Seleccione la red de salud"
               block
               size="lg"
@@ -94,7 +99,7 @@ export default function formStepOneU() {
             <Form.ControlLabel>Departamento *</Form.ControlLabel>
             <FormControl
               name="department"
-              value={ userInfo.info.state } // Carga los datos actuales o cadena vacía
+              value={ userInfo?.info?.state } // Carga los datos actuales o cadena vacía
               placeholder="Seleccione el departamento"
               block
               size="lg"
@@ -118,10 +123,8 @@ export default function formStepOneU() {
             <Form.ControlLabel>Cómo se Descubrió el Caso *</Form.ControlLabel>
             <InputPicker
               name="discoveryMethod"
-              value={ fileSelector?.file?.discoveryMethod }
-              onChange={(value) => {
-                handleChange(value, 'discoveryMethod') 
-              }}
+              value={formData.discoveryMethod || ''}  // Usa `value` enlazado al estado
+              onChange={(value) => handleInputChange('discoveryMethod', value)}  // Sincroniza con Redux
               placeholder="Seleccione el método"
               block
               size="lg"
@@ -133,7 +136,7 @@ export default function formStepOneU() {
             <Form.ControlLabel>Teléfono o Correo Electrónico del Establecimiento *</Form.ControlLabel>
             <FormControl
               name="contactInfo"
-              value={ userInfo.info.hospitalContact || 'No tiene número o correo'} // Carga los datos actuales o cadena vacía
+              value={ userInfo?.info?.hospitalContact || 'No tiene número o correo'} // Carga los datos actuales o cadena vacía
               type="text"
               placeholder="Ingrese teléfono o correo electrónico"
               style={{ width: '100%' }}

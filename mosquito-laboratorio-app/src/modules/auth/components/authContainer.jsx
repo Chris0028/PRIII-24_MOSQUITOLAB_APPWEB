@@ -20,7 +20,7 @@ export default function AuthContainer({ children }) {
             <Content style={{ marginTop: '60px' }}>
                 <FlexboxGrid justify="center" align="middle">
                     <FlexboxGridItem style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        <Panel header="Por seguridad jamás revele sus datos" bordered style={{ textAlign: 'center', width: 400, height: 350, borderColor: '#1D3B72' }}>
+                        <Panel header="Por seguridad jamás revele sus datos" bordered style={{ textAlign: 'center', width: 400, height: 300, borderColor: '#1D3B72' }}>
                             {children}
                         </Panel>
                     </FlexboxGridItem>
