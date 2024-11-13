@@ -1,4 +1,4 @@
-import { Container, Content, Divider, Header, Nav, Navbar, Sidebar, Sidenav, IconButton, Footer } from "rsuite";
+import { Container, Content, Divider, Header, Nav, Navbar, Sidebar, Sidenav, IconButton, Footer, Button } from "rsuite";
 import { FaChartBar, FaCloudDownloadAlt, FaFileInvoice, FaSignOutAlt, FaUserAlt, FaVial, FaBars, FaUsers, FaFileAlt, FaChartPie } from "react-icons/fa";
 import SidenavBody from "rsuite/esm/Sidenav/SidenavBody";
 import { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ import { decodeToken } from "../../utils/decoder";
 import { useSelector } from "react-redux";
 import connectToSignalR from "./services/signalRService";
 import NotificationContainer from "./components/notificationContainer";
+import DevsModal from "./components/devsModal";
 
 export default function Layout({ children }) {
     const [hoveredItem, setHoveredItem] = useState(null);
@@ -19,7 +20,8 @@ export default function Layout({ children }) {
 
     const user = useSelector((state) => state.user.user)
 
-    const [message, setMessage] = useState(null); // Estado para almacenar el mensaje
+    const [message, setMessage] = useState(null);
+    const [showDevsModal, setShowDevsModal] = useState(false);
 
     useEffect(() => {
         if (user.jwt) {
@@ -30,9 +32,8 @@ export default function Layout({ children }) {
 
     useEffect(() => {
         if (user.info.laboratoryId) {
-            // Conexión a SignalR y manejo de mensajes
             const connection = connectToSignalR(user.info.laboratoryId, (msg) => {
-                setMessage(msg); // Actualiza el mensaje al recibir una notificación
+                setMessage(msg);
             });
 
             return () => connection.stop();
@@ -57,89 +58,105 @@ export default function Layout({ children }) {
 
     window.addEventListener('resize', handleResize);
 
-    return (
-        <Container style={styles.container}>
-            <Sidebar width={expanded ? 300 : 100} collapsible expanded={expanded} style={styles.sidebar}>
-                <Sidenav defaultOpenKeys={['1']} appearance="subtle">
-                    <SidenavBody style={{ flexGrow: 1 }}>
-                        <Nav>
-                            <UserInfo expanded={expanded} />
-                            <CustomNavItem eventKey="2" label="Área de trabajo" hoveredItem={hoveredItem} disabled expanded={expanded} />
-                            {role !== 'Doctor' && (
-                                <CustomNavItem eventKey="3" icon={<FaVial />} label="Laboratorio" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/homefilelabo'} expanded={expanded} />
-                            )}
-                            <CustomNavItem eventKey="5" icon={<FaFileInvoice />} label="Fichas DE.CHI.KA" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/homefiledoctor'} expanded={expanded} />
-                            {role !== 'Doctor' && (
-                                <CustomNavItem eventKey="4" icon={<PiEyedropperSampleFill />} label="Muestras" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/samples'} expanded={expanded} />
-                            )}
-                            <CustomNavItem eventKey="6" icon={<FaCloudDownloadAlt />} label="Descargas" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/download'} expanded={expanded} />
-                            <CustomNavMenu
-                                eventKey="7"
-                                icon={<FaChartBar />}
-                                label="Reportes"
-                                hoveredItem={hoveredItem}
-                                handleMouseEnter={handleMouseEnter}
-                                handleMouseLeave={handleMouseLeave}
-                                expanded={expanded}
-                                menuItems={[
-                                    {
-                                        label: (
-                                            <>
-                                                <FaFileAlt style={{ marginRight: '8px' }} />
-                                                Reporte Consolidado
-                                            </>
-                                        ),
-                                        url: '/consolidatereport',
-                                    },
-                                    {
-                                        label: (
-                                            <>
-                                                <FaChartPie style={{ marginRight: '8px' }} />
-                                                Gráficos
-                                            </>
-                                        ),
-                                        url: '/pieGraph',
-                                    }
-                                ]}
-                            />
-                            {role === 'Admin' && (
-                                <CustomNavItem eventKey="8" icon={<FaUsers />} label="Usuarios" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/users'} expanded={expanded} />
-                            )}
-                            <CustomNavItem eventKey="9" icon={<FaUserAlt />} label="Cuenta" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/profile'} expanded={expanded} />
-                        </Nav>
-                    </SidenavBody>
-                    <Nav style={{ marginTop: expanded ? '10vh' : '2vh' }}>
-                        <Divider />
-                        <CustomNavItem eventKey="10" icon={<FaSignOutAlt />} label="Cerrar sesión" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} expanded={expanded} />
-                    </Nav>
-                </Sidenav>
-            </Sidebar>
+    function handleOpenDevsModal() {
+        setShowDevsModal(true);
+    }
 
-            <Container style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <Header>
-                    <Navbar appearance="inverse" style={styles.navbar}>
-                        <Nav>
-                            <IconButton
-                                icon={<FaBars />}
-                                onClick={toggleSidebar}
-                                appearance="subtle"
-                                style={styles.toggleButton}
-                                aria-label="Toggle Sidebar"
-                            />
-                            <NavItem disabled style={styles.headerNav}>LABORATORIO</NavItem>
+    function handleCloseDevsModal() {
+        setShowDevsModal(false);
+    }
+
+    return (
+        <>
+            <Container style={styles.container}>
+                <Sidebar width={expanded ? 300 : 100} collapsible expanded={expanded} style={styles.sidebar}>
+                    <Sidenav defaultOpenKeys={['1']} appearance="subtle">
+                        <SidenavBody style={{ flexGrow: 1 }}>
+                            <Nav>
+                                <UserInfo expanded={expanded} />
+                                <CustomNavItem eventKey="2" label="Área de trabajo" hoveredItem={hoveredItem} disabled expanded={expanded} />
+                                {role !== 'Doctor' && (
+                                    <CustomNavItem eventKey="3" icon={<FaVial />} label="Laboratorio" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/homefilelabo'} expanded={expanded} />
+                                )}
+                                <CustomNavItem eventKey="5" icon={<FaFileInvoice />} label="Fichas DE.CHI.KA" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/homefiledoctor'} expanded={expanded} />
+                                {role !== 'Doctor' && (
+                                    <CustomNavItem eventKey="4" icon={<PiEyedropperSampleFill />} label="Muestras" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/samples'} expanded={expanded} />
+                                )}
+                                <CustomNavItem eventKey="6" icon={<FaCloudDownloadAlt />} label="Descargas" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'#'} expanded={expanded} />
+                                <CustomNavMenu
+                                    eventKey="7"
+                                    icon={<FaChartBar />}
+                                    label="Reportes"
+                                    hoveredItem={hoveredItem}
+                                    handleMouseEnter={handleMouseEnter}
+                                    handleMouseLeave={handleMouseLeave}
+                                    expanded={expanded}
+                                    menuItems={[
+                                        {
+                                            label: (
+                                                <>
+                                                    <FaFileAlt style={{ marginRight: '8px' }} />
+                                                    Reporte Consolidado
+                                                </>
+                                            ),
+                                            url: '/consolidatereport',
+                                        },
+                                        {
+                                            label: (
+                                                <>
+                                                    <FaChartPie style={{ marginRight: '8px' }} />
+                                                    Gráficos
+                                                </>
+                                            ),
+                                            url: '/pieGraph',
+                                        }
+                                    ]}
+                                />
+                                {role === 'Admin' && (
+                                    <CustomNavItem eventKey="8" icon={<FaUsers />} label="Usuarios" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/users'} expanded={expanded} />
+                                )}
+                                <CustomNavItem eventKey="9" icon={<FaUserAlt />} label="Cuenta" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} url={'/profile'} expanded={expanded} />
+                            </Nav>
+                        </SidenavBody>
+                        <Nav style={{ marginTop: expanded ? '10vh' : '2vh' }}>
+                            <Divider />
+                            <CustomNavItem eventKey="10" icon={<FaSignOutAlt />} label="Cerrar sesión" hoveredItem={hoveredItem} handleMouseEnter={handleMouseEnter} handleMouseLeave={handleMouseLeave} expanded={expanded} />
                         </Nav>
-                        <Nav pullRight>
-                            <NavItem disabled style={styles.headerNav}>BOLIVIA A TU SERVICIO</NavItem>
-                        </Nav>
-                    </Navbar>
-                </Header>
-                <Content style={styles.content}>
-                    <NotificationContainer message={message} />
-                    {children}
-                </Content>
-                <Footer style={styles.footer}>Desarrollado por Univalle</Footer>
+                    </Sidenav>
+                </Sidebar>
+
+                <Container style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <Header>
+                        <Navbar appearance="inverse" style={styles.navbar}>
+                            <Nav>
+                                <IconButton
+                                    icon={<FaBars />}
+                                    onClick={toggleSidebar}
+                                    appearance="subtle"
+                                    style={styles.toggleButton}
+                                    aria-label="Toggle Sidebar"
+                                />
+                                <NavItem disabled style={styles.headerNav}>LABORATORIO</NavItem>
+                            </Nav>
+                            <Nav pullRight>
+                                <NavItem disabled style={styles.headerNav}>BOLIVIA A TU SERVICIO</NavItem>
+                            </Nav>
+                        </Navbar>
+                    </Header>
+                    <Content style={styles.content}>
+                        <NotificationContainer message={message} />
+                        {children}
+                    </Content>
+                    <Footer style={styles.footer}>
+                        <Button
+                            appearance="subtle"
+                            onClick={() => handleOpenDevsModal()}>Desarrollado por Univalle</Button>
+                    </Footer>
+                </Container>
             </Container>
-        </Container>
+
+            <DevsModal open={showDevsModal} hiddeModal={handleCloseDevsModal} />
+        </>
     );
 }
 
@@ -171,7 +188,7 @@ const styles = {
         overflow: 'auto',
     },
     footer: {
-        padding: '10px',
+        padding: '5px',
         textAlign: 'center'
     }
 };

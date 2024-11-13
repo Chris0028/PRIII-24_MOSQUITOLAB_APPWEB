@@ -63,7 +63,7 @@ export default function StepSix({ method, type, disease }) {
                                     <Text>Caso sospechoso de Dengue</Text>
                                 </View>
                                 <View style={styles.emptyCell}>
-                                    <Text>X</Text>
+                                    <Text>{'\n  X'}</Text>
                                 </View>
                                 <View style={styles.caseCell}>
                                     <Text>Caso confirmado de Dengue</Text>
@@ -97,7 +97,7 @@ export default function StepSix({ method, type, disease }) {
                                             <Text>Por Nexo Epidemiológico</Text>
                                         </View>
                                         <View style={styles.rightEmptyCell}>
-                                            <Text>X</Text>
+                                            <Text>{'\n  X'}</Text>
                                         </View>
                                     </>
                                 ) : (
@@ -113,7 +113,7 @@ export default function StepSix({ method, type, disease }) {
                                             <Text>Por Laboratorio</Text>
                                         </View>
                                         <View style={styles.extraEmptyCell}>
-                                            <Text>X</Text>
+                                            <Text>{'\n  X'}</Text>
                                         </View>
                                         <View style={styles.optionCell}>
                                             <Text>Por Nexo Epidemiológico</Text>
@@ -188,7 +188,7 @@ export default function StepSix({ method, type, disease }) {
                                     <Text>Caso sospechoso de Chikungunya</Text>
                                 </View>
                                 <View style={styles.emptyCell}>
-                                    <Text>X</Text>
+                                    <Text>{'\n  X'}</Text>
                                 </View>
                                 <View style={styles.caseCell}>
                                     <Text>Caso confirmado de Chikungunya</Text>
@@ -259,7 +259,7 @@ export default function StepSix({ method, type, disease }) {
                                             <Text>Por Nexo Epidemiológico</Text>
                                         </View>
                                         <View style={styles.rightEmptyCell}>
-                                            <Text>X</Text>
+                                            <Text>{'\n  X'}</Text>
                                         </View>
                                     </View>
 
@@ -313,7 +313,7 @@ export default function StepSix({ method, type, disease }) {
                                             <Text>Por Laboratorio</Text>
                                         </View>
                                         <View style={styles.extraEmptyCell}>
-                                            <Text>X</Text>
+                                            <Text>{'\n  X'}</Text>
                                         </View>
                                         <View style={styles.optionCell}>
                                             <Text>Por Nexo Epidemiológico</Text>
@@ -388,7 +388,7 @@ export default function StepSix({ method, type, disease }) {
                                     <Text>Caso sospechoso de Zika</Text>
                                 </View>
                                 <View style={styles.emptyCell}>
-                                    <Text>X</Text>
+                                    <Text>{'\n  X'}</Text>
                                 </View>
                                 <View style={styles.caseCell}>
                                     <Text>Caso confirmado de Zika</Text>
@@ -459,7 +459,7 @@ export default function StepSix({ method, type, disease }) {
                                             <Text>Por Nexo Epidemiológico</Text>
                                         </View>
                                         <View style={styles.rightEmptyCell}>
-                                            <Text>X</Text>
+                                            <Text>{'\n  X'}</Text>
                                         </View>
                                     </View>
                                 </>
@@ -513,7 +513,7 @@ export default function StepSix({ method, type, disease }) {
                                             <Text>Por Laboratorio</Text>
                                         </View>
                                         <View style={styles.extraEmptyCell}>
-                                            <Text>X</Text>
+                                            <Text>{'\n  X'}</Text>
                                         </View>
                                         <View style={styles.optionCell}>
                                             <Text>Por Nexo Epidemiológico</Text>

@@ -10,6 +10,7 @@ import { getFileWithResultAsync } from "../services/pdfService"
 import StepSeven from "./steps/step07";
 import StepFinal from "./steps/finalStep";
 import Header from "./header";
+import StepEight from "./steps/step08";
 
 const styles = StyleSheet.create({
     page: {
@@ -35,6 +36,11 @@ export default function FilePDF({ fileId, info }) {
                 diagnosticMethod: ''
             }
         ],
+        notifier: {
+            role: '',
+            userId: 0,
+            username: ''
+        },
         patient: {
             ci: '',
             name: '',
@@ -80,7 +86,8 @@ export default function FilePDF({ fileId, info }) {
         symptomsDate: '',
         discoveryMethod: '',
         hospitalization: [],
-        epidemiologicalWeek: ''
+        epidemiologicalWeek: '',
+        fileCode: ''
     });
 
     useEffect(() => {
@@ -95,7 +102,7 @@ export default function FilePDF({ fileId, info }) {
     return (
         <Document>
             <Page size={'LEGAL'} style={styles.page}>
-                <Header />
+                <Header code={data.fileCode} />
                 <StepOne discoveryMethod={data.discoveryMethod} info={info} registerDate={data.registerDate} />
                 <StepTwo
                     name={data.patient.name}
@@ -127,7 +134,8 @@ export default function FilePDF({ fileId, info }) {
                 <StepFive />
                 <StepSix disease={data.symptoms[0].disease} method={data.case.method} type={data.case.caseType} />
                 <StepSeven disease={data.symptoms[0].disease} />
-                <StepFinal info={info} />
+                <StepEight latitude={data.location.latitude} longitude={data.location.longitude} />
+                <StepFinal info={info} username={data.notifier.username} role={data.notifier.role} />
             </Page>
         </Document>
     );

@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export default function Header() {
+export default function Header({ code }) {
     return (
         <View style={styles.container}>
             <View style={styles.logoContainer}>
@@ -61,7 +61,7 @@ export default function Header() {
                 <Text style={styles.subTitleText}>DENGUE - CHIKUNGUNYA - ZIKA</Text>
             </View>
             <View style={styles.numberContainer}>
-                <Text>N°</Text>
+                <Text>{code}</Text>
             </View>
         </View>
     );

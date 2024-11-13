@@ -79,16 +79,10 @@ export default function StepFour({ epidemiologicalWeek, symptomsDate, symptoms, 
                     <Text style={styles.smallText}>Fecha inicio de Síntomas</Text>
                 </View>
                 <View style={styles.dateColumn}>
-                    <Text style={styles.smallText}>Día</Text>
+                    <Text style={styles.smallText}>{symptomsDate}</Text>
                 </View>
                 <View style={styles.dateColumn}>
-                    <Text style={styles.smallText}>Mes</Text>
-                </View>
-                <View style={styles.dateColumn}>
-                    <Text style={styles.smallText}>Año</Text>
-                </View>
-                <View style={styles.dateColumn}>
-                    <Text style={styles.smallText}>Semana epidemiológica {epidemiologicalWeek}</Text>
+                    <Text style={styles.smallText}>Semana epidemiológica: {epidemiologicalWeek}</Text>
                 </View>
             </View>
 
