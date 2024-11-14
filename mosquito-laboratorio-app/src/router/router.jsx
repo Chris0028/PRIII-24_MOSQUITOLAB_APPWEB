@@ -27,16 +27,16 @@ export default function Routing() {
             <Route path="/changepassword/:username" element={<AuthContainer children={<ChangePasswordForm />} />} />
 
             <Route element={<PrivateRoute token={user} />}>
-                <Route path='/samples' element={<Layout children={<SampleContainer />} />} />
-                <Route path='/fileform' element={<Layout children={<FileForm />} />} />
-                <Route path='/homefiledoctor' element={<Layout children={<HomeFileDoctor />} />} />
-                <Route path='/homefilelabo' element={<Layout children={<HomeFileLabo />} />} />
-                <Route path='/download' element={<Layout children={<Download />} />} />
-                <Route path='/consolidatereport' element={<Layout children={<ConsolidateReport />} />} />
-                <Route path='/pieGraph' element={<Layout children={<PieGraph />} />} />
-                <Route path='/fileformu/:fileID' element={<Layout children={< FileFormU />} />} />
-                <Route path='/users' element={<Layout children={<UserContainer />} />} />
-                <Route path='/profile' element={<Layout children={<Profile />} />} />
+                <Route path='/samples' element={<Layout titleComponent={'MUESTRAS'} children={<SampleContainer />} />} />
+                <Route path='/fileform' element={<Layout titleComponent={'NUEVA FICHA EPIDEMIOLÓGICA'} children={<FileForm />} />} />
+                <Route path='/homefiledoctor' element={<Layout titleComponent={'HISTORIAL DE FICHAS EPIDEMIOLÓGICAS'} children={<HomeFileDoctor />} />} />
+                <Route path='/homefilelabo' element={<Layout titleComponent={'LABORATORIO: HISTORIAL DE FICHAS EPIDEMIOLÓGICAS'} children={<HomeFileLabo />} />} />
+                <Route path='/download' element={<Layout titleComponent={'REPORTES GENERADOS'} children={<Download />} />} />
+                <Route path='/consolidatereport' element={<Layout titleComponent={'REPORTE CONSOLIDADO'} children={<ConsolidateReport />} />} />
+                <Route path='/pieGraph' element={<Layout titleComponent={'REPORTES GRÁFICOS'} children={<PieGraph />} />} />
+                <Route path='/fileformu/:fileID' element={<Layout titleComponent={'ACTUALIZAR FICHA EPIDEMIOLÓGICA'} children={< FileFormU />} />} />
+                <Route path='/users' element={<Layout titleComponent={'USUARIOS'} children={<UserContainer />} />} />
+                <Route path='/profile' element={<Layout titleComponent={'CUENTA'} children={<Profile />} />} />
             </Route>
         </Routes>
     )

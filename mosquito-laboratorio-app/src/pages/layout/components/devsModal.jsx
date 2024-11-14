@@ -11,53 +11,65 @@ import UNIVALLE from "../../../../public/static/LOGO-UNIVALLE-04.png";
 
 export default function DevsModal({ open, hiddeModal }) {
     return (
-        <Modal open={open} onClose={hiddeModal}>
+        <Modal open={open} onClose={hiddeModal} size="xs" style={styles.modal}>
             <ModalHeader>
                 <ModalTitle>
                     <strong>Desarrollado por:</strong>
                 </ModalTitle>
             </ModalHeader>
             <ModalBody>
-                <Form>
-                    <FormGroup>
-                        <FormControlLabel>
-                            <strong>
-                                Christian Elias Gonzales Encinas
-                            </strong>
-                        </FormControlLabel>
-                    </FormGroup>
-                    <FormGroup>
-                        <FormControlLabel>
-                            <strong>
-                                Cesar Alberto Peñaloza Tapia
-                            </strong>
-                        </FormControlLabel>
-                    </FormGroup>
-                    <FormGroup>
-                        <FormControlLabel>
-                            <strong>
-                                Teddy Andres Fernandez Lopez
-                            </strong>
-                        </FormControlLabel>
-                    </FormGroup>
-                    <FormGroup>
-                        <FormControlLabel>
-                            <strong>Elias Nahuel Gutierrez Vargas</strong>
-                        </FormControlLabel>
-                    </FormGroup>
-                </Form>
-                <FlexboxGrid justify="end" align="middle" style={{ marginTop: '10px' }}>
-                    <FlexboxGridItem>
-                        <img src={UNIVALLE} alt="UNIVALLE" style={{ width: 40, marginRight: 20 }} />
+                <FlexboxGrid justify="center" align="middle">
+                    <FlexboxGridItem colspan={24} style={styles.namesContainer}>
+                        <Form>
+                            {["Christian Elias Gonzales Encinas", "Cesar Alberto Peñaloza Tapia", "Teddy Andres Fernandez Lopez", "Elias Nahuel Gutierrez Vargas"].map((name, index) => (
+                                <FormGroup key={index} style={styles.nameGroup}>
+                                    <FormControlLabel>
+                                        <strong>{name}</strong>
+                                    </FormControlLabel>
+                                </FormGroup>
+                            ))}
+                        </Form>
                     </FlexboxGridItem>
-                    <FlexboxGridItem>
-                        <img src={UMA} alt="UMA" style={{ width: 80 }} />
+                    <FlexboxGridItem colspan={24} style={styles.imagesContainer}>
+                        <FlexboxGrid justify="space-around" align="middle">
+                            <FlexboxGridItem>
+                                <img src={UNIVALLE} alt="UNIVALLE" style={styles.univalleLogo} />
+                            </FlexboxGridItem>
+                            <FlexboxGridItem>
+                                <img src={UMA} alt="UMA" style={styles.umaLogo} />
+                            </FlexboxGridItem>
+                        </FlexboxGrid>
                     </FlexboxGridItem>
                 </FlexboxGrid>
             </ModalBody>
             <ModalFooter>
-                <Button onClick={() => hiddeModal()}>Cerrar</Button>
+                <Button onClick={hiddeModal} appearance="primary">
+                    Cerrar
+                </Button>
             </ModalFooter>
         </Modal>
     );
 }
+
+const styles = {
+    modal: {
+        textAlign: 'center',
+    },
+    namesContainer: {
+        textAlign: 'center',
+        marginBottom: '20px',
+    },
+    nameGroup: {
+        marginBottom: '10px',
+    },
+    imagesContainer: {
+        marginTop: '10px',
+    },
+    univalleLogo: {
+        width: '60px',
+        marginRight: '20px',
+    },
+    umaLogo: {
+        width: '110px',
+    },
+};

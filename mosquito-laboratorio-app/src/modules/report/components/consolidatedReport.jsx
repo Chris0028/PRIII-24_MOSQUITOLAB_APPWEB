@@ -316,7 +316,7 @@ export default function FilterReportForm() {
       </Form>
       <FlexboxGrid justify='end'>
         <FlexboxGridItem>
-          <Button appearance="primary" color="blue" size="lg" onClick={generateReport}>
+          <Button appearance="primary" size="lg" onClick={generateReport}>
             <FaPlus style={{ marginRight: 10 }} /> Generar Reporte
           </Button>
 

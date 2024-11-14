@@ -163,7 +163,7 @@ export default function RecordsView() {
   function handleChangeLimit(dataKey) {
     setPage(1);
     setLimit(dataKey);
-}
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: 'auto', padding: '20px', overflow: 'hidden' }}>
@@ -226,7 +226,7 @@ export default function RecordsView() {
 
         {/* Botones de Buscar y Refrescar */}
         <FlexboxGrid.Item colspan={3} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Button appearance="primary" color="blue" size="md" style={{ fontSize: 16 }} onClick={() => { filter(); }}>
+          <Button appearance="primary" size="md" style={{ fontSize: 16 }} onClick={() => { filter(); }}>
             <FaSearch style={{ marginRight: 5, width: 25 }} /> Buscar
           </Button>
         </FlexboxGrid.Item>
@@ -386,17 +386,16 @@ export default function RecordsView() {
         }
       </div >
       <div>
-                <Pagination prev next first last ellipsis boundaryLinks
-                    size="sm"
-                    maxButtons={10}
-                    layout={['-', 'pager']}
-                    total={total}
-                    limit={limit}
-                    activePage={page}
-                    onChangePage={setPage}
-                    onChangeLimit={handleChangeLimit} />
-            </div>
-      {/* Footer Fijo con los botones de Agregar y Descargar */}
+        <Pagination prev next first last ellipsis boundaryLinks
+          size="sm"
+          maxButtons={10}
+          layout={['-', 'pager']}
+          total={total}
+          limit={limit}
+          activePage={page}
+          onChangePage={setPage}
+          onChangeLimit={handleChangeLimit} />
+      </div>
       <div
         style={{
           position: 'sticky',
@@ -411,15 +410,12 @@ export default function RecordsView() {
       >
         <ResultViewer pdfToView={pdfToView} />
 
-        {/* Botón para Agregar Ficha */}
-        <Button appearance="primary" color="blue" size="lg" onClick={() => navigate('/fileform')}>
+        <Button appearance="primary" size="lg" onClick={() => navigate('/fileform')}>
           <FaPlus style={{ marginRight: 10 }} /> Agregar Ficha
         </Button>
 
-        {/* Botón para Actualizar */}
         <Button
           appearance="primary"
-          color="blue"
           size="lg"
           onClick={() => handleRefresh()} >
           <FaSync style={{ marginRight: 10 }} /> Actualizar

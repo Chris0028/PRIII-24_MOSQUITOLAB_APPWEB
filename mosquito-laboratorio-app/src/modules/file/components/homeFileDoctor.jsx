@@ -209,7 +209,7 @@ export default function RecordsView() {
         </FlexboxGrid.Item>
 
         <FlexboxGrid.Item colspan={3} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Button appearance="primary" color="blue" size="md" style={{ fontSize: 16 }} onClick={() => { filter(); }}>
+          <Button appearance="primary" size="md" style={{ fontSize: 16 }} onClick={() => { filter(); }}>
             <FaSearch style={{ marginRight: 5, width: 25 }} /> Buscar
           </Button>
         </FlexboxGrid.Item>
@@ -240,7 +240,6 @@ export default function RecordsView() {
                       <IconButton
                         icon={<FaRegFilePdf />}
                         appearance="ghost"
-                        color="blue"
                         onClick={() => {
                           handleFilePreview(rowData.id);
                           handleOpenModalPDF();
@@ -355,13 +354,11 @@ export default function RecordsView() {
         }}
       >
         <FileViewer pdfToView={pdfToView} open={showModalPDF} hiddeModal={handleCloseModalPDF} />
-        {/* Botón para Agregar Ficha */}
-        <Button appearance="primary" color="blue" size="lg" onClick={() => navigate('/fileform')}>
+        <Button appearance="primary" size="lg" onClick={() => navigate('/fileform')}>
           <FaPlus style={{ marginRight: 10 }} /> Agregar Ficha
         </Button>
 
-        {/* Botón para Actualizar */}
-        <Button appearance="primary" color="blue" size="lg" onClick={handleRefresh} >
+        <Button appearance="primary" size="lg" onClick={handleRefresh} >
           <FaSync style={{ marginRight: 10 }} /> Actualizar
         </Button>
       </div>

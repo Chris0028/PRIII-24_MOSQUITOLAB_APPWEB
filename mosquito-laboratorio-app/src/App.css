@@ -1,0 +1,20 @@
+:root {
+    --rs-primary-500: #203E7B;
+    --rs-primary-600: #00235E;
+
+    .rs-nav-menu:hover {
+        background-color: transparent !important;
+    }
+
+    .rs-dropdown {
+        padding: 0 !important;
+    }
+
+    .rs-sidenav-toggle {
+        border-top: white solid 1px;
+    }
+
+    .rs-sidenav-toggle-button {
+        border-radius: 6px;
+    }
+}
