@@ -178,7 +178,7 @@ export default function Layout({ titleComponent, children }) {
                     <Footer style={styles.footer}>
                         <Button
                             appearance="subtle"
-                            onClick={() => handleOpenDevsModal()}>Desarrollado por Univalle</Button>
+                            onClick={() => handleOpenDevsModal()}>Desarrollado por Univalle®</Button>
                     </Footer>
                 </Container>
             </Container>

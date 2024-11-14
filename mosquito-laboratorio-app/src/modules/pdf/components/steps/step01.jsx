@@ -1,5 +1,4 @@
 import { Text, View, StyleSheet } from "@react-pdf/renderer";
-import { useEffect, useState } from "react";
 
 const styles = StyleSheet.create({
     sectionTitle: {

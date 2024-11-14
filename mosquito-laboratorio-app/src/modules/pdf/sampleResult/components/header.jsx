@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image } from "@react-pdf/renderer";
-import logo from '../../../../../public/static/estado-plurinacional-de-bolivia-logo.png';
+import logo from '../../../../../public/static/estado-plurinacional-de-bolivia-logo.png'
 
 const styles = StyleSheet.create({
     container: {
@@ -47,8 +47,8 @@ const styles = StyleSheet.create({
         color: 'red',
     }
 });
-
-export default function HeaderSampleResult() {
+//{ code }
+export default function HeaderSampleResult({resultId}) {
     return (
         <View style={styles.container}>
             <View style={styles.logoContainer}>
@@ -61,7 +61,7 @@ export default function HeaderSampleResult() {
                 <Text style={styles.subTitleText}>DENGUE - CHIKUNGUNYA - ZIKA</Text>
             </View>
             <View style={styles.numberContainer}>
-                <Text>N°</Text>
+                <Text>{resultId}</Text>
             </View>
         </View>
     );
