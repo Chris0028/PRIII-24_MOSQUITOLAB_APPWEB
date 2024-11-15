@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Divider, FlexboxGrid, Form, Input, InputPicker, Modal } from "rsuite";
+import { Button, Divider, FlexboxGrid, Form, InputPicker, Modal, Schema } from "rsuite";
 import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
 import FormControlLabel from "rsuite/esm/FormControlLabel";
 import FormGroup from "rsuite/esm/FormGroup";
@@ -10,7 +10,8 @@ import ModalTitle from "rsuite/esm/Modal/ModalTitle";
 import { createUserAsync, getRoles } from "../services/userService";
 import { getNamesNIdsOfLabos } from "../../../modules/file/services/laboratoryService";
 import { getNamesNIdsOfHospitals } from "../../../modules/file/services/hospitalService";
-import { validateName, validateEmail, validatePhoneNumber } from "../../../utils/validator";
+import FormControl from "rsuite/esm/FormControl";
+import { regexName, regexEmail, regexPhone } from "../../../utils/validator";
 
 export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
 
@@ -28,6 +29,27 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
     const [currentRole, setCurrentRole] = useState('');
     const [workplaces, setWorkplaces] = useState([]);
 
+    const { StringType } = Schema.Types;
+
+    const model = Schema.Model({
+        email: StringType()
+            .isRequired('El correo electrónico es obligatorio')
+            .pattern(regexEmail),
+        phone: StringType()
+            .isRequired('El número de teléfono es obligatorio')
+            .pattern(regexPhone),
+        role: StringType()
+            .isRequired('El cargo del usuario es obligatorio'),
+        name: StringType()
+            .isRequired('El nombre es obligatorio')
+            .pattern(regexName, 'El nombre debe empezar por mayúscula y solo puede contener letras'),
+        lastName: StringType().isRequired('El apellido paterno es obligatorio')
+            .pattern(regexName, 'El apellido debe empezar por mayúscula y solo puede contener letras'),
+        secondLastName: StringType()
+            .pattern(regexName, 'El apellido debe empezar por mayúscula y solo puede contener letras'),
+        workPlace: StringType().isRequired('El lugar de trabajo es obligatorio')
+    })
+
     useEffect(() => {
         setRoles(getRoles());
     }, []);
@@ -41,6 +63,11 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
 
     async function createUser() {
         let clearNewUser = { ...newUser };
+        clearNewUser.name = clearNewUser.name.trim();
+        clearNewUser.lastName = clearNewUser.lastName.trim();
+        if (clearNewUser.secondLastName) {
+            clearNewUser.secondLastName = clearNewUser.secondLastName.trim();
+        }
         Object.keys(clearNewUser).forEach(key => {
             if (clearNewUser[key] === '' || clearNewUser[key] == null) {
                 delete clearNewUser[key];
@@ -62,14 +89,6 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
             setWorkplaces(await getNamesNIdsOfHospitals());
     }
 
-    function validate() {
-        validateName(newUser.name);
-        validateName(newUser.lastName);
-        validateName(newUser.secondLastName);
-        validateEmail(newUser.email);
-        validatePhoneNumber(newUser.phone);
-    }
-
     return (
         <Modal open={open} onClose={hiddeModal} overflow>
             <ModalHeader>
@@ -77,14 +96,15 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
                     Nuevo Usuario
                 </ModalTitle>
             </ModalHeader>
-            <ModalBody>
-                <Form fluid>
+            <Form fluid model={model} onSubmit={(checkStatus) => checkStatus && createUser()}>
+                <ModalBody>
                     <FlexboxGrid align="middle" justify="space-between">
                         <Divider style={{ fontWeight: 'bold' }}>Cargo del usuario</Divider>
                         <FlexboxGridItem colspan={13}>
                             <FormGroup controlId="role">
                                 <FormControlLabel>Cargo del usuario</FormControlLabel>
-                                <InputPicker
+                                <FormControl
+                                    accepter={InputPicker}
                                     style={{ width: '100%' }}
                                     onChange={async (value) => {
                                         handleChange(value, 'role');
@@ -103,7 +123,8 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
                         <FlexboxGridItem colspan={11} style={{ marginBottom: '20px' }}>
                             <FormGroup controlId="names">
                                 <FormControlLabel>Nombres</FormControlLabel>
-                                <Input
+                                <FormControl
+                                    name="name"
                                     value={newUser.name}
                                     onChange={(value) => handleChange(value, 'name')}
                                     placeholder="Ingrese los nombres del usuario" />
@@ -112,8 +133,9 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
                         <FlexboxGridItem colspan={11} style={{ marginBottom: '20px' }}>
                             <FormGroup controlId="lastName">
                                 <FormControlLabel>Apellido paterno</FormControlLabel>
-                                <Input
-                                    value={newUser.lastName}
+                                <FormControl
+                                    name="lastName"
+                                    value={newUser.lastName.trim()}
                                     onChange={(value) => handleChange(value, 'lastName')}
                                     placeholder="Ingrese el apellido paterno" />
                             </FormGroup>
@@ -121,8 +143,9 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
                         <FlexboxGridItem colspan={11} style={{ marginBottom: '20px' }}>
                             <FormGroup controlId="secondLastName">
                                 <FormControlLabel>Apellido materno</FormControlLabel>
-                                <Input
-                                    value={newUser.secondLastName}
+                                <FormControl
+                                    name="secondLastName"
+                                    value={newUser.secondLastName.trim()}
                                     onChange={(value) => handleChange(value, 'secondLastName')}
                                     placeholder="Ingrese el apellido materno (Opcional)" />
                             </FormGroup>
@@ -133,8 +156,9 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
                         <FlexboxGridItem colspan={11} style={{ marginBottom: '20px' }}>
                             <FormGroup controlId="phone">
                                 <FormControlLabel>Nro de celular</FormControlLabel>
-                                <Input
-                                    value={newUser.phone}
+                                <FormControl
+                                    name="phone"
+                                    value={newUser.phone.trim()}
                                     onChange={(value) => handleChange(value, 'phone')}
                                     placeholder="Ingrese el nro de celular" />
                             </FormGroup>
@@ -142,8 +166,9 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
                         <FlexboxGridItem colspan={11} style={{ marginBottom: '20px' }}>
                             <FormGroup controlId="email">
                                 <FormControlLabel>Correo electrónico</FormControlLabel>
-                                <Input
-                                    value={newUser.email}
+                                <FormControl
+                                    name="email"
+                                    value={newUser.email.trim()}
                                     onChange={(value) => handleChange(value, 'email')}
                                     placeholder="Ingrese el correo electrónico" />
                             </FormGroup>
@@ -155,7 +180,7 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
                                 <FlexboxGridItem colspan={13} style={{ marginBottom: '20px' }}>
                                     <FormGroup controlId="sedes">
                                         <FormControlLabel>SEDES</FormControlLabel>
-                                        <Input
+                                        <FormControl
                                             disabled
                                             value={'Cochabamba'}
                                             onChange={(value) => handleChange(value, 'sedes')} />
@@ -169,7 +194,9 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
                                 <FlexboxGridItem colspan={13} style={{ marginBottom: '20px' }}>
                                     <FormGroup controlId="workPlace">
                                         <FormControlLabel>Lugar de trabajo</FormControlLabel>
-                                        <InputPicker
+                                        <FormControl
+                                            accepter={InputPicker}
+                                            name="workPlace"
                                             value={newUser.workplaceId}
                                             style={{ width: '100%' }}
                                             placeholder="Seleccione el lugar de trabajo"
@@ -183,12 +210,12 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
                         )}
 
                     </FlexboxGrid>
-                </Form>
-            </ModalBody>
-            <ModalFooter>
-                <Button onClick={() => createUser()} appearance="primary">Aceptar</Button>
-                <Button onClick={hiddeModal}>Cancelar</Button>
-            </ModalFooter>
+                </ModalBody>
+                <ModalFooter>
+                    <Button type="submit" appearance="primary">Aceptar</Button>
+                    <Button onClick={hiddeModal}>Cancelar</Button>
+                </ModalFooter>
+            </Form>
         </Modal >
     );
 }

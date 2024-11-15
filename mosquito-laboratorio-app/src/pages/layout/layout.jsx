@@ -31,7 +31,6 @@ export default function Layout({ titleComponent, children }) {
     function signOut() {
         dispatch(clearUser());
         localStorage.clear();
-        navigate('/');
     }
 
     useEffect(() => {

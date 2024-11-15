@@ -1,14 +1,5 @@
-export function validateName(source) {
-    const regex = /^[A-Za-zÑñÁÉÍÓÚáéíóú]{2,60}$/;
-    return regex.test(source);
-}
+export const regexName = /^(?!$)(?=[A-Za-zñÑáéíóúÁÉÍÓÚüÜ\s]{2})[A-Za-zñÑáéíóúÁÉÍÓÚüÜ\s]*$/;
 
-export function validateEmail(source) {
-    const regex = /^[\w\.-]+@[\w\.-]+\.[\w\.]{2,}(?<!\.\.)$/;
-    return regex.test(source);
-}
+export const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@\.]{2,}(?<!\.\.)$/;
 
-export function validatePhoneNumber(source) {
-    const regex = /^\+?\d+$/;
-    return regex.test(source);
-}
+export const regexPhone = /^\+?\d+$/;
