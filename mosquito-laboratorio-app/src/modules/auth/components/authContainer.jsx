@@ -1,6 +1,6 @@
 import { Container, Content, FlexboxGrid, Footer, Header, Panel } from "rsuite";
 import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
-import escudo from '../../../../public/static/escudo-patrio.png';
+import sedes from '../../../../public/static/Logo_Sedes.png';
 import UMA from '../../../../public/static/logo-UMA-2023_BN-positivo.png';
 import UNIVALLE from '../../../../public/static/LOGO-UNIVALLE-04.png';
 
@@ -10,11 +10,11 @@ export default function AuthContainer({ children }) {
             <Header style={styles.header}>
                 <FlexboxGrid justify="center">
                     <FlexboxGridItem colspan={24} style={styles.logoContainer}>
-                        <img src={escudo} alt="Escudo patrio" style={styles.escudo} />
-                        <h6 style={styles.headerText}>MINISTERIO DE SALUD Y DEPORTES</h6>
+                        <img src={sedes} alt="SEDES" style={styles.sedes} />
+                        <h6 style={styles.headerText}>Gobierno Autónomo Departamental de Cochabamba - SDS</h6>
                     </FlexboxGridItem>
                     <FlexboxGridItem colspan={24} style={styles.titleContainer}>
-                        <label style={styles.title}>Sistema Integrado de Vigilancia Epidemiológica</label>
+                        <label style={styles.title}>Plataforma TI de Arbovirosis DE-CHI-KA</label>
                     </FlexboxGridItem>
                 </FlexboxGrid>
             </Header>
@@ -56,13 +56,12 @@ const styles = {
     logoContainer: {
         textAlign: 'center',
     },
-    escudo: {
+    sedes: {
         width: '100%',
-        maxWidth: '240px',
+        maxWidth: '200px',
     },
     headerText: {
-        fontFamily: 'serif',
-        margin: 0,
+        margin: 0
     },
     titleContainer: {
         textAlign: 'center',

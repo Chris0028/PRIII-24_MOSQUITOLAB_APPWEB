@@ -39,14 +39,6 @@ export default function SamplesTable({ args, page, limit, total, handlePage, han
                     <HeaderCell style={{ fontWeight: 'bolder', fontSize: 17 }}>Enfermedad</HeaderCell>
                     <Cell dataKey="diseaseName" />
                 </Column>
-                <Column flexGrow={1}>
-                    <HeaderCell style={{ fontWeight: 'bolder', fontSize: 17 }}>Entregó la muestra</HeaderCell>
-                    <Cell dataKey="sampleManager" />
-                </Column>
-                <Column flexGrow={1}>
-                    <HeaderCell style={{ fontWeight: 'bolder', fontSize: 17 }}>Número de referencia</HeaderCell>
-                    <Cell dataKey="contact" />
-                </Column>
             </Table>
             <div>
                 <Pagination prev next first last ellipsis boundaryLinks
