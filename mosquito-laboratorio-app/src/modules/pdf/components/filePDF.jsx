@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export default function FilePDF({ fileId, info }) {
+export default function FilePDF({ fileId }) {
 
     const [data, setData] = useState({
         case: {
@@ -39,7 +39,16 @@ export default function FilePDF({ fileId, info }) {
         notifier: {
             role: '',
             userId: 0,
-            username: ''
+            username: '',
+            name: '',
+            email: '',
+            phone: '',
+            labo: '',
+            hospital: '',
+            hospitalNetwork: '',
+            laboNetwork: '',
+            state: '',
+            municipality: ''
         },
         patient: {
             ci: '',
@@ -103,7 +112,14 @@ export default function FilePDF({ fileId, info }) {
         <Document>
             <Page size={'LEGAL'} style={styles.page}>
                 <Header code={data.fileCode} />
-                <StepOne discoveryMethod={data.discoveryMethod} info={info} registerDate={data.registerDate} />
+                <StepOne
+                    discoveryMethod={data.discoveryMethod}
+                    registerDate={data.registerDate}
+                    placeNotifier={data.notifier.hospital || data.notifier.laboratory}
+                    placeContact={data.notifier.contact}
+                    placeMunicipality={data.notifier.municipality}
+                    placeState={data.notifier.state}
+                    placeNetwork={data.notifier.hospitalNetwork || data.notifier.laboNetwork} />
                 <StepTwo
                     name={data.patient.name}
                     lastName={data.patient.lastName}
@@ -132,10 +148,23 @@ export default function FilePDF({ fileId, info }) {
                     symptoms={data.symptoms}
                     disease={data.symptoms[0].disease} />
                 <StepFive />
-                <StepSix disease={data.symptoms[0].disease} method={data.case.method} type={data.case.caseType} />
-                <StepSeven disease={data.symptoms[0].disease} />
-                <StepEight latitude={data.location.latitude} longitude={data.location.longitude} />
-                <StepFinal info={info} username={data.notifier.username} role={data.notifier.role} />
+                <StepSix
+                    disease={data.symptoms[0].disease}
+                    method={data.case.method}
+                    type={data.case.caseType} />
+                <StepSeven
+                    sampleCollectionDate={data.samples[0].sampleCollectionDate}
+                    disease={data.symptoms[0].disease} />
+                <StepEight
+                    latitude={data.location.latitude}
+                    longitude={data.location.longitude} />
+                <StepFinal
+                    username={data.notifier.username}
+                    role={data.notifier.role}
+                    notifierName={data.notifier.name}
+                    phone={data.notifier.phone}
+                    email={data.notifier.email}
+                    workplace={data.notifier.hospital || data.notifier.laboratory} />
             </Page>
         </Document>
     );

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Divider, FlexboxGrid, Form, Input, InputPicker, Modal } from "rsuite";
+import { Button, Divider, FlexboxGrid, Form, Input, InputPicker, Message, Modal, Schema, useToaster } from "rsuite";
 import FormControlLabel from "rsuite/esm/FormControlLabel";
 import FormGroup from "rsuite/esm/FormGroup";
 import ModalBody from "rsuite/esm/Modal/ModalBody";
@@ -11,7 +11,6 @@ import FormControl from "rsuite/esm/FormControl";
 import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
 import { useSelector } from "react-redux";
 import { decodeToken } from "../../../utils/decoder";
-import { useNavigate } from "react-router-dom";
 
 export default function TestForm({ open, hiddeModal, fileId, diseaseName, action, refreshHistoryLab }) {
 
@@ -21,9 +20,18 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName, action
     const [caseTypes, setCaseTypes] = useState([]);
     const [caseMethods, setCaseMethods] = useState([]);
     const [title, setTitle] = useState('');
+    const toaster = useToaster();
+    const { StringType } = Schema.Types;;
 
     const userInfo = useSelector((state) => state.user.user);
-    const navigate = useNavigate();
+
+    const model = Schema.Model({
+        caseType: StringType().isRequired('El tipo de caso es obligatorio.'),
+        caseMethod: StringType().isRequired('El método de detección es obligatorio.'),
+        sampleType: StringType().isRequired('El tipo de muestra es obligatorio.'),
+        testDiagnosticMethod: StringType().isRequired('El método de diagnóstico es obligatorio.'),
+        testResult: StringType().isRequired('El resultado es obligatorio.')
+    });
 
     const [test, setTest] = useState({
         fileId: 0,
@@ -39,16 +47,22 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName, action
 
     useEffect(() => {
         handleAction();
-
         setDiagnostics(diagnosticMethodsByDisease(diseaseName));
         setSamples(sampleTypes());
         setResults(laboratoryResults());
         setCaseTypes(getCaseTypes());
         setCaseMethods(getCaseMethods());
 
-        const userCredentials = decodeToken(userInfo.jwt);
-
     }, [fileId]);
+
+    function showNotification(type, message, header) {
+        toaster.push(
+            <Message type={type} showIcon closable header={header}>
+                {message}
+            </Message>,
+            { duration: 4000 }
+        );
+    }
 
     function handleChange(value, name) {
         setTest({
@@ -65,8 +79,18 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName, action
         }
         const success = await createResultAsync(test);
         if (success) {
+            if (action === 'Edit')
+                showNotification('success', 'Cambios guardados correctamente.', 'Éxito')
+            else
+                showNotification('success', 'La prueba se guardó correctamente.', 'Éxito')
+
             hiddeModal();
             refreshHistoryLab();
+        } else {
+            if (action === 'Edit')
+                showNotification('error', 'No se guardaron los cambios. Inténtelo de nuevo.', 'Algo salió mal')
+            else
+                showNotification('error', 'No se pudo crear la prueba. Inténtelo de nuevo.', 'Algo salió mal')
         }
     }
 
@@ -102,8 +126,8 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName, action
             <ModalHeader>
                 <ModalTitle style={{ fontWeight: 'bold' }}>{title}</ModalTitle>
             </ModalHeader>
-            <ModalBody>
-                <Form fluid>
+            <Form fluid model={model} onSubmit={(checkStatus) => checkStatus && sendResult()}>
+                <ModalBody>
                     <FlexboxGrid justify="space-between" align="middle">
 
                         <Divider style={{ fontWeight: 'bold' }}>Definición de caso</Divider>
@@ -111,10 +135,12 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName, action
                         <FlexboxGridItem colspan={10} style={{ marginBottom: '20px' }}>
                             <FormGroup controlId="caseType">
                                 <FormControlLabel>Tipo de caso</FormControlLabel>
-                                <InputPicker style={{ width: '100%' }}
+                                <FormControl style={{ width: '100%' }}
+                                    accepter={InputPicker}
                                     placeholder="Seleccione tipo de caso"
                                     onChange={(value) => handleChange(value, 'caseType')}
-                                    name="caseType"
+                                    name="caseType" d
+                                    defaultValue={test.caseType}
                                     value={test.caseType}
                                     data={caseTypes.map(caseType => ({ label: caseType, value: caseType }))} />
                             </FormGroup>
@@ -122,7 +148,8 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName, action
                         <FlexboxGridItem colspan={12} style={{ marginBottom: '20px' }}>
                             <FormGroup controlId="caseMethod">
                                 <FormControlLabel>Tipo de método de detección</FormControlLabel>
-                                <InputPicker style={{ width: '100%' }}
+                                <FormControl style={{ width: '100%' }}
+                                    accepter={InputPicker}
                                     placeholder="Seleccione método de detección"
                                     onChange={(value) => handleChange(value, 'caseMethod')}
                                     name="caseMethod"
@@ -136,7 +163,8 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName, action
                         <FlexboxGridItem colspan={10} style={{ marginBottom: '20px' }}>
                             <FormGroup controlId="sampleType">
                                 <FormControlLabel>Tipo de muestra tomada</FormControlLabel>
-                                <InputPicker style={{ width: '100%' }}
+                                <FormControl style={{ width: '100%' }}
+                                    accepter={InputPicker}
                                     placeholder="Seleccione el tipo de muestra"
                                     onChange={(value) => handleChange(value, 'sampleType')}
                                     name="sampleType"
@@ -172,8 +200,8 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName, action
                         <FlexboxGridItem colspan={10} style={{ marginBottom: '20px' }}>
                             <FormGroup controlId="testDiagnosticMethod">
                                 <FormControlLabel>Método de diagnóstico</FormControlLabel>
-                                <InputPicker
-                                    style={{ width: '100%' }}
+                                <FormControl style={{ width: '100%' }}
+                                    accepter={InputPicker}
                                     placeholder="Seleccione el método de diagnóstico"
                                     onChange={(value) => handleChange(value, 'testDiagnosticMethod')}
                                     name="testDiagnosticMethod"
@@ -184,8 +212,8 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName, action
                         <FlexboxGridItem colspan={12} style={{ marginBottom: '20px' }}>
                             <FormGroup controlId="testResult">
                                 <FormControlLabel>Resultado de laboratorio</FormControlLabel>
-                                <InputPicker
-                                    style={{ width: '100%' }}
+                                <FormControl style={{ width: '100%' }}
+                                    accepter={InputPicker}
                                     placeholder="Seleccione el resultado de laboratorio"
                                     onChange={(value) => handleChange(value, 'testResult')}
                                     name="testResult"
@@ -206,26 +234,25 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName, action
                             </FormGroup>
                         </FlexboxGridItem>
                     </FlexboxGrid>
-                </Form>
-            </ModalBody>
-            <ModalFooter>
-                <Button
-                    appearance="primary"
-                    onClick={async () => await sendResult()}>Guardar</Button>
-                <Button onClick={() => {
-                    setTest({
-                        caseType: '',
-                        caseMethod: '',
-                        sampleType: '',
-                        sampleObservation: '',
-                        testDiagnosticMethod: '',
-                        testResult: '',
-                        testObservation: '',
-                        lastUpdateUserId: 0
-                    });
-                    hiddeModal();
-                }}>Cancelar</Button>
-            </ModalFooter>
+                </ModalBody>
+                <ModalFooter>
+                    <Button appearance="primary" type="submit">Aceptar</Button>
+                    <Button onClick={() => {
+                        if (action === 'Create')
+                            setTest({
+                                caseType: '',
+                                caseMethod: '',
+                                sampleType: '',
+                                sampleObservation: '',
+                                testDiagnosticMethod: '',
+                                testResult: '',
+                                testObservation: '',
+                                lastUpdateUserId: 0
+                            });
+                        hiddeModal();
+                    }}>Cancelar</Button>
+                </ModalFooter>
+            </Form>
         </Modal>
     )
 }

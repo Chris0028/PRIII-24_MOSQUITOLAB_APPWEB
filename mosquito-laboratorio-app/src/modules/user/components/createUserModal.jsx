@@ -33,11 +33,11 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
 
     const model = Schema.Model({
         email: StringType()
-            .isRequired('El correo electrónico es obligatorio')
-            .pattern(regexEmail),
+            .isEmail('La dirección de correo no es correcta (ejemplo@ejemplo.com)')
+            .isRequired('El correo electrónico es obligatorio'),
         phone: StringType()
             .isRequired('El número de teléfono es obligatorio')
-            .pattern(regexPhone),
+            .pattern(regexPhone, 'El número de celular no es correcto, solo debe contener números'),
         role: StringType()
             .isRequired('El cargo del usuario es obligatorio'),
         name: StringType()
@@ -213,7 +213,20 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
                 </ModalBody>
                 <ModalFooter>
                     <Button type="submit" appearance="primary">Aceptar</Button>
-                    <Button onClick={hiddeModal}>Cancelar</Button>
+                    <Button
+                        onClick={() => {
+                            setNewUser({
+                                role: '',
+                                name: '',
+                                lastName: '',
+                                secondLastName: '',
+                                phone: '',
+                                email: '',
+                                workplaceId: 0,
+                                sedes: ''
+                            });
+                            hiddeModal();
+                        }}>Cancelar</Button>
                 </ModalFooter>
             </Form>
         </Modal >
