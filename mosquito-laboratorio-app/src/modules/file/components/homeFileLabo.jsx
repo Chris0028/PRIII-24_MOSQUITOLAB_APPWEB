@@ -2,7 +2,7 @@ import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, Loader
 import { FaEdit, FaSearch, FaSync, FaPlus, FaRegFilePdf, FaMicroscope, FaRegEdit } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-//import { GetFileDetails } from '../services/GetUpdateFile';
+//import { GetFileDetails } from '../services/getUpdateFile';
 import { useDispatch } from 'react-redux';
 import TestForm from '../../test/components/testForm';
 import { useSelector } from 'react-redux';
@@ -85,11 +85,11 @@ export default function RecordsView() {
 
   function handleCloseModalPDF() {
     setShowModalPDF(false);
-  }	
+  }
 
   function handleFilePreview(selectedId) {
     console.log(selectedId);
-    setPdfToView(<ResultFilePDF resultId={selectedId}/>)
+    setPdfToView(<ResultFilePDF resultId={selectedId} />)
   }
 
   useEffect(() => {
@@ -126,7 +126,7 @@ export default function RecordsView() {
     setTotal(response.total);
   }
 
-/*  const handleEdit = async (fileId) => {
+  const handleEdit = async (fileId) => {
     if (fileId) {
       const data = await GetFileDetails(fileId);
       localStorage.setItem('updateFile', JSON.stringify(data));
@@ -135,7 +135,7 @@ export default function RecordsView() {
     } else {
       console.error('File ID is undefined or null');
     }
-  };*/
+  };
 
   function handleRefresh() {
     if (decodeToken(userInfo.jwt).role === 'Admin') {
