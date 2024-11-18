@@ -1,7 +1,7 @@
 import { Form, FlexboxGrid, Panel } from 'rsuite';
 import { FormControl, FormGroup } from '../hooks/useForms';
 import { useSelector, useDispatch } from 'react-redux';
-import { createHandleInputChange } from '../utils/stepThreeutil.js';
+import { createHandleInputChange } from '../utils/stepThreeUtil';
 
 export default function FormStepThree() {
     const dispatch = useDispatch();
