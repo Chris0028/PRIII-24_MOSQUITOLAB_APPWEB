@@ -1,8 +1,8 @@
 import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, Loader, Pagination } from 'rsuite';
-import { FaEdit, FaSearch, FaSync, FaPlus, FaRegFilePdf, FaMicroscope, FaFlask, FaRegEdit } from 'react-icons/fa';
+import { FaEdit, FaSearch, FaSync, FaPlus, FaRegFilePdf, FaMicroscope, FaRegEdit } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { GetFileDetails } from '../services/GetUpdateFile';
+//import { GetFileDetails } from '../services/GetUpdateFile';
 import { useDispatch } from 'react-redux';
 import TestForm from '../../test/components/testForm';
 import { useSelector } from 'react-redux';
@@ -126,7 +126,7 @@ export default function RecordsView() {
     setTotal(response.total);
   }
 
-  const handleEdit = async (fileId) => {
+/*  const handleEdit = async (fileId) => {
     if (fileId) {
       const data = await GetFileDetails(fileId);
       localStorage.setItem('updateFile', JSON.stringify(data));
@@ -135,7 +135,7 @@ export default function RecordsView() {
     } else {
       console.error('File ID is undefined or null');
     }
-  };
+  };*/
 
   function handleRefresh() {
     if (decodeToken(userInfo.jwt).role === 'Admin') {
@@ -256,14 +256,14 @@ export default function RecordsView() {
               <Cell >
                 {(rowData) => (
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Editar</Tooltip>}>
+                    {/*<Whisper placement="top" trigger="hover" speaker={<Tooltip>Editar</Tooltip>}>
                       <IconButton
                         icon={<FaEdit />}
                         appearance="ghost"
                         style={{ color: 'black', border: 'Transparent', fontSize: '22px', padding: 5 }}
                         onClick={() => handleEdit(rowData.id)}
                       />
-                    </Whisper>
+                    </Whisper>*/}
                     <Whisper placement="top" trigger="hover" speaker={<Tooltip>Vista previa resultado</Tooltip>}>
                       <IconButton
                         icon={<FaRegFilePdf />}
