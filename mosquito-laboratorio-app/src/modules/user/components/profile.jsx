@@ -7,7 +7,7 @@ import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
 import FormGroup from "rsuite/esm/FormGroup";
 import FormControlLabel from "rsuite/esm/FormControlLabel";
 import ModalChangePassword from "./modalChangePassword";
-import { regexName, regexEmail, regexPhone } from "../../../utils/validator";
+import { regexName, regexEmail, regexPhone, regexUserName } from "../../../utils/validator";
 import FormControl from "rsuite/esm/FormControl";
 
 export default function Profile() {
@@ -34,20 +34,17 @@ export default function Profile() {
 
     const model = Schema.Model({
         username: StringType()
-            .isRequired('El nombre de usuario es obligatorio'),
+            .pattern(regexUserName, 'El nombre de usuario debe tener mínimo 7 caracteres'),
         name: StringType()
-            .isRequired('El nombre es obligatorio')
-            .pattern(regexName, 'El nombre debe empezar por mayúscula y solo puede contener letras'),
+            .pattern(regexName, 'El nombre debe empezar por mayúscula y solo puede contener letras, mínimo e caracteres'),
         lastName: StringType()
-            .isRequired('El apellido paterno es obligatorio')
             .pattern(regexName, 'El apellido debe empezar por mayúscula y solo puede contener letras'),
         secondLastName: StringType()
             .pattern(regexName, 'El apellido debe empezar por mayúscula y solo puede contener letras'),
         email: StringType()
-            .isEmail('La dirección de correo no es correcta (ejemplo@ejemplo.com)')
-            .isRequired('El correo electrónico es obligatorio'),
+            .pattern(regexEmail)
+            .isEmail('La dirección de correo no es correcta (ejemplo@ejemplo.com)'),
         phone: StringType()
-            .isRequired('El número de teléfono es obligatorio')
             .pattern(regexPhone, 'El número de celular no es correcto, solo debe contener números')
     })
 

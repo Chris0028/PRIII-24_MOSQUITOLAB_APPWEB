@@ -59,7 +59,9 @@ export default function StepSeven({ disease, sampleCollectionDate, testresult, s
                 </View>
                 <View style={styles.typeCell}>
                     <Text>
-                        {sampleType === 'Orina' ? 'Tipo de muestra: Suero( ) Orina(X)' : 'Tipo de muestra: Suero(X) Orina( )'}
+                        {sampleType === 'Orina' ? 'Tipo de muestra: Suero( ) Orina(X)'
+                            : sampleType === 'Suero' ? 'Tipo de muestra: Suero(X) Orina( )'
+                                : 'Tipo de muestra: Suero( ) Orina( )'}
                     </Text>
                 </View>
             </View>
@@ -95,7 +97,7 @@ export default function StepSeven({ disease, sampleCollectionDate, testresult, s
                                 <Text>Mac Elisa IgM +( ) -( )</Text>
                             </View>
                         </View>
-                    ) : (
+                    ) : diagnosticMehtod === 'Elisa NS1' ? (
                         <View style={styles.row}>
                             <View style={styles.labelCell}>
                                 <Text>Dengue:</Text>
@@ -105,6 +107,21 @@ export default function StepSeven({ disease, sampleCollectionDate, testresult, s
                             </View>
                             <View style={styles.inputCell}>
                                 <Text>{testresult === 'Positivo' ? 'Elisa NS1 +(X) -( )' : 'Elisa NS1 +( ) -(X)'}</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>Mac Elisa IgM +( ) -( )</Text>
+                            </View>
+                        </View>
+                    ) : (
+                        <View style={styles.row}>
+                            <View style={styles.labelCell}>
+                                <Text>Dengue:</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>RT-PCR en tiempo real +( ) -( )</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>Elisa NS1 +( ) -( )</Text>
                             </View>
                             <View style={styles.inputCell}>
                                 <Text>Mac Elisa IgM +( ) -( )</Text>
@@ -163,7 +180,7 @@ export default function StepSeven({ disease, sampleCollectionDate, testresult, s
                                 <Text>Elisa IgM +( ) -( )</Text>
                             </View>
                         </View>
-                    ) : (
+                    ) : diagnosticMehtod === 'Elisa IgM' ? (
                         <View style={styles.row}>
                             <View style={styles.labelCell}>
                                 <Text>Chikungunya:</Text>
@@ -173,6 +190,18 @@ export default function StepSeven({ disease, sampleCollectionDate, testresult, s
                             </View>
                             <View style={styles.inputCell}>
                                 <Text>{testresult === 'Positivo' ? 'Elisa IgM +(X) -( )' : 'Elisa IgM +( ) -(X)'}</Text>
+                            </View>
+                        </View>
+                    ) : (
+                        <View style={styles.row}>
+                            <View style={styles.labelCell}>
+                                <Text>Chikungunya:</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>RT-PCR en tiempo real +( ) -( )</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>Elisa IgM +( ) -( )</Text>
                             </View>
                         </View>
                     )}
@@ -228,7 +257,7 @@ export default function StepSeven({ disease, sampleCollectionDate, testresult, s
                                 <Text>Elisa IgM +( ) -( )</Text>
                             </View>
                         </View>
-                    ) : (
+                    ) : diagnosticMehtod === 'Elisa IgM' ? (
                         <View style={styles.row}>
                             <View style={styles.labelCell}>
                                 <Text>Zika:</Text>
@@ -238,6 +267,18 @@ export default function StepSeven({ disease, sampleCollectionDate, testresult, s
                             </View>
                             <View style={styles.inputCell}>
                                 <Text>{testresult === 'Positivo' ? 'Elisa IgM +(X) -( )' : 'Elisa IgM +( ) -(X)'}</Text>
+                            </View>
+                        </View>
+                    ) : (
+                        <View style={styles.row}>
+                            <View style={styles.labelCell}>
+                                <Text>Zika:</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>RT-PCR en tiempo real +( ) -( )</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>Elisa IgM +( ) -( )</Text>
                             </View>
                         </View>
                     )}

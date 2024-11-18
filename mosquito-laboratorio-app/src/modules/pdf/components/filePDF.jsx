@@ -90,11 +90,20 @@ export default function FilePDF({ fileId }) {
             municipality: '',
             neighborhood: ''
         },
-        discharge: '',
+        discharge: {
+            dischargeType: null,
+            dischargeDate: null
+        },
         registerDate: '',
         symptomsDate: '',
         discoveryMethod: '',
-        hospitalization: [],
+        hospitalization: [
+            {
+                entryDate: null,
+                hospitalName: '',
+                type: 0
+            }
+        ],
         epidemiologicalWeek: '',
         fileCode: ''
     });
@@ -115,7 +124,7 @@ export default function FilePDF({ fileId }) {
                 <StepOne
                     discoveryMethod={data.discoveryMethod}
                     registerDate={data.registerDate}
-                    placeNotifier={data.notifier.hospital || data.notifier.laboratory}
+                    placeNotifier={data.notifier.hospital || data.notifier.labo}
                     placeContact={data.notifier.contact}
                     placeMunicipality={data.notifier.municipality}
                     placeState={data.notifier.state}
@@ -147,7 +156,23 @@ export default function FilePDF({ fileId }) {
                     epidemiologicalWeek={data.epidemiologicalWeek}
                     symptoms={data.symptoms}
                     disease={data.symptoms[0].disease} />
-                <StepFive />
+
+                {data.discharge && (
+                    <StepFive
+                        type={data.hospitalization[0].type}
+                        entryDate={data.hospitalization[0].entryDate}
+                        hospital={data.hospitalization[0].hospitalName}
+                        discharge={data.discharge.dischargeType}
+                        dischargeDate={data.discharge.dischargeDate} />
+                )}
+
+                {!data.discharge && (
+                    <StepFive
+                        type={data.hospitalization[0].type}
+                        entryDate={data.hospitalization[0].entryDate}
+                        hospital={data.hospitalization[0].hospitalName} />
+                )}
+
                 <StepSix
                     disease={data.symptoms[0].disease}
                     method={data.case.method}
@@ -164,7 +189,7 @@ export default function FilePDF({ fileId }) {
                     notifierName={data.notifier.name}
                     phone={data.notifier.phone}
                     email={data.notifier.email}
-                    workplace={data.notifier.hospital || data.notifier.laboratory} />
+                    workplace={data.notifier.hospital || data.notifier.labo} />
             </Page>
         </Document>
     );
