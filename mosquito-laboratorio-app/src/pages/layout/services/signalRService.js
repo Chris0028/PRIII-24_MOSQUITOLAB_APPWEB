@@ -5,7 +5,7 @@ const connectToSignalR = (laboratoryId, onNotificationReceived) => {
     const token = localStorage.getItem("jwt");
 
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("http://localhost:5174/notificationHub", {
+        .withUrl("http://www.mosquito-laboratorio.somee.com/notificationHub", {
             accessTokenFactory: () => token,
         })
         .withAutomaticReconnect()

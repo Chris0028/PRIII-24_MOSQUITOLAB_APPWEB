@@ -5,7 +5,7 @@ import { dengueOptions, dengueSymptoms, chikungunyaSymptoms, zikaSymptoms } from
 import { createHandleSymptomChange, createHandleOtherSymptomCheckboxChange, createHandleOtherSymptomInputChange } from '../utils/stepFourUtil';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateStepFour } from '../../../redux/fileSlice';
-import { UpdateFile } from '../services/GetUpdateFile'; //
+import { UpdateFile } from '../services/getUpdateFile';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 
@@ -54,11 +54,11 @@ export default function FormStepFourU() {
       }
       setLoading(false);
     }
-      fetchFileDetails();
-    }, [fileID]);
-    // Manejar cambios en los campos del formulario
-    const handleChange = (value, name) => {
-      //dispatch(updateStepSix({ [name]: value }));
+    fetchFileDetails();
+  }, [fileID]);
+  // Manejar cambios en los campos del formulario
+  const handleChange = (value, name) => {
+    //dispatch(updateStepSix({ [name]: value }));
   };
 
   // Manejar la acción del botón para enviar la ficha epidemiológica
@@ -71,28 +71,28 @@ export default function FormStepFourU() {
       alert('Ocurrió un error al enviar la ficha epidemiológica. Inténtelo de nuevo.');
     }
   };
-  
+
   if (loading) return <p>Cargando...</p>;                   ////
   return (
     <Form fluid>
       <FlexboxGrid justify="space-between">
-      {/* Fecha de Inicio de Síntomas y Semana Epidemiológica */}
-      <FlexboxGrid.Item colspan={11}>
-        <FormGroup>
-          <Form.ControlLabel>Fecha de Inicio de Síntomas *</Form.ControlLabel>
-          <DatePicker
-            name="symptomStartDate"
-            format="yyyy/MM/dd"
-            style={{ width: '100%' }}
-            value={fileU.symptomsDate ? new Date(fileU.symptomsDate) : null}
-            onChange={(value) => {
-              // Convertir la fecha seleccionada a ISO si existe
-              const dateValue = value instanceof Date ? value.toISOString() : null;
-              dispatch(updateStepFour({ symptomStartDate: dateValue }));
-            }}
-          />
-        </FormGroup>
-      </FlexboxGrid.Item>
+        {/* Fecha de Inicio de Síntomas y Semana Epidemiológica */}
+        <FlexboxGrid.Item colspan={11}>
+          <FormGroup>
+            <Form.ControlLabel>Fecha de Inicio de Síntomas *</Form.ControlLabel>
+            <DatePicker
+              name="symptomStartDate"
+              format="yyyy/MM/dd"
+              style={{ width: '100%' }}
+              value={fileU.symptomsDate ? new Date(fileU.symptomsDate) : null}
+              onChange={(value) => {
+                // Convertir la fecha seleccionada a ISO si existe
+                const dateValue = value instanceof Date ? value.toISOString() : null;
+                dispatch(updateStepFour({ symptomStartDate: dateValue }));
+              }}
+            />
+          </FormGroup>
+        </FlexboxGrid.Item>
 
         <FlexboxGrid.Item colspan={11}>
           <FormGroup>

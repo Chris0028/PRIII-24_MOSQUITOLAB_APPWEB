@@ -1,8 +1,8 @@
 import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, Loader, Pagination } from 'rsuite';
-import { FaEdit, FaSearch, FaSync, FaPlus, FaRegFilePdf, FaMicroscope, FaFlask, FaRegEdit } from 'react-icons/fa';
+import { FaEdit, FaSearch, FaSync, FaPlus, FaRegFilePdf, FaMicroscope, FaRegEdit } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { GetFileDetails } from '../services/GetUpdateFile';
+//import { GetFileDetails } from '../services/getUpdateFile';
 import { useDispatch } from 'react-redux';
 import TestForm from '../../test/components/testForm';
 import { useSelector } from 'react-redux';
@@ -85,11 +85,11 @@ export default function RecordsView() {
 
   function handleCloseModalPDF() {
     setShowModalPDF(false);
-  }	
+  }
 
   function handleFilePreview(selectedId) {
     console.log(selectedId);
-    setPdfToView(<ResultFilePDF resultId={selectedId}/>)
+    setPdfToView(<ResultFilePDF resultId={selectedId} />)
   }
 
   useEffect(() => {
@@ -256,14 +256,14 @@ export default function RecordsView() {
               <Cell >
                 {(rowData) => (
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                    <Whisper placement="top" trigger="hover" speaker={<Tooltip>Editar</Tooltip>}>
+                    {/*<Whisper placement="top" trigger="hover" speaker={<Tooltip>Editar</Tooltip>}>
                       <IconButton
                         icon={<FaEdit />}
                         appearance="ghost"
                         style={{ color: 'black', border: 'Transparent', fontSize: '22px', padding: 5 }}
                         onClick={() => handleEdit(rowData.id)}
                       />
-                    </Whisper>
+                    </Whisper>*/}
                     <Whisper placement="top" trigger="hover" speaker={<Tooltip>Vista previa resultado</Tooltip>}>
                       <IconButton
                         icon={<FaRegFilePdf />}

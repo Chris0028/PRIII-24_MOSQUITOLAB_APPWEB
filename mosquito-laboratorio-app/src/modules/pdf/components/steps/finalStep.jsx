@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
     dottedCell: {
         flexDirection: 'row',
         flex: 2,
+        marginLeft: -15
     },
     signatureText: {
         fontSize: 7,
@@ -44,7 +45,13 @@ const styles = StyleSheet.create({
     }
 });
 
-export default function StepFinal({ info, username, role }) {
+export default function StepFinal({
+    notifierName,
+    workplace,
+    username,
+    email,
+    phone,
+    role }) {
     return (
         <>
             <View style={styles.sectionTitle}>
@@ -55,31 +62,30 @@ export default function StepFinal({ info, username, role }) {
                 <View style={styles.leftColumn}>
                     <View style={styles.row}>
                         <View style={styles.labelCell}>
-                            <Text>Nombre y cargo: {role}</Text>
+                            <Text>Nombre y cargo: </Text>
                         </View>
-                        <View style={styles.dottedCell}></View>
+                        <View style={styles.dottedCell}>
+                            <Text style={{ marginLeft: -25 }}>{`${notifierName} - ${role}`}</Text>
+                        </View>
                         <View style={styles.labelCell}>
                             <Text>Establecimiento de Salud:</Text>
                         </View>
                         <View style={styles.dottedCell}>
-                            <Text>{info.hospital}</Text>
+                            <Text>{workplace}</Text>
                         </View>
                     </View>
 
                     <View style={styles.row}>
                         <View style={styles.labelCell}>
-                            <Text>Teléfono/celular:</Text>
+                            <Text>Teléfono/celular:{phone}</Text>
                         </View>
-                        <View style={styles.dottedCell}></View>
+                        <Text></Text>
                         <View style={styles.labelCell}>
                             <Text>Correo electrónico:</Text>
                         </View>
-                        <View style={styles.dottedCell}></View>
+                        <Text style={{ marginLeft: -25 }}>{email}</Text>
                         <View style={styles.labelCell}>
-                            <Text>SEDES:</Text>
-                        </View>
-                        <View style={styles.dottedCell}>
-                            <Text>Cochabamba</Text>
+                            <Text style={{ marginLeft: 20 }}>SEDES: Cochabamba</Text>
                         </View>
                     </View>
                 </View>

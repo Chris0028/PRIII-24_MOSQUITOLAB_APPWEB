@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getProfileAsync, updateProfileAsync } from "../services/userService";
 import { decodeToken } from "../../../utils/decoder"
-import { Button, ButtonToolbar, Divider, FlexboxGrid, Form, Input, Message, useToaster } from "rsuite";
+import { Button, ButtonToolbar, Divider, FlexboxGrid, Form, Message, Schema, useToaster } from "rsuite";
 import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
 import FormGroup from "rsuite/esm/FormGroup";
 import FormControlLabel from "rsuite/esm/FormControlLabel";
 import ModalChangePassword from "./modalChangePassword";
+import { regexName, regexEmail, regexPhone, regexUserName } from "../../../utils/validator";
+import FormControl from "rsuite/esm/FormControl";
 
 export default function Profile() {
 
@@ -28,6 +30,23 @@ export default function Profile() {
     const [showModalChangePassword, setShowModalChangePassword] = useState(false);
 
     const toaster = useToaster();
+    const { StringType } = Schema.Types;
+
+    const model = Schema.Model({
+        username: StringType()
+            .pattern(regexUserName, 'El nombre de usuario debe tener mínimo 7 caracteres'),
+        name: StringType()
+            .pattern(regexName, 'El nombre debe empezar por mayúscula y solo puede contener letras, mínimo e caracteres'),
+        lastName: StringType()
+            .pattern(regexName, 'El apellido debe empezar por mayúscula y solo puede contener letras'),
+        secondLastName: StringType()
+            .pattern(regexName, 'El apellido debe empezar por mayúscula y solo puede contener letras'),
+        email: StringType()
+            .pattern(regexEmail)
+            .isEmail('La dirección de correo no es correcta (ejemplo@ejemplo.com)'),
+        phone: StringType()
+            .pattern(regexPhone, 'El número de celular no es correcto, solo debe contener números')
+    })
 
     useEffect(() => {
         const credentials = decodeToken(user.jwt);
@@ -96,38 +115,37 @@ export default function Profile() {
                 <FlexboxGridItem>
                     <h3 style={{ marginLeft: 50, marginBottom: 10, marginTop: 10 }}>Mi cuenta</h3>
                 </FlexboxGridItem>
-
             </FlexboxGrid>
-            <FlexboxGrid justify="end" style={{ marginTop: -50, marginRight: 50 }} align="middle">
-                <FlexboxGridItem>
-                    <ButtonToolbar>
-                        {!isEditing && (
-                            <Button
-                                style={{ width: 100, padding: 10 }}
-                                appearance="primary"
-                                onClick={handleEdit}>
-                                Editar cuenta
-                            </Button>
-                        )}
-                        {isEditing && (
-                            <>
-                                <Button
-                                    style={{ padding: 10 }}
-                                    appearance="primary"
-                                    onClick={handleSave}>
-                                    Guardar cambios
-                                </Button>
+            <Form model={model} fluid style={{ paddingLeft: 50, paddingRight: 50 }} onSubmit={(checkStatus) => checkStatus && handleSave()}>
+                <FlexboxGrid justify="end" style={{ marginTop: -50, marginRight: 50 }} align="middle">
+                    <FlexboxGridItem>
+                        <ButtonToolbar>
+                            {!isEditing && (
                                 <Button
                                     style={{ width: 100, padding: 10 }}
-                                    onClick={handleCancel}>
-                                    Cancelar
+                                    appearance="primary"
+                                    onClick={handleEdit}>
+                                    Editar cuenta
                                 </Button>
-                            </>
-                        )}
-                    </ButtonToolbar>
-                </FlexboxGridItem>
-            </FlexboxGrid>
-            <Form fluid style={{ paddingLeft: 50, paddingRight: 50 }}>
+                            )}
+                            {isEditing && (
+                                <>
+                                    <Button
+                                        style={{ padding: 10 }}
+                                        appearance="primary"
+                                        type="submit">
+                                        Guardar cambios
+                                    </Button>
+                                    <Button
+                                        style={{ width: 100, padding: 10 }}
+                                        onClick={handleCancel}>
+                                        Cancelar
+                                    </Button>
+                                </>
+                            )}
+                        </ButtonToolbar>
+                    </FlexboxGridItem>
+                </FlexboxGrid>
                 <FlexboxGrid justify="space-between" align="middle">
 
                     <Divider><strong>Usuario</strong></Divider>
@@ -135,7 +153,7 @@ export default function Profile() {
                     <FlexboxGridItem colspan={10}>
                         <FormGroup>
                             <FormControlLabel>Nombre de usuario</FormControlLabel>
-                            <Input
+                            <FormControl
                                 disabled={disabledControls}
                                 placeholder="Usuario"
                                 name="username"
@@ -160,7 +178,7 @@ export default function Profile() {
                     <FlexboxGridItem colspan={11}>
                         <FormGroup>
                             <FormControlLabel>Nombres</FormControlLabel>
-                            <Input
+                            <FormControl
                                 disabled={disabledControls}
                                 style={{ marginBottom: '20px' }}
                                 placeholder="Nombres"
@@ -173,7 +191,7 @@ export default function Profile() {
                     <FlexboxGridItem colspan={11}>
                         <FormGroup>
                             <FormControlLabel>Apellido paterno</FormControlLabel>
-                            <Input
+                            <FormControl
                                 disabled={disabledControls}
                                 style={{ marginBottom: '20px' }}
                                 placeholder="Apellido paterno"
@@ -186,7 +204,7 @@ export default function Profile() {
                     <FlexboxGridItem colspan={11}>
                         <FormGroup>
                             <FormControlLabel>Apellido materno</FormControlLabel>
-                            <Input
+                            <FormControl
                                 disabled={disabledControls}
                                 placeholder="Apellido Materno (Opcional)"
                                 name="secondLastName"
@@ -200,7 +218,7 @@ export default function Profile() {
                     <FlexboxGridItem colspan={10}>
                         <FormGroup>
                             <FormControlLabel>Número de celular</FormControlLabel>
-                            <Input
+                            <FormControl
                                 disabled={disabledControls}
                                 placeholder="Celular"
                                 name="phone"
@@ -212,7 +230,7 @@ export default function Profile() {
                     <FlexboxGridItem colspan={10}>
                         <FormGroup>
                             <FormControlLabel>Correo Electrónico</FormControlLabel>
-                            <Input
+                            <FormControl
                                 disabled={disabledControls}
                                 placeholder="Correo electrónico"
                                 name="email"
@@ -228,12 +246,12 @@ export default function Profile() {
                             <FlexboxGridItem colspan={10}>
                                 <FormGroup>
                                     <FormControlLabel>SEDES</FormControlLabel>
-                                    <Input
+                                    <FormControl
                                         disabled={disabledControls}
                                         placeholder="Sedes"
                                         name="sedes"
                                         onChange={(value) => handleChange(value, 'sedes')}
-                                        value={profile.sedes} />
+                                        value={'Cochabamba'} />
                                 </FormGroup>
                             </FlexboxGridItem>
                         </>

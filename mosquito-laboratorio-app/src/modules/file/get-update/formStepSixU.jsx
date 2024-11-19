@@ -15,7 +15,7 @@ export default function FormStepSixU() {
   const formData = useSelector((state) => state.file);
   const stepSixData = useSelector((state) => state.file.stepSix);
   const laboratories = useFetchLaboratories();
-  
+
   // Manejar cambios en los campos del formulario
   const handleChange = (value, name) => {
     dispatch(updateStepSix({ [name]: value }));
@@ -50,11 +50,11 @@ export default function FormStepSixU() {
           <FormGroup>
             <Form.ControlLabel>Enviar a Laboratorio</Form.ControlLabel>
             <InputPicker
-              data={ laboratories || []}
+              data={laboratories || []}
               style={{ width: '100%' }}
               placeholder="Seleccione el laboratorio"
               size="lg"
-              value={ stepSixData.laboratorySend || ''}
+              value={stepSixData.laboratorySend || ''}
               onChange={(value) => handleChange(value, 'laboratorySend')}
             />
           </FormGroup>
@@ -69,7 +69,7 @@ export default function FormStepSixU() {
               name="doctorFullName"
               placeholder="Ingrese el nombre del médico"
               type="text"
-              value={ stepSixData.doctorName || ''}
+              value={stepSixData.doctorName || ''}
               onChange={(value) => handleChange(value, 'doctorName')}
             />
           </FormGroup>
@@ -81,19 +81,19 @@ export default function FormStepSixU() {
               name="notifyingMedicalCenter"
               placeholder="Ingrese el centro médico notificante"
               type="text"
-              value={ stepSixData.healthEstablishmentNotifier || ''}
+              value={stepSixData.healthEstablishmentNotifier || ''}
               onChange={(value) => handleChange(value, 'healthEstablishmentNotifier')}
             />
           </FormGroup>
         </FlexboxGrid.Item>
       </FlexboxGrid>
-      
+
       {/* Botón para guardar */}
-      <Button 
-        appearance="primary" 
-        color="blue" 
-        size="lg" 
-        circle 
+      <Button
+        appearance="primary"
+        color="blue"
+        size="lg"
+        circle
         style={{ position: 'fixed', bottom: 20, right: 20 }}
         onClick={handleSave}
       >

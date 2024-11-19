@@ -4,7 +4,7 @@ import { FormControl, FormGroup } from '../hooks/useForms';
 import { caseOptions } from '../utils/pickerOptions';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { GetFileDetails } from '../services/GetUpdateFile';
+import { GetFileDetails } from '../services/getUpdateFile';
 import { updateStepOne } from '../../../redux/formStepsSlice';
 import { mapPayloadToSteps } from '../utils/mapPayLoadToSteps';
 
@@ -13,7 +13,7 @@ export default function formStepOneU() {
   const { fileID } = useParams();
   // Uso de REDUX
   const dispatch = useDispatch();
-  
+
   // Obtener los datos del estado de Redux
   const formData = useSelector((state) => state.formSteps.stepOne)
   console.log('Redux state formData:', formData);
@@ -25,7 +25,7 @@ export default function formStepOneU() {
 
   const userInfo = userSelector.user;
 
- 
+
   //Cargado de datos
   useEffect(() => {
     const loadData = async () => {
@@ -40,9 +40,9 @@ export default function formStepOneU() {
   }, [fileID, dispatch]);
 
   const handleInputChange = (name, value) => {
-  console.log("Actualizando discoveryMethod a:", value);
-  dispatch(updateStepOne({ ...formData, [name]: value }));
-};
+    console.log("Actualizando discoveryMethod a:", value);
+    dispatch(updateStepOne({ ...formData, [name]: value }));
+  };
 
   return (
     <Form fluid>
@@ -52,7 +52,7 @@ export default function formStepOneU() {
             <Form.ControlLabel>Establecimiento de Salud Notificante *</Form.ControlLabel>
             <InputPicker
               name="healthEstablishment"
-              value={userInfo?.info?.hospital || [] } // Carga los datos actuales o cadena vacía
+              value={userInfo?.info?.hospital || []} // Carga los datos actuales o cadena vacía
               placeholder="Seleccione el establecimiento"
               block
               size="lg"
@@ -76,7 +76,7 @@ export default function formStepOneU() {
             <Form.ControlLabel>Red de Salud *</Form.ControlLabel>
             <FormControl
               name="healthNetwork"
-              value={userInfo?.info?.hospitalNetwork || [] } // Carga los datos actuales o cadena vacía
+              value={userInfo?.info?.hospitalNetwork || []} // Carga los datos actuales o cadena vacía
               placeholder="Seleccione la red de salud"
               block
               size="lg"
@@ -88,18 +88,18 @@ export default function formStepOneU() {
             <Form.ControlLabel>Fecha de Notificación *</Form.ControlLabel>
             <DatePicker
               name="notificationDate"
-              value={ new Date } // Convierte la cadena almacenada en un objeto Date
+              value={new Date} // Convierte la cadena almacenada en un objeto Date
               style={{ width: '100%' }}
               disabled
             />
           </FormGroup>
-          </FlexboxGrid.Item>
+        </FlexboxGrid.Item>
         <FlexboxGrid.Item colspan={11}>
           <FormGroup>
             <Form.ControlLabel>Departamento *</Form.ControlLabel>
             <FormControl
               name="department"
-              value={ userInfo?.info?.state } // Carga los datos actuales o cadena vacía
+              value={userInfo?.info?.state} // Carga los datos actuales o cadena vacía
               placeholder="Seleccione el departamento"
               block
               size="lg"
@@ -136,7 +136,7 @@ export default function formStepOneU() {
             <Form.ControlLabel>Teléfono o Correo Electrónico del Establecimiento *</Form.ControlLabel>
             <FormControl
               name="contactInfo"
-              value={ userInfo?.info?.hospitalContact || 'No tiene número o correo'} // Carga los datos actuales o cadena vacía
+              value={userInfo?.info?.hospitalContact || 'No tiene número o correo'} // Carga los datos actuales o cadena vacía
               type="text"
               placeholder="Ingrese teléfono o correo electrónico"
               style={{ width: '100%' }}

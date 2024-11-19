@@ -3,7 +3,7 @@ import { useFetchMunicipalities, useFetchStates } from '../repositories/location
 import { countriesOptions } from '../utils/pickerOptions';
 import { FormControl, FormGroup } from '../hooks/useForms';
 import { useSelector, useDispatch } from 'react-redux';
-import {  GetFileDetails } from '../services/GetUpdateFile'; //
+import { GetFileDetails } from '../services/getUpdateFile';
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 
@@ -13,23 +13,23 @@ export default function FormStepThreeU() {
     const { fileID } = useParams();
     //USO DE REDUX
     const dispatch = useDispatch();
-    
+
     const municipalities = useFetchMunicipalities();
     const states = useFetchStates();
     const fileSelector = useSelector((state) => state.updateFile); //
-    
+
     //Cargado de datos
     useEffect(() => {
         let data = null;
-        const getFile = async () =>{
-        data = await GetFileDetails(fileID)
-        dispatch(setUpdateFile(data));
+        const getFile = async () => {
+            data = await GetFileDetails(fileID)
+            dispatch(setUpdateFile(data));
         }
         getFile();
     }, [fileID]);
 
     //if (loading) return <p>Cargando...</p>;
-    
+
     return (
         <Form fluid>
             <Panel bordered bodyFill style={{ marginBottom: 20, padding: 10, backgroundColor: '#E0ECF8' }}>
@@ -45,26 +45,26 @@ export default function FormStepThreeU() {
                         <Form.ControlLabel>País / Lugar *</Form.ControlLabel>
                         <InputPicker
                             name="countryPlace"
-                            defaultValue={ fileSelector?.file.contagionCountry || ''}
+                            defaultValue={fileSelector?.file.contagionCountry || ''}
                             onChange={(value) => handleChange(value, 'countryOrPlace')}
                             placeholder="Seleccione el país o lugar"
                             block
                             size="lg"
                             style={{ width: '100%' }}
-                            data={countriesOptions.map(c=>({ label: c.label, value: c.value}))}
+                            data={countriesOptions.map(c => ({ label: c.label, value: c.value }))}
                         />
                     </FormGroup>
                     <FormGroup>
                         <Form.ControlLabel>Provincia / Municipio *</Form.ControlLabel>
                         <InputPicker
                             name="provinceMunicipality"
-                            defaultValue={ fileSelector?.file.contagionMunicipality || ''}
+                            defaultValue={fileSelector?.file.contagionMunicipality || ''}
                             onChange={(value) => handleChange(value, 'provinceOrMunicipality')}
                             placeholder="Seleccione la provincia o municipio"
                             block
                             size="lg"
                             style={{ width: '100%' }}
-                            data={municipalities.map(c=>({ label: c.label, value: c.value}))}
+                            data={municipalities.map(c => ({ label: c.label, value: c.value }))}
                         />
                     </FormGroup>
                     <FormGroup>
