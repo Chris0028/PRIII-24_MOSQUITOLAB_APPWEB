@@ -86,7 +86,7 @@ export function createFilePayload(state) {
     hospitalizedType: stepFive.wasHospitalized ? 1 : 0,
     hospitalizedName: stepFive.hospitalizedName,
     utiEntryDate: formatDate(stepFive.utiHospitalizationDate), 
-    utiType: stepFive.utiHospitalized ? 1 : 0,
+    utiType: stepFive.utiHospitalized ? 2 : 0,
     utiName: stepFive.hospitalizedName,
     dischargeType: stepFive.dischargeType,
     dischargeDate: formatDate(stepFive.dischargeDate), 

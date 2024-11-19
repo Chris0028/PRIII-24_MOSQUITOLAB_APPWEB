@@ -7,6 +7,7 @@ import FormStepFour from './formStepFour';
 import FormStepFive from './formStepFive';
 import FormStepSix from './formStepSix';
 
+
 export default function FileForm() {
     const [step, setStep] = useState(0);
 
@@ -16,7 +17,6 @@ export default function FileForm() {
 
     const onNext = () => onChange(step + 1);
     const onPrevious = () => onChange(step - 1);
-
     return (
         <div>
             <Steps current={step}>
