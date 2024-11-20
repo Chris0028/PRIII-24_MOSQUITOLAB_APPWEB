@@ -66,8 +66,8 @@ export default function FilterReportForm() {
       toaster.push(
         <Message type="error" header="Campos Vacíos" closable showIcon>
           <p>Debe completar al menos un campo antes de generar el reporte.</p>
-          </Message>,
-          { placement: 'topCenter'}
+        </Message>,
+        { placement: 'topCenter' }
       );
       return; // Detener la ejecución si los filtros están vacíos
     }
@@ -104,7 +104,7 @@ export default function FilterReportForm() {
         day: '2-digit',
       });
       const formattedTime = now.toLocaleTimeString('es-ES', { hour12: false });
-  
+
       const newReport = {
         fileName: newFileName,
         reportType: 'excel-consolidado',
@@ -113,18 +113,18 @@ export default function FilterReportForm() {
         creationDate: `${formattedDate} - ${formattedTime}`,
         data: response || [],// Incluye los datos para descarga
       };
-  
+
       // Guardar el nuevo reporte en el localStorage para persistencia
       const existingReports = JSON.parse(localStorage.getItem('reports')) || [];
       localStorage.setItem('reports', JSON.stringify([...existingReports, newReport]));
-  
+
       // Navegar a la vista Download y pasar el nuevo reporte
-      navigate('/download', { 
-        state: { 
+      navigate('/download', {
+        state: {
           newReport,
           warningMessage: 'Cuando usted cierre su sesión los reportes generados se perderan de la tabla de descargas.',
-         },
-        });
+        },
+      });
     } catch (error) {
       console.error('Error al generar el reporte:', error);
     }
