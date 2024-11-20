@@ -1,4 +1,4 @@
-import { DatePicker, FlexboxGrid, Form, SelectPicker, Button, InputGroup, IconButton, Modal, Divider } from 'rsuite';
+import { DatePicker, FlexboxGrid, Form, SelectPicker, Button, InputGroup, toaster, Message, Schema } from 'rsuite';
 import FormGroup from 'rsuite/esm/FormGroup';
 import { GetReportsListAsync } from '../services/reportServicie';
 import { FaPlus } from 'react-icons/fa';
@@ -9,14 +9,28 @@ import FormControl from 'rsuite/esm/FormControl';
 import { useNavigate } from 'react-router-dom';
 import { exportToExcel, exportToCSV } from '../../download/service/exportService';
 import FlexboxGridItem from 'rsuite/esm/FlexboxGrid/FlexboxGridItem';
+import { regexAll } from '../../../utils/validator';
 
 export default function FilterReportForm() {
   const [hospital, setHospital] = useState([])
   const [reportData, setReportData] = useState([]);
-  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
+  //Validation
+  const [formValue, setFormValue] = useState({});
+  const [formError, setFormError] = useState({});
 
+  const { StringType } = Schema.Types;
+  const model = Schema.Model({
+    department: StringType()
+      .pattern(regexAll, 'El departamento solo puede tener letras y numeros'),
+    municipality: StringType()
+      .pattern(regexAll, 'El municipio solo puede tener letras y numeros')
+  });
+
+  const disableFutureDates = (date) => {
+    return date > new Date(); // Deshabilita las fechas futuras
+  };
 
   const [filters, setFilters] = useState({
     notificationStartDate: null,
@@ -44,6 +58,19 @@ export default function FilterReportForm() {
   };
 
   const generateReport = async () => {
+    // Verificar si los filtros están vacíos
+    const areFiltersEmpty = Object.values(filters).every(value => value === null || value === '' || value === undefined);
+
+    if (areFiltersEmpty) {
+      // Mostrar un mensaje de advertencia usando toaster
+      toaster.push(
+        <Message type="error" header="Campos Vacíos" closable showIcon>
+          <p>Debe completar al menos un campo antes de generar el reporte.</p>
+          </Message>,
+          { placement: 'topCenter'}
+      );
+      return; // Detener la ejecución si los filtros están vacíos
+    }
     const requestBody = {
       NotificationDateFrom: filters.notificationStartDate,
       NotificationDateTo: filters.notificationEndDate,
@@ -59,41 +86,48 @@ export default function FilterReportForm() {
       Establishment: filters.facility,
       Subsector: filters.subsector,
     };
-    // try {
-    //   const response = await GetReportsListAsync(requestBody);
-    //   console.log('Respuesta de la API:', response);
-
-    //   // Verifica si response es un array o un objeto
-    //   if (!Array.isArray(response)) {
-    //     console.error('La respuesta de la API no es un array:', response);
-    //   }
-
-    //   // Guarda los datos en localStorage
-    //   localStorage.setItem('reportData', JSON.stringify(response));
-
-    //   // Redirige al usuario a la vista de descarga
-    //   navigate('/download');
-    // } catch (error) {
-    //   console.error('Error al generar el reporte:', error);
-    // }
     try {
       const response = await GetReportsListAsync(requestBody);
-      console.log('Respuesta de la API:', response);
-      setReportData(response);
-      setShowModal(true); // Mostrar el modal después de generar el reporte
+
+      if (!Array.isArray(response)) {
+        console.error("La respuesta de la API no es una matriz válida:", response);
+        return;
+      }
+      // Contador basado en la cantidad de reportes existentes en la tabla
+      const reportCount = JSON.parse(localStorage.getItem('reports'))?.length || 0;
+      const newFileName = `fichas-LABORATORIO-${String(reportCount + 1).padStart(2, "0")}`;
+
+      const now = new Date();
+      const formattedDate = now.toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      });
+      const formattedTime = now.toLocaleTimeString('es-ES', { hour12: false });
+  
+      const newReport = {
+        fileName: newFileName,
+        reportType: 'excel-consolidado',
+        filters: '-',
+        level: 'LABORATORIO',
+        creationDate: `${formattedDate} - ${formattedTime}`,
+        data: response || [],// Incluye los datos para descarga
+      };
+  
+      // Guardar el nuevo reporte en el localStorage para persistencia
+      const existingReports = JSON.parse(localStorage.getItem('reports')) || [];
+      localStorage.setItem('reports', JSON.stringify([...existingReports, newReport]));
+  
+      // Navegar a la vista Download y pasar el nuevo reporte
+      navigate('/download', { 
+        state: { 
+          newReport,
+          warningMessage: 'Cuando usted cierre su sesión los reportes generados se perderan de la tabla de descargas.',
+         },
+        });
     } catch (error) {
       console.error('Error al generar el reporte:', error);
     }
-  };
-
-  const handleExportToExcel = () => {
-    exportToExcel(reportData, 'Reporte_Consolidado');
-    setShowModal(false); // Cerrar el modal después de la exportación
-  };
-
-  const handleExportToCSV = () => {
-    exportToCSV(reportData, 'Reporte_Consolidado');
-    setShowModal(false); // Cerrar el modal después de la exportación
   };
 
   async function fetchHospital() {
@@ -101,11 +135,18 @@ export default function FilterReportForm() {
     setHospital(data);
   }
 
+  const handleFormSubmit = () => {
+    // Valida el formulario antes de enviar
+    if (Object.keys(formError).length === 0) {
+      generateReport(); // Realiza el filtro solo si no hay errores
+    }
+  };
+
   return (
     <div style={{ padding: '20px', maxWidth: '1300px', margin: '0 auto' }}>
       <h3 style={{ fontWeight: 'bold', color: '#1B3A61', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>FILTROS PARA UN REPORTE CONSOLIDADO</h3>
 
-      <Form fluid>
+      <Form fluid model={model} formValue={formValue} onChange={setFormValue} onCheck={setFormError} >
         <FlexboxGrid justify="space-between">
           <FlexboxGrid.Item colspan={11} style={{ marginTop: 20, marginBottom: 20 }}>
             <FormGroup>
@@ -118,6 +159,7 @@ export default function FilterReportForm() {
                   placeholder="yyyy-MM-dd"
                   style={{ width: '100%' }}
                   onChange={(value) => handleFilterChange('notificationStartDate', value)}
+                  disabledDate={disableFutureDates}
                 />
               </InputGroup>
             </FormGroup>
@@ -134,6 +176,7 @@ export default function FilterReportForm() {
                   placeholder="yyyy-MM-dd"
                   style={{ width: '100%' }}
                   onChange={(value) => handleFilterChange('notificationEndDate', value)}
+                  disabledDate={disableFutureDates}
                 />
 
               </InputGroup>
@@ -151,6 +194,7 @@ export default function FilterReportForm() {
                   placeholder="yyyy-MM-dd"
                   style={{ width: '100%' }}
                   onChange={(value) => handleFilterChange('symptomStartDate', value)}
+                  disabledDate={disableFutureDates}
                 />
 
               </InputGroup>
@@ -168,6 +212,7 @@ export default function FilterReportForm() {
                   placeholder="yyyy-MM-dd"
                   style={{ width: '100%' }}
                   onChange={(value) => handleFilterChange('symptomEndDate', value)}
+                  disabledDate={disableFutureDates}
                 />
 
               </InputGroup>
@@ -185,7 +230,7 @@ export default function FilterReportForm() {
                   placeholder="yyyy-MM-dd"
                   style={{ width: '100%' }}
                   onChange={(value) => handleFilterChange('labResultStartDate', value)}
-
+                  disabledDate={disableFutureDates}
                 />
 
               </InputGroup>
@@ -203,7 +248,7 @@ export default function FilterReportForm() {
                   placeholder="yyyy-MM-dd"
                   style={{ width: '100%' }}
                   onChange={(value) => handleFilterChange('labResultEndDate', value)}
-
+                  disabledDate={disableFutureDates}
                 />
 
               </InputGroup>
@@ -317,23 +362,9 @@ export default function FilterReportForm() {
       </Form>
       <FlexboxGrid justify='end'>
         <FlexboxGridItem>
-          <Button appearance="primary" size="lg" onClick={generateReport}>
+          <Button appearance="primary" size="lg" onClick={handleFormSubmit}>
             <FaPlus style={{ marginRight: 10 }} /> Generar Reporte
           </Button>
-
-          <Modal open={showModal} onClose={() => setShowModal(false)} size="xs">
-            <Modal.Header>
-              <Modal.Title>Exportar Reporte</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <p>Seleccione el formato para exportar el reporte consolidado.</p>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button onClick={handleExportToExcel} color="green">Exportar a Excel</Button>
-              <Button onClick={handleExportToCSV} color="blue">Exportar a CSV</Button>
-              <Button onClick={() => setShowModal(false)} appearance="subtle">Cancelar</Button>
-            </Modal.Footer>
-          </Modal>
         </FlexboxGridItem>
       </FlexboxGrid>
 

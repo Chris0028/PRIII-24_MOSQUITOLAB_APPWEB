@@ -1,4 +1,4 @@
-import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, Loader, Pagination } from 'rsuite';
+import { Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, Loader, Pagination, Schema, Form } from 'rsuite';
 import { FaEdit, FaSearch, FaSync, FaPlus, FaRegFilePdf, FaMicroscope, FaFlask, FaRegEdit } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -12,6 +12,7 @@ import ResultFilePDF from '../../pdf/sampleResult/components/sampleResultFile';
 import ResultViewer from '../../pdf/sampleResult/components/resultViewer';
 import { historyFilterLAsync } from '../services/historyFileFilterL';
 import { GetHistoryForLab } from '../services/historyForLab';
+import { regexNameReport, regexAll } from '../../../utils/validator';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -70,6 +71,26 @@ export default function RecordsView() {
 
   const [args, setArgs] = useState({});
   const userInfo = useSelector((state) => state.user.user);
+
+  //Validation
+  const [formValue, setFormValue] = useState({});
+  const [formError, setFormError] = useState({});
+
+  const { StringType } = Schema.Types;
+  const model = Schema.Model({
+    code: StringType()
+      .pattern(regexAll, 'El codigo de ficha solo puede contener letras - numeros'),
+    codePatient: StringType()
+      .pattern(regexAll, 'El codigo de paciente solo puede contener letras - numeros'),
+    ci: StringType()
+      .pattern(regexAll, 'El ci solo puede contener numeros y letras'),
+    name: StringType()
+      .pattern(regexNameReport, 'El nombre solo puede contener letras'),
+    lastName: StringType()
+      .pattern(regexNameReport, 'El apellido solo puede contener letras'),
+    secondLastName: StringType()
+      .pattern(regexNameReport, 'El apellido solo puede contener letras')
+  });
 
   function handleOpenModal() {
     setShowModal(true);
@@ -138,6 +159,17 @@ export default function RecordsView() {
   };
 
   function handleRefresh() {
+    // Limpia los valores de los filtros
+    setFormValue({
+      code: '',
+      codePatient: '',
+      ci: '',
+      name: '',
+      lastName: '',
+      secondLastName: ''
+    });
+  
+    setArgs({}); 
     if (decodeToken(userInfo.jwt).role === 'Admin') {
       fetchData(null);
     } else
@@ -174,73 +206,82 @@ export default function RecordsView() {
     setLimit(dataKey);
   }
 
+  const handleFormSubmit = () => {
+    // Valida el formulario antes de enviar
+    if (Object.keys(formError).length === 0) {
+      filter(); // Realiza el filtro solo si no hay errores
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: 'auto', padding: '20px', overflow: 'hidden' }}>
-      {/* Filtros */}
-      <FlexboxGrid justify="start" style={{ marginBottom: 10, gap: 20 }} gutter={10}>
-        {/* Primera Columna de Inputs */}
-        <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
+      <Form fluid model={model} formValue={formValue} onChange={setFormValue} onCheck={setFormError} >
+      <FlexboxGrid justify="start" style={{ gap: 20 }} gutter={10}>
+        <FlexboxGrid.Item  colspan={5} style={{ marginBottom: 5 }}>
           <FormGroup controlId="code">
-            <Input
+            <Form.Control
+              name='code'
               onChange={(value) => handleChange(value, 'code')}
               placeholder="Código de la ficha"
               style={{ width: '100%' }}
             />
           </FormGroup>
           <FormGroup controlId="codePatient">
-            <Input
+            <Form.Control
+              name='codePatient'
               onChange={(value) => handleChange(value, 'codePatient')}
               placeholder="Código del paciente"
-              style={{ width: '100%', marginTop: 10 }}
+              style={{ marginTop:-15, width: '100%' }}
             />
           </FormGroup>
 
         </FlexboxGrid.Item>
 
-        {/* Segunda Columna de Inputs */}
         <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
           <FormGroup controlId="ci">
-            <Input
+            <Form.Control
+              name='ci'
               onChange={(value) => handleChange(value, 'ci')}
               placeholder="Cédula de identidad"
               style={{ width: '100%' }}
             />
           </FormGroup>
           <FormGroup controlId="names">
-            <Input
+            <Form.Control
+              name='name'
               onChange={(value) => handleChange(value, 'names')}
               placeholder="Nombres"
-              style={{ width: '100%', marginTop: 10 }}
+              style={{ marginTop:-15, width: '100%'}}
             />
           </FormGroup>
         </FlexboxGrid.Item>
 
-        {/* Tercera Columna de Inputs */}
         <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
           <FormGroup controlId="lastName">
-            <Input
+            <Form.Control
+              name='lastName'
               onChange={(value) => handleChange(value, 'lastName')}
               placeholder="Primer Apellido"
               style={{ width: '100%' }}
             />
           </FormGroup>
           <FormGroup controlId="secondLastName">
-            <Input
+            <Form.Control
+              name='secondLastName'
               onChange={(value) => handleChange(value, 'secondLastName')}
               placeholder="Segundo Apellido"
-              style={{ width: '100%', marginTop: 10 }}
+              style={{ marginTop:-15, width: '100%' }}
             />
           </FormGroup>
         </FlexboxGrid.Item>
 
-        {/* Botones de Buscar y Refrescar */}
         <FlexboxGrid.Item colspan={3} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Button appearance="primary" size="md" style={{ fontSize: 16 }} onClick={() => { filter(); }}>
+          <Button appearance="primary" size="md" style={{ fontSize: 16 }} onClick={handleFormSubmit}>
             <FaSearch style={{ marginRight: 5, width: 25 }} /> Buscar
           </Button>
         </FlexboxGrid.Item>
       </FlexboxGrid>
-
+      </Form>
       {/* Contenedor para la tabla con scroll */}
       <div style={{ flex: 1, overflowY: 'auto', marginBottom: '20px', position: 'relative' }}>
         {/* Tabla de Registros */}
@@ -416,7 +457,7 @@ export default function RecordsView() {
           justifyContent: 'space-between',
           alignItems: 'center',
           backgroundColor: '#fff',
-          padding: '10px 20px',
+          padding: '10px 20px 0px 0px',
           borderTop: '2px solid #ccc',
         }}
       >
