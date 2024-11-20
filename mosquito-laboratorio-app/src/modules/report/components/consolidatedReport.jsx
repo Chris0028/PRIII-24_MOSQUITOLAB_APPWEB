@@ -78,6 +78,7 @@ export default function FilterReportForm() {
     // }
     try {
       const response = await GetReportsListAsync(requestBody);
+      console.log('Respuesta de la API:', response);
       setReportData(response);
       setShowModal(true); // Mostrar el modal después de generar el reporte
     } catch (error) {
