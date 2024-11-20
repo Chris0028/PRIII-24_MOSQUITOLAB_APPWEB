@@ -111,7 +111,7 @@ export default function RecordsView() {
   };
 
   function handleFilePreview(selectedId) {
-    setPdfToView(<FilePDF fileId={selectedId} info={userInfo.info} />)
+    setPdfToView(<FilePDF fileId={selectedId} />)
   }
 
   async function filter() {

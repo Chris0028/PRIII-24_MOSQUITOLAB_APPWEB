@@ -78,7 +78,7 @@ export default function StepSix({ method, type, disease }) {
                                 <View style={styles.rightEmptyCell}>
                                 </View>
                             </>
-                        ) : (
+                        ) : type === 'Confirmado' ? (
                             <>
                                 {method === 'Por Nexo Epidemiológico' ? (
                                     <>
@@ -121,6 +121,25 @@ export default function StepSix({ method, type, disease }) {
                                         <View style={styles.rightEmptyCell}></View>
                                     </>
                                 )}
+                            </>
+                        ) : (
+                            <>
+                                <View style={styles.caseLabelCell}>
+                                    <Text>Caso sospechoso de Dengue</Text>
+                                </View>
+                                <View style={styles.emptyCell}></View>
+                                <View style={styles.caseCell}>
+                                    <Text>Caso confirmado de Dengue</Text>
+                                </View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Laboratorio</Text>
+                                </View>
+                                <View style={styles.extraEmptyCell}>
+                                </View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Nexo Epidemiológico</Text>
+                                </View>
+                                <View style={styles.rightEmptyCell}></View>
                             </>
                         )}
                     </View>
@@ -221,7 +240,7 @@ export default function StepSix({ method, type, disease }) {
                                 <View style={styles.rightEmptyCell}></View>
                             </View>
                         </>
-                    ) : (
+                    ) : type === 'Confirmado' ? (
                         <>
                             {method === 'Por Nexo Epidemiológico' ? (
                                 <>
@@ -340,6 +359,62 @@ export default function StepSix({ method, type, disease }) {
                                     </View>
                                 </>
                             )}
+                        </>
+                    ) : (
+                        <>
+                            <View style={styles.row}>
+                                <View style={styles.caseLabelCell}>
+                                    <Text>Caso sospechoso de Dengue</Text>
+                                </View>
+                                <View style={styles.emptyCell}></View>
+                                <View style={styles.caseCell}>
+                                    <Text>Caso confirmado de Dengue</Text>
+                                </View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Laboratorio</Text>
+                                </View>
+                                <View style={styles.extraEmptyCell}></View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Nexo Epidemiológico</Text>
+                                </View>
+                                <View style={styles.rightEmptyCell}></View>
+                            </View>
+
+                            <View style={styles.row}>
+                                <View style={styles.caseLabelCell}>
+                                    <Text>Caso sospechoso de Chikungunya</Text>
+                                </View>
+                                <View style={styles.emptyCell}></View>
+                                <View style={styles.caseCell}>
+                                    <Text>Caso confirmado de Chikungunya</Text>
+                                </View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Laboratorio</Text>
+                                </View>
+                                <View style={styles.extraEmptyCell} />
+                                <View style={styles.optionCell}>
+                                    <Text>Por Nexo Epidemiológico</Text>
+                                </View>
+                                <View style={styles.rightEmptyCell}></View>
+                            </View>
+
+                            <View style={styles.row}>
+                                <View style={styles.caseLabelCell}>
+                                    <Text>Caso sospechoso de Zika</Text>
+                                </View>
+                                <View style={styles.emptyCell}></View>
+                                <View style={styles.caseCell}>
+                                    <Text>Caso confirmado de Zika</Text>
+                                </View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Laboratorio</Text>
+                                </View>
+                                <View style={styles.extraEmptyCell}></View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Nexo Epidemiológico</Text>
+                                </View>
+                                <View style={styles.rightEmptyCell}></View>
+                            </View>
                         </>
                     )}
                 </>
@@ -403,7 +478,7 @@ export default function StepSix({ method, type, disease }) {
                                 <View style={styles.rightEmptyCell}></View>
                             </View>
                         </>
-                    ) : (
+                    ) : type === 'Confirmado' ? (
                         <>
                             {method === 'Por Nexo Epidemiológico' ? (
                                 <>
@@ -522,6 +597,63 @@ export default function StepSix({ method, type, disease }) {
                                     </View>
                                 </>
                             )}
+                        </>
+                    ) : (
+                        <>
+                            <View style={styles.row}>
+                                <View style={styles.caseLabelCell}>
+                                    <Text>Caso sospechoso de Dengue</Text>
+                                </View>
+                                <View style={styles.emptyCell}></View>
+                                <View style={styles.caseCell}>
+                                    <Text>Caso confirmado de Dengue</Text>
+                                </View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Laboratorio</Text>
+                                </View>
+                                <View style={styles.extraEmptyCell}></View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Nexo Epidemiológico</Text>
+                                </View>
+                                <View style={styles.rightEmptyCell}></View>
+                            </View>
+
+                            <View style={styles.row}>
+                                <View style={styles.caseLabelCell}>
+                                    <Text>Caso sospechoso de Chikungunya</Text>
+                                </View>
+                                <View style={styles.emptyCell}></View>
+                                <View style={styles.caseCell}>
+                                    <Text>Caso confirmado de Chikungunya</Text>
+                                </View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Laboratorio</Text>
+                                </View>
+                                <View style={styles.extraEmptyCell}></View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Nexo Epidemiológico</Text>
+                                </View>
+                                <View style={styles.rightEmptyCell}></View>
+                            </View>
+
+                            <View style={styles.row}>
+                                <View style={styles.caseLabelCell}>
+                                    <Text>Caso sospechoso de Zika</Text>
+                                </View>
+                                <View style={styles.emptyCell}></View>
+                                <View style={styles.caseCell}>
+                                    <Text>Caso confirmado de Zika</Text>
+                                </View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Laboratorio</Text>
+                                </View>
+                                <View style={styles.extraEmptyCell}>
+                                </View>
+                                <View style={styles.optionCell}>
+                                    <Text>Por Nexo Epidemiológico</Text>
+                                </View>
+                                <View style={styles.rightEmptyCell}></View>
+                            </View>
                         </>
                     )}
                 </>

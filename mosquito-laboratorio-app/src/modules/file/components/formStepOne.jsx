@@ -6,9 +6,9 @@ import { createHandleInputChange } from '../utils/stepOneUtil';
 
 export default function FormStepOne() {
   const dispatch = useDispatch();
-  
+
   const formData = useSelector((state) => state.file.stepOne);
-  
+
   const handleInputChange = createHandleInputChange(dispatch);
 
   const userSelector = useSelector((state) => state.user);
@@ -24,7 +24,7 @@ export default function FormStepOne() {
             <Form.ControlLabel>Establecimiento de Salud Notificante *</Form.ControlLabel>
             <FormControl
               name="healthEstablishment"
-              value={userInfo.info.hospital || [] } 
+              value={userInfo.info.hospital || userInfo.info.laboratory}
               placeholder="Seleccione el establecimiento"
               block
               size="lg"
@@ -36,7 +36,7 @@ export default function FormStepOne() {
             <Form.ControlLabel>Municipio *</Form.ControlLabel>
             <FormControl
               name="municipality"
-              value={userInfo.info.municipality} 
+              value={userInfo.info.municipality}
               placeholder="Seleccione el municipio"
               block
               size="lg"
@@ -48,7 +48,7 @@ export default function FormStepOne() {
             <Form.ControlLabel>Red de Salud *</Form.ControlLabel>
             <FormControl
               name="healthNetwork"
-              value={userInfo.info.hospitalNetwork || [] } 
+              value={userInfo.info.hospitalNetwork || userInfo.info.laboNetwork}
               placeholder="Seleccione la red de salud"
               block
               size="lg"
@@ -60,7 +60,7 @@ export default function FormStepOne() {
             <Form.ControlLabel>Fecha de Notificación *</Form.ControlLabel>
             <DatePicker
               name="notificationDate"
-              value={ new Date } 
+              value={new Date}
               style={{ width: '100%' }}
               disabled
             />
@@ -71,7 +71,7 @@ export default function FormStepOne() {
             <Form.ControlLabel>Departamento *</Form.ControlLabel>
             <FormControl
               name="department"
-              value={ userInfo.info.state } 
+              value={userInfo.info.state}
               placeholder="Seleccione el departamento"
               block
               size="lg"
@@ -83,7 +83,7 @@ export default function FormStepOne() {
             <Form.ControlLabel>Subsector *</Form.ControlLabel>
             <FormControl
               name="subsector"
-              value={'Publico'} 
+              value={'Publico'}
               placeholder="Seleccione el subsector"
               block
               size="lg"
@@ -95,7 +95,7 @@ export default function FormStepOne() {
             <Form.ControlLabel>Cómo se Descubrió el Caso *</Form.ControlLabel>
             <InputPicker
               name="discoveryMethod"
-              value={formData.discoveryMethod || ''} 
+              value={formData.discoveryMethod || ''}
               onChange={(value) => handleInputChange('discoveryMethod', value)}
               placeholder="Seleccione el método"
               block
@@ -108,7 +108,7 @@ export default function FormStepOne() {
             <Form.ControlLabel>Teléfono o Correo Electrónico del Establecimiento *</Form.ControlLabel>
             <FormControl
               name="contactInfo"
-              value={ userInfo.info.hospitalContact || 'No tiene numero o correo'} 
+              value={userInfo.info.hospitalContact || 'No tiene numero o correo'}
               type="text"
               placeholder="Ingrese teléfono o correo electrónico"
               style={{ width: '100%' }}

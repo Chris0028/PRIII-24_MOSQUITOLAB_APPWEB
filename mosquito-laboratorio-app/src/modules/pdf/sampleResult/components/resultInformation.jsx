@@ -1,28 +1,23 @@
-import { Container, Content, FlexboxGrid, Footer, Header, Panel } from "rsuite";
-import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
-import sedes from '../../../../public/static/Logo_Sedes.png';
-import UMA from '../../../../public/static/logo-UMA-2023_BN-positivo.png';
-import UNIVALLE from '../../../../public/static/LOGO-UNIVALLE-04.png';
+import { decryptId } from "../Utils/encrypter";
 
-export default function AuthContainer({ children }) {
+export default function ResultInformation({id}){
+
+    const restoredId = decryptId(id);
     return (
         <Container style={styles.container}>
             <Header style={styles.header}>
                 <FlexboxGrid justify="center">
                     <FlexboxGridItem colspan={24} style={styles.logoContainer}>
-                        <img src={sedes} alt="SEDES" style={styles.sedes} />
-                        <h6 style={styles.headerText}>Gobierno Autónomo Departamental de Cochabamba - SDS</h6>
-                    </FlexboxGridItem>
-                    <FlexboxGridItem colspan={24} style={styles.titleContainer}>
-                        <label style={styles.title}>Plataforma TI de Arbovirosis DE-CHI-KA</label>
+                        <img src={escudo} alt="Escudo patrio" style={styles.escudo} />
+                        <h6 style={styles.headerText}>MINISTERIO DE SALUD Y DEPORTES</h6>
                     </FlexboxGridItem>
                 </FlexboxGrid>
             </Header>
             <Content style={styles.content}>
                 <FlexboxGrid justify="center" align="middle">
                     <FlexboxGridItem colspan={24} style={styles.panelContainer}>
-                        <Panel header="Por seguridad jamás revele sus datos" bordered style={styles.panel}>
-                            {children}
+                        <Panel bordered style={styles.panel}>
+                            <ResultBody id={restoredId}/>
                         </Panel>
                     </FlexboxGridItem>
                 </FlexboxGrid>
@@ -41,6 +36,16 @@ export default function AuthContainer({ children }) {
     )
 }
 
+function ResultBody({id}){
+
+    
+    return(
+        <FlexboxGrid justify="center">
+
+        </FlexboxGrid>
+    );
+}
+
 const styles = {
     container: {
         height: '100vh',
@@ -56,12 +61,13 @@ const styles = {
     logoContainer: {
         textAlign: 'center',
     },
-    sedes: {
+    escudo: {
         width: '100%',
-        maxWidth: '200px',
+        maxWidth: '240px',
     },
     headerText: {
-        margin: 0
+        fontFamily: 'serif',
+        margin: 0,
     },
     titleContainer: {
         textAlign: 'center',

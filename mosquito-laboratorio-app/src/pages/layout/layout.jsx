@@ -31,7 +31,6 @@ export default function Layout({ titleComponent, children }) {
     function signOut() {
         dispatch(clearUser());
         localStorage.clear();
-        navigate('/');
     }
 
     useEffect(() => {
@@ -178,7 +177,7 @@ export default function Layout({ titleComponent, children }) {
                     <Footer style={styles.footer}>
                         <Button
                             appearance="subtle"
-                            onClick={() => handleOpenDevsModal()}>Desarrollado por Univalle</Button>
+                            onClick={() => handleOpenDevsModal()}>Desarrollado por Univalle®</Button>
                     </Footer>
                 </Container>
             </Container>

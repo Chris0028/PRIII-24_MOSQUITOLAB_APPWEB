@@ -1,5 +1,4 @@
 import { Text, View, StyleSheet } from "@react-pdf/renderer";
-import { useEffect, useState } from "react";
 
 const styles = StyleSheet.create({
     sectionTitle: {
@@ -56,7 +55,14 @@ const styles = StyleSheet.create({
     }
 });
 
-export default function StepOne({ discoveryMethod, info, registerDate }) {
+export default function StepOne({
+    discoveryMethod,
+    registerDate,
+    placeNotifier,
+    placeNetwork,
+    placeState,
+    placeMunicipality,
+    placeContact }) {
 
     return (
         <>
@@ -76,26 +82,22 @@ export default function StepOne({ discoveryMethod, info, registerDate }) {
                 </View>
                 <View style={styles.reducedColumn}>
                     <Text>Departamento:</Text>
-                    <Text>{'\n\t' + info.state}</Text>
+                    <Text>{'\n\t' + placeState}</Text>
                 </View>
                 <View style={styles.reducedColumn}>
                     <Text>Municipio:</Text>
-                    <Text>{'\n\t' + info.municipality}</Text>
-                </View>
-                <View style={styles.reducedColumn}>
-                    <Text>Localidad/comunidad:</Text>
-                    <Text>{'\n\t' + info.municipality}</Text>
+                    <Text>{'\n\t' + placeMunicipality}</Text>
                 </View>
                 <View style={styles.reducedColumn}>
                     <Text>Red de Salud:</Text>
-                    <Text>{'\n\t' + info.hospitalNetwork}</Text>
+                    <Text>{'\n\t' + placeNetwork}</Text>
                 </View>
             </View>
 
             <View style={styles.row}>
                 <View style={{ ...styles.column, flex: 1 }}>
                     <Text>Establecimiento de Salud notificante:</Text>
-                    <Text>{'\n\t' + info.hospital}</Text>
+                    <Text>{'\n\t' + placeNotifier}</Text>
                 </View>
                 <View style={{ ...styles.column, flex: 0.5 }}>
                     <View style={styles.verticalOptions}>
@@ -107,7 +109,7 @@ export default function StepOne({ discoveryMethod, info, registerDate }) {
                 </View>
                 <View style={{ ...styles.column, flex: 1.2 }}>
                     <Text>Teléfono o correo electrónico del Establecimiento:</Text>
-                    <Text>{'\n\t' + info.hospitalContact ? null : ''}</Text>
+                    <Text>{'\n\t' + placeContact ? null : ''}</Text>
                 </View>
                 <View style={{ ...styles.column, flex: 1 }}>
                     <View style={styles.verticalOptions}>

@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export default function StepSeven({ disease }) {
+export default function StepSeven({ disease, sampleCollectionDate, testresult, sampleType, diagnosticMehtod }) {
     return (
         <>
             <View style={styles.sectionTitle}>
@@ -52,63 +52,238 @@ export default function StepSeven({ disease }) {
 
             <View style={styles.row}>
                 <View style={styles.sampleCell}>
-                    <Text>Se tomó muestra: Si ( ) No ( )</Text>
+                    <Text>{sampleCollectionDate ? 'Se tomó muestra: Si (X) No ( )' : 'Se tomó muestra: Si ( ) No (X)'}</Text>
                 </View>
                 <View style={styles.labelCell}>
-                    <Text>Fecha de toma de muestra:</Text>
-                </View>
-                <View style={styles.dateCell}>
-                    <Text>Día</Text>
-                </View>
-                <View style={styles.dateCell}>
-                    <Text>Mes</Text>
-                </View>
-                <View style={styles.dateCell}>
-                    <Text>Año</Text>
+                    <Text>Fecha de toma de muestra: {sampleCollectionDate}</Text>
                 </View>
                 <View style={styles.typeCell}>
-                    <Text>Tipo de muestra: Suero( ) Orina( ) Otro ( )</Text>
+                    <Text>
+                        {sampleType === 'Orina' ? 'Tipo de muestra: Suero( ) Orina(X)'
+                            : sampleType === 'Suero' ? 'Tipo de muestra: Suero(X) Orina( )'
+                                : 'Tipo de muestra: Suero( ) Orina( )'}
+                    </Text>
                 </View>
             </View>
+            {disease === 1 ? (
+                <>
+                    {diagnosticMehtod === 'Mac Elisa IgM' ? (
+                        <View style={styles.row}>
+                            <View style={styles.labelCell}>
+                                <Text>Dengue:</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>RT-PCR en tiempo real +( ) -( )</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>Elisa NS1 +( ) -( )</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>{testresult === 'Positivo' ? 'Mac Elisa IgM +(X) -( )' : 'Mac Elisa IgM +( ) -(X)'}</Text>
+                            </View>
+                        </View>
+                    ) : diagnosticMehtod === 'RT-PCR en tiempo real' ? (
+                        <View style={styles.row}>
+                            <View style={styles.labelCell}>
+                                <Text>Dengue:</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>{testresult === 'Positivo' ? 'RT-PCR en tiempo real +(X) -( )' : 'RT-PCR en tiempo real +( ) -(X)'}</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>Elisa NS1 +( ) -( )</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>Mac Elisa IgM +( ) -( )</Text>
+                            </View>
+                        </View>
+                    ) : diagnosticMehtod === 'Elisa NS1' ? (
+                        <View style={styles.row}>
+                            <View style={styles.labelCell}>
+                                <Text>Dengue:</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>RT-PCR en tiempo real +( ) -( )</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>{testresult === 'Positivo' ? 'Elisa NS1 +(X) -( )' : 'Elisa NS1 +( ) -(X)'}</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>Mac Elisa IgM +( ) -( )</Text>
+                            </View>
+                        </View>
+                    ) : (
+                        <View style={styles.row}>
+                            <View style={styles.labelCell}>
+                                <Text>Dengue:</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>RT-PCR en tiempo real +( ) -( )</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>Elisa NS1 +( ) -( )</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>Mac Elisa IgM +( ) -( )</Text>
+                            </View>
+                        </View>
+                    )}
+                    <View style={styles.row}>
+                        <View style={styles.labelCell}>
+                            <Text>Chikungunya:</Text>
+                        </View>
+                        <View style={styles.inputCell}>
+                            <Text>RT-PCR en tiempo real +( ) -( )</Text>
+                        </View>
+                        <View style={styles.inputCell}>
+                            <Text>Elisa IgM +( ) -( )</Text>
+                        </View>
+                    </View>
 
-            <View style={styles.row}>
-                <View style={styles.labelCell}>
-                    <Text>Dengue:</Text>
-                </View>
-                <View style={styles.inputCell}>
-                    <Text>RT-PCR en tiempo real +( ) -( )</Text>
-                </View>
-                <View style={styles.inputCell}>
-                    <Text>Elisa NS1 +( ) -( )</Text>
-                </View>
-                <View style={styles.inputCell}>
-                    <Text>Mac Elisa IgM +( ) -( )</Text>
-                </View>
-            </View>
+                    <View style={styles.row}>
+                        <View style={styles.labelCell}>
+                            <Text>Zika:</Text>
+                        </View>
+                        <View style={styles.inputCell}>
+                            <Text>RT-PCR en tiempo real +( ) -( )</Text>
+                        </View>
+                        <View style={styles.inputCell}>
+                            <Text>Elisa IgM +( ) -( )</Text>
+                        </View>
+                    </View>
+                </>
+            ) : disease === 2 ? (
+                <>
+                    <View style={styles.row}>
+                        <View style={styles.labelCell}>
+                            <Text>Dengue:</Text>
+                        </View>
+                        <View style={styles.inputCell}>
+                            <Text>RT-PCR en tiempo real +( ) -( )</Text>
+                        </View>
+                        <View style={styles.inputCell}>
+                            <Text>Elisa NS1 +( ) -( )</Text>
+                        </View>
+                        <View style={styles.inputCell}>
+                            <Text>Mac Elisa IgM +( ) -( )</Text>
+                        </View>
+                    </View>
+                    {diagnosticMehtod === 'RT-PCR en tiempo real' ? (
+                        <View style={styles.row}>
+                            <View style={styles.labelCell}>
+                                <Text>Chikungunya:</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>{testresult === 'Positivo' ? 'RT-PCR en tiempo real +(X) -( )' : 'RT-PCR en tiempo real +( ) -(X)'}</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>Elisa IgM +( ) -( )</Text>
+                            </View>
+                        </View>
+                    ) : diagnosticMehtod === 'Elisa IgM' ? (
+                        <View style={styles.row}>
+                            <View style={styles.labelCell}>
+                                <Text>Chikungunya:</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>RT-PCR en tiempo real +( ) -( )</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>{testresult === 'Positivo' ? 'Elisa IgM +(X) -( )' : 'Elisa IgM +( ) -(X)'}</Text>
+                            </View>
+                        </View>
+                    ) : (
+                        <View style={styles.row}>
+                            <View style={styles.labelCell}>
+                                <Text>Chikungunya:</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>RT-PCR en tiempo real +( ) -( )</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>Elisa IgM +( ) -( )</Text>
+                            </View>
+                        </View>
+                    )}
+                    <View style={styles.row}>
+                        <View style={styles.labelCell}>
+                            <Text>Zika:</Text>
+                        </View>
+                        <View style={styles.inputCell}>
+                            <Text>RT-PCR en tiempo real +( ) -( )</Text>
+                        </View>
+                        <View style={styles.inputCell}>
+                            <Text>Elisa IgM +( ) -( )</Text>
+                        </View>
+                    </View>
+                </>
+            ) : (
+                <>
+                    <View style={styles.row}>
+                        <View style={styles.labelCell}>
+                            <Text>Dengue:</Text>
+                        </View>
+                        <View style={styles.inputCell}>
+                            <Text>RT-PCR en tiempo real +( ) -( )</Text>
+                        </View>
+                        <View style={styles.inputCell}>
+                            <Text>Elisa NS1 +( ) -( )</Text>
+                        </View>
+                        <View style={styles.inputCell}>
+                            <Text>Mac Elisa IgM +( ) -( )</Text>
+                        </View>
+                    </View>
 
-            <View style={styles.row}>
-                <View style={styles.labelCell}>
-                    <Text>Chikungunya:</Text>
-                </View>
-                <View style={styles.inputCell}>
-                    <Text>RT-PCR en tiempo real +( ) -( )</Text>
-                </View>
-                <View style={styles.inputCell}>
-                    <Text>Elisa IgM +( ) -( )</Text>
-                </View>
-            </View>
-
-            <View style={styles.row}>
-                <View style={styles.labelCell}>
-                    <Text>Zika:</Text>
-                </View>
-                <View style={styles.inputCell}>
-                    <Text>RT-PCR en tiempo real +( ) -( )</Text>
-                </View>
-                <View style={styles.inputCell}>
-                    <Text>Elisa IgM +( ) -( )</Text>
-                </View>
-            </View>
+                    <View style={styles.row}>
+                        <View style={styles.labelCell}>
+                            <Text>Chikungunya:</Text>
+                        </View>
+                        <View style={styles.inputCell}>
+                            <Text>RT-PCR en tiempo real +( ) -( )</Text>
+                        </View>
+                        <View style={styles.inputCell}>
+                            <Text>Elisa IgM +( ) -( )</Text>
+                        </View>
+                    </View>
+                    {diagnosticMehtod === 'RT-PCR en tiempo real' ? (
+                        <View style={styles.row}>
+                            <View style={styles.labelCell}>
+                                <Text>Zika:</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>{testresult === 'Positivo' ? 'RT-PCR en tiempo real +(X) -( )' : 'RT-PCR en tiempo real +( ) -(X)'}</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>Elisa IgM +( ) -( )</Text>
+                            </View>
+                        </View>
+                    ) : diagnosticMehtod === 'Elisa IgM' ? (
+                        <View style={styles.row}>
+                            <View style={styles.labelCell}>
+                                <Text>Zika:</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>RT-PCR en tiempo real +( ) -( )</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>{testresult === 'Positivo' ? 'Elisa IgM +(X) -( )' : 'Elisa IgM +( ) -(X)'}</Text>
+                            </View>
+                        </View>
+                    ) : (
+                        <View style={styles.row}>
+                            <View style={styles.labelCell}>
+                                <Text>Zika:</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>RT-PCR en tiempo real +( ) -( )</Text>
+                            </View>
+                            <View style={styles.inputCell}>
+                                <Text>Elisa IgM +( ) -( )</Text>
+                            </View>
+                        </View>
+                    )}
+                </>
+            )}
         </>
     );
 }

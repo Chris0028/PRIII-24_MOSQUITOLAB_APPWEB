@@ -60,6 +60,7 @@ export default function RecordsView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [showModalPDF, setShowModalPDF] = useState(false);
   const [fileId, setFileId] = useState(0);
   const [diseaseName, setDiseaseName] = useState('');
   const [action, setAction] = useState('');
@@ -78,9 +79,17 @@ export default function RecordsView() {
     setShowModal(false);
   }
 
+  function handleOpenModalPDF() {
+    setShowModalPDF(true);
+  }
+
+  function handleCloseModalPDF() {
+    setShowModalPDF(false);
+  }	
+
   function handleFilePreview(selectedId) {
     console.log(selectedId);
-    setPdfToView(<ResultFilePDF />)
+    setPdfToView(<ResultFilePDF resultId={selectedId}/>)
   }
 
   useEffect(() => {
@@ -260,7 +269,10 @@ export default function RecordsView() {
                         icon={<FaRegFilePdf />}
                         appearance="ghost"
                         color="blue"
-                        onClick={() => handleFilePreview(rowData.id)}
+                        onClick={() => {
+                          handleFilePreview(rowData.id);
+                          handleOpenModalPDF();
+                        }}
                         style={{ color: 'black', border: 'Transparent', marginTop: 5, fontSize: '24px', padding: 5 }}
                       />
                     </Whisper>
@@ -408,7 +420,7 @@ export default function RecordsView() {
           borderTop: '2px solid #ccc',
         }}
       >
-        <ResultViewer pdfToView={pdfToView} />
+        <ResultViewer pdfToView={pdfToView} open={showModalPDF} hiddeModal={handleCloseModalPDF} />
 
         <Button appearance="primary" size="lg" onClick={() => navigate('/fileform')}>
           <FaPlus style={{ marginRight: 10 }} /> Agregar Ficha
