@@ -29,7 +29,7 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
     const [currentRole, setCurrentRole] = useState('');
     const [workplaces, setWorkplaces] = useState([]);
 
-    const { StringType } = Schema.Types;
+    const { StringType, NumberType } = Schema.Types;
 
     const model = Schema.Model({
         email: StringType()
@@ -47,7 +47,7 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
             .pattern(regexName, 'El apellido debe empezar por mayúscula y solo puede contener letras'),
         secondLastName: StringType()
             .pattern(regexName, 'El apellido debe empezar por mayúscula y solo puede contener letras'),
-        workPlace: StringType().isRequired('El lugar de trabajo es obligatorio')
+        workPlace: NumberType().isRequired('El lugar de trabajo es obligatorio')
     })
 
     useEffect(() => {
