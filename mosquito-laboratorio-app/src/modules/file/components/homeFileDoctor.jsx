@@ -137,7 +137,7 @@ export default function RecordsView() {
       lastName: '',
       secondLastName: ''
     });
-  
+
     setArgs({});
     if (decodeToken(userInfo.jwt).role === 'Admin') {
       fetchData(null);
@@ -199,71 +199,71 @@ export default function RecordsView() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: 'auto', padding: '20px', overflow: 'hidden' }}>
       <Form fluid model={model} formValue={formValue} onChange={setFormValue} onCheck={setFormError} >
-      <FlexboxGrid justify="start" style={{ gap: 20 }} gutter={10}>
-        <FlexboxGrid.Item  colspan={5} style={{ marginBottom: 5 }}>
-          <FormGroup controlId="code">
-            <Form.Control
-              name='code'
-              onChange={(value) => handleChange(value, 'code')}
-              placeholder="Código de la ficha"
-              style={{ width: '100%' }}
-            />
-          </FormGroup>
-          <FormGroup controlId="codePatient">
-            <Form.Control
-              name='codePatient'
-              onChange={(value) => handleChange(value, 'codePatient')}
-              placeholder="Código del paciente"
-              style={{ marginTop:-15, width: '100%' }}
-            />
-          </FormGroup>
+        <FlexboxGrid justify="start" style={{ gap: 20 }} gutter={10}>
+          <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
+            <FormGroup controlId="code">
+              <Form.Control
+                name='code'
+                onChange={(value) => handleChange(value, 'code')}
+                placeholder="Código de la ficha"
+                style={{ width: '100%' }}
+              />
+            </FormGroup>
+            <FormGroup controlId="codePatient">
+              <Form.Control
+                name='codePatient'
+                onChange={(value) => handleChange(value, 'codePatient')}
+                placeholder="Código del paciente"
+                style={{ marginTop: -15, width: '100%' }}
+              />
+            </FormGroup>
 
-        </FlexboxGrid.Item>
+          </FlexboxGrid.Item>
 
-        <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
-          <FormGroup controlId="ci">
-            <Form.Control
-              name='ci'
-              onChange={(value) => handleChange(value, 'ci')}
-              placeholder="Cédula de identidad"
-              style={{ width: '100%' }}
-            />
-          </FormGroup>
-          <FormGroup controlId="names">
-            <Form.Control
-              name='name'
-              onChange={(value) => handleChange(value, 'names')}
-              placeholder="Nombres"
-              style={{ marginTop:-15, width: '100%'}}
-            />
-          </FormGroup>
-        </FlexboxGrid.Item>
+          <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
+            <FormGroup controlId="ci">
+              <Form.Control
+                name='ci'
+                onChange={(value) => handleChange(value, 'ci')}
+                placeholder="Cédula de identidad"
+                style={{ width: '100%' }}
+              />
+            </FormGroup>
+            <FormGroup controlId="names">
+              <Form.Control
+                name='name'
+                onChange={(value) => handleChange(value, 'names')}
+                placeholder="Nombres"
+                style={{ marginTop: -15, width: '100%' }}
+              />
+            </FormGroup>
+          </FlexboxGrid.Item>
 
-        <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
-          <FormGroup controlId="lastName">
-            <Form.Control
-              name='lastName'
-              onChange={(value) => handleChange(value, 'lastName')}
-              placeholder="Primer Apellido"
-              style={{ width: '100%' }}
-            />
-          </FormGroup>
-          <FormGroup controlId="secondLastName">
-            <Form.Control
-              name='secondLastName'
-              onChange={(value) => handleChange(value, 'secondLastName')}
-              placeholder="Segundo Apellido"
-              style={{ marginTop:-15, width: '100%' }}
-            />
-          </FormGroup>
-        </FlexboxGrid.Item>
+          <FlexboxGrid.Item colspan={5} style={{ marginBottom: 5 }}>
+            <FormGroup controlId="lastName">
+              <Form.Control
+                name='lastName'
+                onChange={(value) => handleChange(value, 'lastName')}
+                placeholder="Primer Apellido"
+                style={{ width: '100%' }}
+              />
+            </FormGroup>
+            <FormGroup controlId="secondLastName">
+              <Form.Control
+                name='secondLastName'
+                onChange={(value) => handleChange(value, 'secondLastName')}
+                placeholder="Segundo Apellido"
+                style={{ marginTop: -15, width: '100%' }}
+              />
+            </FormGroup>
+          </FlexboxGrid.Item>
 
-        <FlexboxGrid.Item colspan={3} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Button appearance="primary" size="md" style={{ fontSize: 16 }} onClick={handleFormSubmit}>
-            <FaSearch style={{ marginRight: 5, width: 25 }} /> Buscar
-          </Button>
-        </FlexboxGrid.Item>
-      </FlexboxGrid>
+          <FlexboxGrid.Item colspan={3} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <Button appearance="primary" size="md" style={{ fontSize: 16 }} onClick={handleFormSubmit}>
+              <FaSearch style={{ marginRight: 5, width: 25 }} /> Buscar
+            </Button>
+          </FlexboxGrid.Item>
+        </FlexboxGrid>
       </Form>
       <div style={{ flex: 1, overflowY: 'auto', marginBottom: '20px' }}>
         {loading ? (
@@ -277,15 +277,6 @@ export default function RecordsView() {
               <Cell>
                 {(rowData) => (
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                    {activeRole !== 'Doctor' && (
-                      <Whisper placement="top" trigger="hover" speaker={<Tooltip>Editar</Tooltip>}>
-                        <IconButton
-                          icon={<FaEdit />}
-                          appearance="ghost"
-                          style={{ color: 'black', border: 'Transparent', fontSize: '22px', padding: 5 }}
-                        />
-                      </Whisper>
-                    )}
                     <Whisper placement="top" trigger="hover" speaker={<Tooltip>Ver ficha</Tooltip>}>
                       <IconButton
                         icon={<FaRegFilePdf />}

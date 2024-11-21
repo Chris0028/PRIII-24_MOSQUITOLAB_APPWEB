@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image } from "@react-pdf/renderer";
-import logo from '../../../../../public/static/estado-plurinacional-de-bolivia-logo.png'
+import logo from '../../../../../public/static/Logo_Sedes.png'
 
 const styles = StyleSheet.create({
     container: {
@@ -48,12 +48,11 @@ const styles = StyleSheet.create({
     }
 });
 //{ code }
-export default function HeaderSampleResult({resultId}) {
+export default function HeaderSampleResult({ resultId }) {
     return (
         <View style={styles.container}>
             <View style={styles.logoContainer}>
                 <Image style={styles.logo} src={logo} />
-                <Text style={styles.ministryText}>MINISTERIO DE SALUD Y DEPORTES</Text>
             </View>
             <View style={styles.titleContainer}>
                 <Text style={styles.titleText}>RESULTADO DE LABORATORIO</Text>

@@ -98,9 +98,6 @@ export default function AuthForm() {
                     </InputGroup.Button>
                 </InputGroup>
             </FormGroup>
-            <FormGroup style={{ textAlign: 'right', marginTop: -20 }}>
-                <Button appearance="link" color="blue">¿Olvidó su contraseña?</Button>
-            </FormGroup>
             <FormGroup>
                 <ButtonToolbar>
                     <Button block appearance="primary" onClick={(e) => signIn(e)}>Ingresar</Button>

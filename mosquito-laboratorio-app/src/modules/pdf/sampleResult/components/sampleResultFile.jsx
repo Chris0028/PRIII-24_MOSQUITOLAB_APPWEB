@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
         height: 80,
     },
     spacer: {
-        marginVertical: 20,
+        marginVertical: 5,
     }
 });
 
@@ -79,7 +79,7 @@ function ResultBody({ qrCodeData,
     sampleCollectionDate, symptomsStartDate,
     diagnosticMethods, hospitalName,
     resultPerson, resultDetails
- }) {
+}) {
 
     return (
         <View style={styles.bodyContainer}>
@@ -103,11 +103,7 @@ function ResultBody({ qrCodeData,
                 <Text style={styles.separator}>:</Text>
                 <Text style={styles.value}>{patientAge}</Text>
             </View>
-            <View style={styles.fieldContainer}>
-                <Text style={styles.label}>Fecha de Inicio de Sintomas</Text>
-                <Text style={styles.separator}>:</Text>
-                <Text style={styles.value}>{symptomsStartDate}</Text>
-            </View>
+
             <View style={styles.fieldContainer}>
                 <Text style={styles.label}>Código</Text>
                 <Text style={styles.separator}>:</Text>
@@ -124,6 +120,11 @@ function ResultBody({ qrCodeData,
                 <Text style={styles.value}>{sampleCollectionDate}</Text>
             </View>
             <View style={styles.fieldContainer}>
+                <Text style={styles.label}>Fecha de Inicio de Sintomas</Text>
+                <Text style={styles.separator}>:</Text>
+                <Text style={styles.value}>{symptomsStartDate}</Text>
+            </View>
+            <View style={styles.fieldContainer}>
                 <Text style={styles.label}>Método de Diagnóstico</Text>
                 <Text style={styles.separator}>:</Text>
                 <Text style={styles.value}>{diagnosticMethods}</Text>
@@ -134,6 +135,11 @@ function ResultBody({ qrCodeData,
                 <Text style={styles.value}>{hospitalName}</Text>
             </View>
             <View style={styles.fieldContainer}>
+                <Text style={styles.label}>RESULTADO</Text>
+                <Text style={styles.separator}>:</Text>
+                <Text style={styles.value}>{resultDetails}</Text>
+            </View>
+            <View style={styles.fieldContainer}>
                 <Text style={styles.label}>Responsable Técnico</Text>
                 <Text style={styles.separator}>:</Text>
                 <Text style={styles.value}>{resultPerson}</Text>
@@ -142,7 +148,8 @@ function ResultBody({ qrCodeData,
             <View style={styles.spacer} />
 
             <View style={styles.resultQrContainer}>
-                <Text style={styles.resultText}>{resultDetails}</Text>
+                <Text style={styles.resultText}>{' '}</Text>
+
                 {qrCodeData && (
                     <Image
                         style={styles.qrImage}
@@ -169,7 +176,7 @@ export default function ResultFilePDF({ resultId }) {
         diagnostic_methods: '',
         hospital_name: '',
         result_person: '',
-        result_details:'',
+        result_details: '',
     });
 
     useEffect(() => {
@@ -204,7 +211,7 @@ export default function ResultFilePDF({ resultId }) {
                 console.error('Error al obtener el resultado:', error.message);
             }
         };
-    
+
         fetchData();
     }, [resultId]);
 
@@ -212,19 +219,19 @@ export default function ResultFilePDF({ resultId }) {
         <Document>
             <Page size="LEGAL" style={styles.page}>
                 <HeaderSampleResult resultId={resultData.file_code} />
-                <ResultBody qrCodeData={qrCodeData} 
-                            labName={resultData.lab_name}
-                            resultRegisterDate={resultData.result_register_date}
-                            patientName={resultData.patient_name}
-                            patientAge={resultData.patient_age}
-                            fileCode={resultData.file_code}
-                            sampleType={resultData.sample_type}
-                            sampleCollectionDate={resultData.sample_collection_date}
-                            symptomsStartDate={resultData.symptoms_start_date}
-                            diagnosticMethods={resultData.diagnostic_methods}
-                            hospitalName={resultData.hospital_name}
-                            resultPerson={resultData.result_person}
-                            resultDetails={resultData.result_details} />
+                <ResultBody qrCodeData={qrCodeData}
+                    labName={resultData.lab_name}
+                    resultRegisterDate={resultData.result_register_date}
+                    patientName={resultData.patient_name}
+                    patientAge={resultData.patient_age}
+                    fileCode={resultData.file_code}
+                    sampleType={resultData.sample_type}
+                    sampleCollectionDate={resultData.sample_collection_date}
+                    symptomsStartDate={resultData.symptoms_start_date}
+                    diagnosticMethods={resultData.diagnostic_methods}
+                    hospitalName={resultData.hospital_name}
+                    resultPerson={resultData.result_person}
+                    resultDetails={resultData.result_details.toUpperCase()} />
             </Page>
         </Document>
     );
