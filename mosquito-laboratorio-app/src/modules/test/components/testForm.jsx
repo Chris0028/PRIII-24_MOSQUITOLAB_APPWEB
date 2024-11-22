@@ -33,6 +33,14 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName, action
         testResult: StringType().isRequired('El resultado es obligatorio.')
     });
 
+    const modelEdit = Schema.Model({
+        caseType: StringType(),
+        caseMethod: StringType(),
+        sampleType: StringType(),
+        testDiagnosticMethod: StringType(),
+        testResult: StringType()
+    });
+
     const [test, setTest] = useState({
         fileId: 0,
         caseType: '',
@@ -92,6 +100,17 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName, action
             else
                 showNotification('error', 'No se pudo crear la prueba. Inténtelo de nuevo.', 'Algo salió mal')
         }
+        setTest({
+            fileId: 0,
+            caseType: '',
+            caseMethod: '',
+            sampleType: '',
+            sampleObservation: '',
+            testDiagnosticMethod: '',
+            testResult: '',
+            testObservation: '',
+            lastUpdateUserId: 0
+        });
     }
 
     async function handleAction() {
@@ -126,7 +145,7 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName, action
             <ModalHeader>
                 <ModalTitle style={{ fontWeight: 'bold' }}>{title}</ModalTitle>
             </ModalHeader>
-            <Form fluid model={model} onSubmit={(checkStatus) => checkStatus && sendResult()}>
+            <Form fluid model={action === 'Edit' ? modelEdit : model} onSubmit={(checkStatus) => checkStatus && sendResult()}>
                 <ModalBody>
                     <FlexboxGrid justify="space-between" align="middle">
 
@@ -238,7 +257,7 @@ export default function TestForm({ open, hiddeModal, fileId, diseaseName, action
                 <ModalFooter>
                     <Button appearance="primary" type="submit">Aceptar</Button>
                     <Button onClick={() => {
-                        if (action === 'Create')
+                        if (action === 'Create' || action === 'Edit')
                             setTest({
                                 caseType: '',
                                 caseMethod: '',

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Divider, FlexboxGrid, Form, InputPicker, Modal, Schema } from "rsuite";
+import { Button, Divider, FlexboxGrid, Form, InputPicker, Message, Modal, Schema, useToaster } from "rsuite";
 import FlexboxGridItem from "rsuite/esm/FlexboxGrid/FlexboxGridItem";
 import FormControlLabel from "rsuite/esm/FormControlLabel";
 import FormGroup from "rsuite/esm/FormGroup";
@@ -11,7 +11,7 @@ import { createUserAsync, getRoles } from "../services/userService";
 import { getNamesNIdsOfLabos } from "../../../modules/file/services/laboratoryService";
 import { getNamesNIdsOfHospitals } from "../../../modules/file/services/hospitalService";
 import FormControl from "rsuite/esm/FormControl";
-import { regexName, regexEmail, regexPhone } from "../../../utils/validator";
+import { regexName, regexPhone } from "../../../utils/validator";
 
 export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
 
@@ -30,6 +30,7 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
     const [workplaces, setWorkplaces] = useState([]);
 
     const { StringType, NumberType } = Schema.Types;
+    const toaster = useToaster();
 
     const model = Schema.Model({
         email: StringType()
@@ -49,6 +50,14 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
             .pattern(regexName, 'El apellido debe empezar por mayúscula y solo puede contener letras'),
         workPlace: NumberType().isRequired('El lugar de trabajo es obligatorio')
     })
+
+    function showNotification(type, message, header) {
+        toaster.push(
+            <Message type={type} header={header} showIcon closable>
+                {message}
+            </Message>
+        );
+    }
 
     useEffect(() => {
         setRoles(getRoles());
@@ -76,10 +85,21 @@ export default function CreateUserModal({ open, hiddeModal, refreshUsers }) {
         const res = await createUserAsync(clearNewUser);
         if (res !== null) {
             hiddeModal();
+            showNotification('success', 'El usuario se creó correctamente.', 'Éxito');
             refreshUsers();
         } else {
-            console.log("Error al crear usuario");
+            showNotification('error', 'No se pudo crear el usuario, inténtelo de nuevo.', 'Algo salió mal');
         }
+        setNewUser({
+            role: '',
+            name: '',
+            lastName: '',
+            secondLastName: '',
+            phone: '',
+            email: '',
+            workplaceId: 0,
+            sedes: ''
+        });
     }
 
     async function loadWorkplaces(role) {

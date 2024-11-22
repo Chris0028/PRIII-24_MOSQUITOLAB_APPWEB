@@ -29,10 +29,10 @@ export default function AuthForm() {
         setShowPassword(!showPassword);
     }
 
-    function showErrorNotification() {
+    function showErrorNotification(content) {
         toaster.push(
             <Message type='error' header='Error de autenticación' closable showIcon>
-                <p>El usuario o la contraseña es incorrecta.</p>
+                <p>{content}.</p>
             </Message>,
             { duration: 3000 }
         );
@@ -62,10 +62,15 @@ export default function AuthForm() {
                     } else {
                         navigate('/homefiledoctor');
                     }
+                } else if (credentials.status === 0) {
+                    showErrorNotification('El usuario no tiene permiso para acceder al sistema porque está deshabilitado, para más información contáctese con su administrador.')
+                } else {
+                    showErrorNotification('El usuario no existe.');
                 }
             }
+            setAuthData({ username: '', password: '' })
         } else {
-            showErrorNotification();
+            showErrorNotification('El usuario o la contraseña es incorrecta.');
             setAuthData({ username: '', password: '' })
         }
     }
@@ -97,6 +102,9 @@ export default function AuthForm() {
                         {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </InputGroup.Button>
                 </InputGroup>
+            </FormGroup>
+            <FormGroup style={{ textAlign: 'right', marginTop: -20 }}>
+                <Button appearance="link">¿Olvidó su contraseña?</Button>
             </FormGroup>
             <FormGroup>
                 <ButtonToolbar>
