@@ -6,8 +6,9 @@ export const diagnosticMethodOptions = [
 ];
 
 export const caseStatusOptions = [
-    { label: 'Pendiente', value: 0 },
-    { label: 'Revisado', value: 1 }
+    { label: 'Positivo', value: 'Positivo' },
+    { label: 'Negativo', value: 'Negativo' },
+    { label: 'Pendiente', value: 'Pendiente' }
 ];
 
 export const departmentOptions = [

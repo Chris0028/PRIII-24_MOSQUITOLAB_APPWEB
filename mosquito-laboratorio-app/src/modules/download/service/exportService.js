@@ -17,6 +17,8 @@ const columnTranslations = {
   probableInfectionMunicipality: "Municipio Probable de Infección",
   infectionLocation: "Ubicación de la Infección",
   currentAddress: "Dirección Actual",
+  latitude: "Latitud",
+  longitude: "Longitud",
   notifierCenter: "Centro Notificador",
   laboratoryName: "Nombre del Laboratorio",
   symptomsStartDate: "Fecha de Inicio de Síntomas",
