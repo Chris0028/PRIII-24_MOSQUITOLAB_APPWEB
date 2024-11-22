@@ -7,13 +7,11 @@ import { diagnosticMethodOptions, networkOptions, subSectorOptions, caseStatusOp
 import { getNamesNIdsOfHospitals } from '../../file/services/hospitalService';
 import FormControl from 'rsuite/esm/FormControl';
 import { useNavigate } from 'react-router-dom';
-import { exportToExcel, exportToCSV } from '../../download/service/exportService';
 import FlexboxGridItem from 'rsuite/esm/FlexboxGrid/FlexboxGridItem';
 import { regexAll } from '../../../utils/validator';
 
 export default function FilterReportForm() {
   const [hospital, setHospital] = useState([])
-  const [reportData, setReportData] = useState([]);
   const navigate = useNavigate();
 
   //Validation
@@ -39,7 +37,7 @@ export default function FilterReportForm() {
     symptomEndDate: null,
     labResultStartDate: null,
     labResultEndDate: null,
-    caseStatus: null,
+    testResult: null,
     diagnosticMethod: null,
     department: null,
     network: null,
@@ -78,7 +76,7 @@ export default function FilterReportForm() {
       SymptomsDateTo: filters.symptomEndDate,
       ResultDateFrom: filters.labResultStartDate,
       ResultDateTo: filters.labResultEndDate,
-      CaseStatus: filters.caseStatus,
+      testResult: filters.testResult,
       DiagnosticMethod: filters.diagnosticMethod,
       Department: filters.department,
       HealthNetwork: filters.network,
@@ -88,6 +86,9 @@ export default function FilterReportForm() {
     };
     try {
       const response = await GetReportsListAsync(requestBody);
+
+      // Log para inspeccionar los datos recibidos de la API
+      console.log('Datos recibidos de la API:', response);
 
       if (!Array.isArray(response)) {
         console.error("La respuesta de la API no es una matriz válida:", response);
@@ -259,11 +260,11 @@ export default function FilterReportForm() {
             <FormGroup>
               <Form.ControlLabel>Estado del caso</Form.ControlLabel>
               <SelectPicker
-                name="caseStatus"
+                name="testResult"
                 block
                 placeholder="Seleccione el estado"
                 data={caseStatusOptions.map(c => ({ label: c.label, value: c.value }))}
-                onChange={(value) => handleFilterChange('caseStatus', value)}
+                onChange={(value) => handleFilterChange('testResult', value)}
                 labelKey="label"
                 valueKey="value"
               />
