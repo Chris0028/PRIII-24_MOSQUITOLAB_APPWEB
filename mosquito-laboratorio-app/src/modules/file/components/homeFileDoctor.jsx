@@ -1,5 +1,5 @@
 import { Form, Table, Input, Button, IconButton, Tooltip, Whisper, FlexboxGrid, Loader, Pagination, Schema } from 'rsuite';
-import { FaEdit, FaSearch, FaSync, FaPlus, FaRegFilePdf } from 'react-icons/fa';
+import { FaEdit, FaSearch, FaSync, FaPlus, FaRegFilePdf, FaMicroscope } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -11,6 +11,7 @@ import { historyFilterHAsync } from '../services/historyFileFilterH';
 import { GetHistoryFileByHospital } from '../services/historyByHospital';
 import { GetHistoryForLab } from '../services/historyForLab';
 import { regexNameReport, regexAll } from '../../../utils/validator';
+import ResultFilePDF from '../../pdf/sampleResult/components/sampleResultFile';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -147,6 +148,10 @@ export default function RecordsView() {
 
   function handleFilePreview(selectedId) {
     setPdfToView(<FilePDF fileId={selectedId} />)
+  }
+
+  function handleFilePreviewResult(selectedId) {
+    setPdfToView(<ResultFilePDF resultId={selectedId} />)
   }
 
   async function filter() {
@@ -288,6 +293,20 @@ export default function RecordsView() {
                         style={{ color: 'black', border: 'Transparent', marginTop: 5, fontSize: '24px', padding: 5 }}
                       />
                     </Whisper>
+                    {decodeToken(userInfo.jwt).role === 'Doctor' && (
+                      <Whisper placement="top" trigger="hover" speaker={<Tooltip>Vista previa resultado</Tooltip>}>
+                        <IconButton
+                          icon={<FaMicroscope />}
+                          appearance="ghost"
+                          color="blue"
+                          onClick={() => {
+                            handleFilePreviewResult(rowData.id);
+                            handleOpenModalPDF();
+                          }}
+                          style={{ color: 'black', border: 'Transparent', marginTop: 5, fontSize: '24px', padding: 5 }}
+                        />
+                      </Whisper>
+                    )}
                   </div>
                 )}
               </Cell>
