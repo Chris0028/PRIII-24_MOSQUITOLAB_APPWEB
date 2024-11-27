@@ -128,7 +128,6 @@ export default function RecordsView() {
         data = await loadFileLabo(userInfo.info.laboratoryId, page, limit);
       } else {
         data = await loadFileLabo(null, page, limit);
-
       }
       if (data != null) {
         setHistoryFiles(data);
@@ -143,6 +142,7 @@ export default function RecordsView() {
 
   async function loadFileLabo(laboratoryId, page, limit) {
     const response = await GetHistoryForLab(laboratoryId, page, limit);
+    console.log(response.data);
     setHistoryFiles(response.data);
     setTotal(response.total);
   }
