@@ -1,8 +1,3 @@
-# React + Vite
+# Mosquito Laboratorio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## [Manual Técnico-SEDES Laboratorio.docx](https://univalleedu-my.sharepoint.com/:w:/g/personal/gec0028228_est_univalle_edu/ERZxzNZ8wh9NhysnXip9S-sB34epIvuBCgXGzAhwMchd_g?e=kbkWw9)
